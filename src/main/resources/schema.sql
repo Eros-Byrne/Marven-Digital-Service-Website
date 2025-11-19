@@ -5,7 +5,7 @@ drop table if exists user_answers;
 drop table if exists users;
 
 create table if not exists skills (
-    id bigint auto_increment primary key,
+    skill_id bigint auto_increment primary key,
     name varchar(128)
 ) engine=InnoDB;
 

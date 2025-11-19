@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <title>List Of Skills</title>
     <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/project_colours.css">
 </head>
-<body>
+<body class="main-background-colour">
     <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div class="container">
-        <h1>Skills</h1>
+        <h1 class="white-text">Skills</h1>
 
         <div class="row">
             <div class="col-10 col-sm-6 col-md-4 mb-3" th:each="skill : ${skills}">
                 <div class="card p-3 text-center">
-                    <span th:text="${skill.name}"></span>
+                    <span th:text="${skill.name}" class="text-on-white-background"></span>
                 </div>
             </div>
         </div>
