@@ -6,17 +6,18 @@
     <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
 </head>
 <body>
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container">
-    <h1>Skills</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container">
+        <h1>Skills</h1>
 
-        <div th:each="skill : ${skills}">
-            <div th:text="${skill.id}"></div>
-            <div th:text="${skill.name}"></div>
+        <div class="row">
+            <div class="col-10 col-sm-6 col-md-4 mb-3" th:each="skill : ${skills}">
+                <div class="card p-3 text-center">
+                    <span th:text="${skill.name}"></span>
+                </div>
+            </div>
         </div>
-
-</div>
-
+    </div>
 
 
 </body>
