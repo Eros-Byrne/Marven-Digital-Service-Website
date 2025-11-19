@@ -19,7 +19,7 @@ public class SkillRepositoryImpl implements SkillRepository {
 
     private void setSkillRowMapper() {
         skillRowMapper = (rs, i) -> new Skill(
-                rs.getLong("id"),
+                rs.getLong("skill_id"),
                 rs.getString("name")
         );
     }
