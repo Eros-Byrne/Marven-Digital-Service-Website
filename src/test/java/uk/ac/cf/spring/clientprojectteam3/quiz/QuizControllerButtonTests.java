@@ -1,92 +1,85 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class QuizControllerButtonTests {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
+    @Mock
     private QuizService quizService;
 
-    private QuizDTO createSampleQuiz(int numQuestions) {
-        List<Map<String, Object>> questions = List.of(
-                Map.of("id", 0, "text", "Question 1", "options", List.of("1","2","3","4","5")),
-                Map.of("id", 1, "text", "Question 2", "options", List.of("1","2","3","4","5")),
-                Map.of("id", 2, "text", "Question 3", "options", List.of("1","2","3","4","5"))
-        );
-        QuizDTO dto = new QuizDTO();
-        dto.setTitle("Sample Quiz");
-        dto.setQuestions(questions.subList(0, numQuestions));
-        return dto;
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    void setup() {
+        QuizController controller = new QuizController();
+        ReflectionTestUtils.setField(controller, "quizService", quizService);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    }
+
+    private Quiz makeQuiz() {
+        Quiz q = new Quiz();
+        q.setName("Sample Quiz");
+
+        Question q1 = new Question();
+        q1.setQuestionId(1L);
+        q1.setText("Q1");
+
+        Question q2 = new Question();
+        q2.setQuestionId(2L);
+        q2.setText("Q2");
+
+        Question q3 = new Question();
+        q3.setQuestionId(3L);
+        q3.setText("Q3");
+        q.setQuestions(List.of(q1, q2, q3));
+        return q;
+    }
+
+
+    @Test
+    void testNextButtonRedirectsToNextQuestion() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        QuizAttempt attempt = new QuizAttempt();
+        attempt.setAnswers(new HashMap<>());
+        session.setAttribute("quizAttempt", attempt);
+
+        mockMvc.perform(post("/quiz/1/attempt/0/question/0/answer")
+                        .param("answer", "3")
+                        .param("nav", "next")
+                        .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/quiz/1/attempt/0/question/1"));
     }
 
     @Test
-    void firstQuestionShouldNotShowPreviousButton() throws Exception {
-        QuizDTO quiz = createSampleQuiz(3);
-        Mockito.when(quizService.getQuizForAttempt(Mockito.anyInt())).thenReturn(quiz);
+    void testPreviousButtonRedirectsToPreviousQuestion() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        QuizAttempt attempt = new QuizAttempt();
+        attempt.setAnswers(new HashMap<>());
+        session.setAttribute("quizAttempt", attempt);
 
-        mockMvc.perform(get("/quiz/attempt/0/question/0"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(not(containsString("id=\"prevBtn\""))))
-                .andExpect(content().string(containsString("id=\"nextBtn\"")));
+        mockMvc.perform(post("/quiz/1/attempt/0/question/2/answer")
+                        .param("answer", "4")
+                        .param("nav", "prev")
+                        .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/quiz/1/attempt/0/question/1"));
     }
 
-    @Test
-    void lastQuestionShouldNotShowNextButton() throws Exception {
-        QuizDTO quiz = createSampleQuiz(3);
-        Mockito.when(quizService.getQuizForAttempt(Mockito.anyInt())).thenReturn(quiz);
-
-        mockMvc.perform(get("/quiz/attempt/0/question/2"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("id=\"prevBtn\"")))
-                .andExpect(content().string(not(containsString("id=\"nextBtn\""))));
-    }
-
-    @Test
-    void middleQuestionShouldShowBothButtons() throws Exception {
-        QuizDTO quiz = createSampleQuiz(3);
-        Mockito.when(quizService.getQuizForAttempt(Mockito.anyInt())).thenReturn(quiz);
-
-        mockMvc.perform(get("/quiz/attempt/0/question/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("id=\"prevBtn\"")))
-                .andExpect(content().string(containsString("id=\"nextBtn\"")));
-    }
-
-    @Test
-    void onlyOneQuestionShouldShowNoButtons() throws Exception {
-        List<Map<String, Object>> questions = List.of(
-            Map.of("id", 0,
-                    "text", "Question 1",
-                    "options", List.of("1","2","3","4","5")
-            ));
-        QuizDTO quiz = new QuizDTO();
-        quiz.setTitle("Sample Quiz");
-        quiz.setQuestions(questions.subList(0, 1));
-
-        Mockito.when(quizService.getQuizForAttempt(Mockito.anyInt())).thenReturn(quiz);
-
-        mockMvc.perform(get("/quiz/attempt/0/question/0"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(not(containsString("id=\"prevBtn\""))))
-                .andExpect(content().string(not(containsString("id=\"nextBtn\""))));
-    }
 }

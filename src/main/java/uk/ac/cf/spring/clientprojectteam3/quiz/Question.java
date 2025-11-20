@@ -1,10 +1,16 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Question {
-    private Long id;
-    private String question;
-    private int answer;
+    private long questionId;
+    private long quizId;
+    private String title;
+    private String text;
+    private long skillId;
 }
