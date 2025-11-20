@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Quizzes</title>
+
+    <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
+
+    <style>
+        :root {
+            --powder-blue: #6068ff;
+            --light-powder-blue: #8089ff;
+            --cdps-blue: #003761;
+            --cdps-slate: #00313f;
+            --cdps-yellow: #fdd300;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--powder-blue);
+            color: var(--white);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--white);
+            font-weight: 700;
+            margin-top: 20px;
+        }
+
+        .quiz-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 18px;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .quiz-card-title {
+            color: var(--cdps-slate);
+            font-weight: bold;
+        }
+
+        .quiz-card-desc {
+            color: var(--cdps-slate);
+            margin-bottom: 10px;
+        }
+
+        .quiz-card-time {
+            font-size: 0.9rem;
+            color: var(--cdps-slate);
+            margin-bottom: 12px;
+        }
+
+        .start-btn {
+            background-color: var(--cdps-blue);
+            color: var(--white);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .start-btn:hover {
+            background-color: var(--light-powder-blue);
+            color: var(--white);
+        }
+
+        .message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar.html :: navbar"></div>
+
+<div class="container mt-4">
+    <h1>Available Quizzes</h1>
+
+    <div th:if="${dbError}" class="message text-danger" th:text="${dbError}"></div>
+
+
+    <div th:if="${noQuizzes}" class="message" style="color: var(--white);">
+        No quizzes available
+    </div>
+
+    <!-- Quiz cards -->
+    <div class="row mt-4" th:if="${quizzes}">
+        <div class="col-md-6 col-lg-4 mb-4" th:each="quiz : ${quizzes}">
+            <div class="quiz-card">
+                <h5 class="quiz-card-title" th:text="${quiz.name}">Quiz Name</h5>
+                <p class="quiz-card-desc" th:text="${quiz.description}">Quiz Description</p>
+                <p class="quiz-card-time">Estimated time: <span th:text="${quiz.timeEstimate}"></span> mins</p>
+
+                <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
+                   class="btn start-btn w-100 mt-3">
+                    Start Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
