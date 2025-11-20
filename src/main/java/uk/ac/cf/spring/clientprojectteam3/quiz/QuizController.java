@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/quiz")
+@RequestMapping("/quiz/{quizId}")
 public class QuizController {
     @Autowired
     private QuizService quizService;
@@ -21,7 +21,7 @@ public class QuizController {
         return "redirect:/quiz/1/attempt/0/question/0";
     }
 
-    @GetMapping("{quizId}/attempt/{attemptId}/question/{index}")
+    @GetMapping("/attempt/{attemptId}/question/{index}")
     public String showQuestion(@PathVariable int attemptId,
                                @PathVariable int index,
                                Model model) {
