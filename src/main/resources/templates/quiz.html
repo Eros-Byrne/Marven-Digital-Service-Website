@@ -19,7 +19,7 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                 <h1 class="mb-0" th:text="${quizTitle}">Quiz Title</h1>
                 <h2 class="mb-0" th:text="'Attempt: ' + ${attemptId}">Attempt Number</h2>
-                <h2 class="mb-0" th:text="${question.id} + '/' + ${total}">Progress</h2>
+                <h2 class="mb-0" th:text="${question.questionId} + '/' + ${total}">Progress</h2>
             </div>
             <hr>
 
@@ -27,42 +27,68 @@
                 <div class="mb-4 p-3 border rounded bg-white">
                     <h4 th:text="${question.text}">Question Text</h4>
                     <div class="btn-group mt-3" role="group" aria-label="1-5 rating">
-                        <input type="radio" class="btn-check" name="answer" th:id="'rate1'" th:value="1" autocomplete="off" />
-                        <label class="btn btn-outline-primary" th:for="'rate1'">1</label>
+                        <form th:action="@{/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer(quizId=${quizId}, attemptId=${attemptId}, index=${index})}"
+                              method="post">
+                            <div class="btn-group mt-3" role="group" aria-label="1-5 rating">
+                                <input type="radio" class="btn-check" name="answer" th:id="'rate1'" th:value="1"
+                                       th:checked="${selectedAnswer == 1}" autocomplete="off" />
+                                <label class="btn btn-outline-primary" th:for="'rate1'">1</label>
 
-                        <input type="radio" class="btn-check" name="answer" th:id="'rate2'" th:value="2" autocomplete="off" />
-                        <label class="btn btn-outline-primary" th:for="'rate2'">2</label>
+                                <input type="radio" class="btn-check" name="answer" th:id="'rate2'" th:value="2"
+                                       th:checked="${selectedAnswer == 2}" autocomplete="off" />
+                                <label class="btn btn-outline-primary" th:for="'rate2'">2</label>
 
-                        <input type="radio" class="btn-check" name="answer" th:id="'rate3'" th:value="3" autocomplete="off" />
-                        <label class="btn btn-outline-primary" th:for="'rate3'">3</label>
+                                <input type="radio" class="btn-check" name="answer" th:id="'rate3'" th:value="3"
+                                       th:checked="${selectedAnswer == 3}" autocomplete="off" />
+                                <label class="btn btn-outline-primary" th:for="'rate3'">3</label>
 
-                        <input type="radio" class="btn-check" name="answer" th:id="'rate4'" th:value="4" autocomplete="off" />
-                        <label class="btn btn-outline-primary" th:for="'rate4'">4</label>
+                                <input type="radio" class="btn-check" name="answer" th:id="'rate4'" th:value="4"
+                                       th:checked="${selectedAnswer == 4}" autocomplete="off" />
+                                <label class="btn btn-outline-primary" th:for="'rate4'">4</label>
 
-                        <input type="radio" class="btn-check" name="answer" th:id="'rate5'" th:value="5" autocomplete="off" />
-                        <label class="btn btn-outline-primary" th:for="'rate5'">5</label>
+                                <input type="radio" class="btn-check" name="answer" th:id="'rate5'" th:value="5"
+                                       th:checked="${selectedAnswer == 5}" autocomplete="off" />
+                                <label class="btn btn-outline-primary" th:for="'rate5'">5</label>
+
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="d-flex justify-content-between mt-4 ">
+                                <button type="submit" class="btn btn-secondary m-2"
+                                        name="nav" value="prev"
+                                        th:if="${index > 0}"
+                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer(quizId=${quizId}, attemptId=${attemptId}, index=${index})}">
+                                    Previous
+                                </button>
+
+                                <button type="submit" class="btn btn-primary m-2"
+                                        name="nav" value="next"
+                                        th:if="${index < total - 1}"
+                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer(quizId=${quizId}, attemptId=${attemptId}, index=${index})}">
+                                    Next
+                                </button>
+                                <button type="submit" class="btn btn-success m-2"
+                                        name="nav" value="saveclose"
+                                        th:if="${index != total - 1}"
+                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/saveclose(quizId=${quizId}, attemptId=${attemptId})}">
+                                    Save & Close
+                                </button>
+
+                                <button type="submit" class="btn btn-success m-2"
+                                        name="nav" value="submit"
+                                        th:if="${index == total - 1}"
+                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/submit(quizId=${quizId}, attemptId=${attemptId})}">
+                                    Submit Quiz
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- BUTTONS -->
-            <div class="d-flex justify-content-between mt-4">
 
-                <button class="btn btn-primary"
-                        onclick="saveQuiz()">Save Progress</button>
-
-                <a id="prevBtn" th:href="@{/quiz/attempt/{attemptId}/question/{index}(attemptId=${attemptId}, index=${index - 1})}"
-                   th:if="${index > 0}" class="btn btn-secondary">Previous</a>
-
-                <a id="nextBtn" th:href="@{/quiz/attempt/{attemptId}/question/{index}(attemptId=${attemptId}, index=${index + 1})}"
-                   th:if="${index < total - 1}" class="btn btn-primary">Next</a>
-
-                <a th:href="@{/quiz/attempt/{attemptId}/submit(attemptId=${attemptId})}"
-                   th:if="${index == total - 1}" class="btn btn-success">Submit Quiz</a>
-
-            </div>
 
         </div>
     </div>
