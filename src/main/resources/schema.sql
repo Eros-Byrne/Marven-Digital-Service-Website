@@ -1,7 +1,13 @@
-drop table if exists quiz;
 drop table if exists quiz_questions;
 drop table if exists user_answers;
 drop table if exists users;
+drop table if exists quiz;
+drop table if exists skills;
+
+create table if not exists skills (
+    skill_id bigint auto_increment primary key,
+    name varchar(128)
+) engine=InnoDB;
 
 create table if not exists quiz
 (
@@ -17,7 +23,14 @@ create table if not exists quiz_questions
     quiz_id        bigint,
     title          varchar(128),
     text           TEXT,
-    skill_id       bigint
+    skill_id       bigint,
+    foreign key (quiz_id) references quiz(quiz_id),
+    foreign key (skill_id) references skills(skill_id)
+) engine = InnoDB;
+
+create table if not exists users
+(
+    user_id      bigint auto_increment primary key
 ) engine = InnoDB;
 
 create table if not exists user_answers
@@ -26,10 +39,7 @@ create table if not exists user_answers
     user_id             bigint,
     attempt_number      int,
     answer_json         text,
-    primary key (quiz_id, user_id, attempt_number)
-) engine = InnoDB;
-
-create table if not exists users
-(
-    user_id      bigint auto_increment primary key
+    primary key (quiz_id, user_id, attempt_number),
+    foreign key (quiz_id) references quiz(quiz_id),
+    foreign key (user_id) references users(user_id)
 ) engine = InnoDB;
