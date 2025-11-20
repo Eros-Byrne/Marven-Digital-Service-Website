@@ -18,17 +18,18 @@ public class QuizController {
 
     @GetMapping("")
     public String quiz(Model model) {
-        return "redirect:/quiz/attempt/0/question/0";
+        return "redirect:/quiz/1/attempt/0/question/0";
     }
 
-    @GetMapping("/attempt/{attemptId}/question/{index}")
+    @GetMapping("{quizId}/attempt/{attemptId}/question/{index}")
     public String showQuestion(@PathVariable int attemptId,
                                @PathVariable int index,
                                Model model) {
-
+        // TODO make quizId dynamic.
+        long quizId = 1;
         QuizDTO quiz = quizService.getQuizForAttempt(attemptId);
         if (index < 0 || index >= quiz.getQuestions().size()) {
-            return "redirect:/quiz/attempt/" + attemptId + "/question/0"; // fallback
+            return "redirect:/quiz/"+ quizId +"/attempt/" + attemptId + "/question/0"; // fallback
         }
 
         Map<String, Object> question = quiz.getQuestions().get(index);
