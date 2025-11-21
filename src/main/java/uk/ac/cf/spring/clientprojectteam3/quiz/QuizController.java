@@ -37,8 +37,8 @@ public class QuizController {
 
         Question question = quiz.getQuestions().get(index);
         Integer selectedAnswer = attempt.getAnswers().get(index);
-        System.out.println(attempt.getAnswers());
-//        System.out.println(selectedAnswer);
+
+
         model.addAttribute("quizTitle", quiz.getName());
         model.addAttribute("question", question);
         model.addAttribute("index", index);
@@ -72,7 +72,6 @@ public class QuizController {
             attempt.getAnswers().put(index, answer);
         }
         session.setAttribute("quizAttempt", attempt);
-        System.out.println(nav);
 
         int newIndex;
         switch (nav) {
