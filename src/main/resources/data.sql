@@ -41,5 +41,14 @@ values ("Identify the capabilities needed to deliver the service",
       "Users can:
 - show how they’ve assessed the capabilities needed to deliver the service.
 - create a core team that has the capabilities needed.
-- plan how to engage with others to bring in specialist  knowledge or information, when needed.")
+- plan how to engage with others to bring in specialist  knowledge or information, when needed.");
+
+insert into resources (content, difficulty, capability_id)
+values ("Resource 1", "Low", 1);
+
+insert into resources (content, difficulty, capability_id)
+values ("Resource 2", "High", 1);
+
+insert into resources (content, difficulty, capability_id)
+values ("testing this resource and hopefully it works", "Medium", 1);
 

@@ -55,8 +55,8 @@ create table if not exists capabilities (
 
 create table if not exists resources (
     resource_id bigint primary key auto_increment,
-    content TEXT,
-    difficulty ENUM('HIGH', 'MEDIUM','LOW'),
+    content varchar(255),
+    difficulty ENUM('High', 'Medium','Low'),
     capability_id bigint,
     foreign key (capability_id) references capabilities(capability_id)
 ) engine = InnoDB;

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class CapabilityController {
 
@@ -20,6 +22,8 @@ public class CapabilityController {
         ModelAndView mv = new ModelAndView("capabilities/single_capability");
         Capability capability = capabilityService.getCapability(id);
         mv.addObject("capability", capability);
+        List<Resource> resources = capabilityService.getResources(id);
+        mv.addObject("resources", resources);
         return mv;
     }
 
