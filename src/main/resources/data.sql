@@ -1,3 +1,6 @@
+delete from capability_skills;
+delete from resources;
+delete from capabilities;
 delete from skills;
 delete
 from quiz;
@@ -32,4 +35,11 @@ insert into quiz_questions (quiz_id, title, text, skill_id)
 values (1,'test question 2 quiz 1', 'how do you feel about skill 2', 2);
 insert into quiz_questions (quiz_id, title, text, skill_id)
 values (2,'test question 1 quiz 2', 'how do you feel about skill 1 quiz 2', 1);
+
+insert into capabilities (title, description)
+values ("Identify the capabilities needed to deliver the service",
+      "Users can:
+- show how they’ve assessed the capabilities needed to deliver the service.
+- create a core team that has the capabilities needed.
+- plan how to engage with others to bring in specialist  knowledge or information, when needed.")
 
