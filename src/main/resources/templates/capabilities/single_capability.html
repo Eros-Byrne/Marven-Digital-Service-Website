@@ -17,7 +17,21 @@
         <p th:text="${capability.description}" id="capability_description" class="border rounded border-2 p-2 text-on-white-background"></p>
 
     <!--    Table needs to store the resources-->
-        <table></table>
+        <div>
+            <table class="border-white table-bordered col-md-8">
+                <thead>
+                <th id="resource-col" class="p-1">Resource</th>
+                <th id="difficulty-col" class="p-1">Difficulty</th>
+                </thead>
+                <tbody>
+                <!--                tr for each resource-->
+                <tr th:each="resource : ${resources}">
+                    <td th:text="${resource.content}" class="p-1"></td>
+                    <td th:text="${resource.difficulty}" class="p-1"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
     <!--    <list should contain all applicable skills-->
         <ul></ul>

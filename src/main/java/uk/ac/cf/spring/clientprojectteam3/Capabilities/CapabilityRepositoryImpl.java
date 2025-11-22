@@ -4,16 +4,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class CapabilityRepositoryImpl implements CapabilityRepository {
 
     private JdbcTemplate jdbc;
     private RowMapper<Capability> capabilityMapper;
+    private RowMapper<Resource> resourceMapper;
 
     public CapabilityRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbc = jdbcTemplate;
         setCapabilityRowMapper();
-
+        setResourceRowMapper();
     }
 
     private void setCapabilityRowMapper() {
@@ -24,10 +27,22 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         );
     }
 
-    public Capability getCapability(long id) {
+    private void setResourceRowMapper() {
+        resourceMapper = (rs, i) -> new Resource(
+                rs.getLong("resource_id"),
+                rs.getString("content"),
+                Difficulty.valueOf(rs.getString("difficulty"))
+        );
+    }
+
+    public Capability getCapability(Long id) {
         String sql = "select * from capabilities where capability_id = ?";
         return jdbc.queryForObject(sql, capabilityMapper, id);
     }
 
+    public List<Resource> getResourcesForACapability(Long id) {
+        String sql = "select * from resources where capability_id = ?";
+        return jdbc.query(sql, resourceMapper, id);
+    }
 
 }

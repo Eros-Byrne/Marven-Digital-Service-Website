@@ -2,3 +2,11 @@
     white-space: pre-line;
     background-color: #ffffff;
 }
+
+#resource-col {
+    width: 85%;
+}
+
+#difficulty-col {
+    width: 15%;
+}
