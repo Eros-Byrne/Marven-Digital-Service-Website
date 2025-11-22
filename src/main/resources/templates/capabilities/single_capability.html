@@ -5,23 +5,22 @@
     <title>Capability</title>
     <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
     <link rel="stylesheet" href="/css/project_colours.css">
+    <link rel="stylesheet" href="/css/single_capability.css">
 </head>
 <body>
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container">
-<!--    Need to add Capability name here-->
-    <h1 class="white-text">CAPABILITY NAME</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container">
+    <!--    Need to add Capability name here-->
+        <h1 th:text="${capability.title}" class="white-text"></h1>
 
-<!--    Description box, need to style-->
-    <p>NEEDS TO CONTAIN CAPABILITY DESCRIPTION</p>
+    <!--    Description box, need to style-->
+        <p th:text="${capability.description}" id="capability_description" class="border rounded border-2 p-2 text-on-white-background"></p>
 
-<!--    Table needs to store the resources-->
-    <table></table>
+    <!--    Table needs to store the resources-->
+        <table></table>
 
-<!--    <list should contain all applicable skills-->
-    <ul></ul>
-</div>
-
-
+    <!--    <list should contain all applicable skills-->
+        <ul></ul>
+    </div>
 </body>
 </html>
