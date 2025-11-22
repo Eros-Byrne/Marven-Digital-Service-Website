@@ -10,24 +10,21 @@
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div class="container">
-    <!--    Need to add Capability name here-->
         <h1 th:text="${capability.title}" class="white-text"></h1>
 
-    <!--    Description box, need to style-->
         <p th:text="${capability.description}" id="capability_description" class="border rounded border-2 p-2 text-on-white-background"></p>
 
     <!--    Table needs to store the resources-->
         <div>
-            <table class="border-white table-bordered col-md-8">
+            <table id="resources_table" class="mt-2 table-bordered rounded col-md-8">
                 <thead>
-                <th id="resource-col" class="p-1">Resource</th>
-                <th id="difficulty-col" class="p-1">Difficulty</th>
+                <th id="resource-col" class="p-1 text-on-white-background">Resource</th>
+                <th id="difficulty-col" class="p-1 text-on-white-background">Difficulty</th>
                 </thead>
                 <tbody>
-                <!--                tr for each resource-->
                 <tr th:each="resource : ${resources}">
-                    <td th:text="${resource.content}" class="p-1"></td>
-                    <td th:text="${resource.difficulty}" class="p-1"></td>
+                    <td th:text="${resource.content}" class="p-1 text-on-white-background"></td>
+                    <td th:text="${resource.difficulty}" class="p-1 text-on-white-background"></td>
                 </tr>
                 </tbody>
             </table>
