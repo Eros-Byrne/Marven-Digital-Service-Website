@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class QuizRepositoryImpl implements QuizRepo {
+public class QuizRepositoryImpl implements QuizRepository {
     JdbcTemplate jdbcTemplate;
     RowMapper<Quiz> quizRowMapper;
     RowMapper<Question> questionRowMapper;
@@ -24,7 +24,7 @@ public class QuizRepositoryImpl implements QuizRepo {
         setRowMappers();
     }
 
-    void setRowMappers() {
+    public void setRowMappers() {
         quizRowMapper = (rs, i) -> new Quiz(
                 rs.getLong("quiz_id"),
                 rs.getString("name"),
@@ -36,7 +36,7 @@ public class QuizRepositoryImpl implements QuizRepo {
                 rs.getLong("quiz_id"),
                 rs.getString("title"),
                 rs.getString("text"),
-                rs.getLong("skillId")
+                rs.getLong("skill_id")
         );
         answerRowMapper = (rs, i) -> {
             Gson gson = new Gson();
@@ -91,5 +91,10 @@ public class QuizRepositoryImpl implements QuizRepo {
             Answers answer = answers.getFirst();
             jdbcTemplate.update("UPDATE user_answers SET answer_json = ? WHERE quiz_id = ? and user_id = ? and attempt_number = ?", jsonObject.toString(), quizId, userId, attemptNumber);
         }
+    }
+
+    @Override
+    public Quiz getQuiz(long quizId) {
+        return jdbcTemplate.queryForObject("SELECT quiz_id, name, description, time_estimate FROM quiz WHERE quiz_id=?", quizRowMapper, quizId);
     }
 }
