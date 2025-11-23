@@ -31,17 +31,11 @@ public class CapabilityServiceImpl implements CapabilityService {
     }
 
     public List<Resource> getResources(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id cannot be null");
-        }
 
         return capRepository.getResourcesForACapability(id);
     }
 
     public List<Skill> getSkills(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id cannot be null");
-        }
 
         return capRepository.getSkillsForACapability(id);
     }
