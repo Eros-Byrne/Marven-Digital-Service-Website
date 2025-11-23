@@ -14,24 +14,27 @@
 
         <p th:text="${capability.description}" id="capability_description" class="border rounded border-2 p-2 text-on-white-background"></p>
 
-    <!--    Table needs to store the resources-->
-        <div>
-            <table id="resources_table" class="mt-2 table-bordered rounded col-md-8">
-                <thead>
-                <th id="resource-col" class="p-1 text-on-white-background">Resource</th>
-                <th id="difficulty-col" class="p-1 text-on-white-background">Difficulty</th>
-                </thead>
-                <tbody>
-                <tr th:each="resource : ${resources}">
-                    <td th:text="${resource.content}" class="p-1 text-on-white-background"></td>
-                    <td th:text="${resource.difficulty}" class="p-1 text-on-white-background"></td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="row mt-2 ms-0">
+            <div id="resources-table-wrapper" class="border rounded border-2 p-0 col-md-8">
+                <table id="resources-table" class="table-bordered rounded w-100">
+                    <thead>
+                    <th id="resource-col" class="p-1 text-on-white-background">Resource</th>
+                    <th id="difficulty-col" class="p-1 text-on-white-background">Difficulty</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="resource : ${resources}">
+                        <td th:text="${resource.content}" class="p-1 text-on-white-background"></td>
+                        <td th:text="${resource.difficulty}" class="p-1 text-on-white-background"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ul class="list-group col-md-3 ms-auto">
+                <li class="list-group-item"> Just Testing the list placement</li>
+            </ul>
         </div>
 
     <!--    <list should contain all applicable skills-->
-        <ul></ul>
     </div>
 </body>
 </html>
