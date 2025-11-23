@@ -31,12 +31,10 @@ public class CapabilityServiceImpl implements CapabilityService {
     }
 
     public List<Resource> getResources(Long id) {
-
         return capRepository.getResourcesForACapability(id);
     }
 
     public List<Skill> getSkills(Long id) {
-
         return capRepository.getSkillsForACapability(id);
     }
 }
