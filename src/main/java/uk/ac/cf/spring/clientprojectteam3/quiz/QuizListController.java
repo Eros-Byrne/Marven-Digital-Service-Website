@@ -10,29 +10,30 @@ import java.util.List;
 @Controller
 public class QuizListController {
 
-    private final QuizRepo quizRepo;
+    private final QuizRepository quizRepository;
 
     @Autowired
-    public QuizListController(QuizRepo quizRepo) {
-        this.quizRepo = quizRepo;
+    public QuizListController(QuizRepository quizRepository) {
+        this.quizRepository = quizRepository;
     }
 
     @GetMapping("/quiz-list")
     public String showQuizList(Model model) {
         try {
-            List<Quiz> quizzes = quizRepo.getQuizNames();
+            List<Quiz> quizzes = quizRepository.getQuizNames();
 
-            if (quizzes.isEmpty()) {
+            if (quizzes == null || quizzes.isEmpty()) {
                 model.addAttribute("noQuizzes", true);
-            } else {
-                model.addAttribute("quizzes", quizzes);
+                return "quiz-list";
             }
-        } catch (Exception e) {
-            model.addAttribute("dbError", "Could not load quizzes. Please try again later.");
-        }
 
-        return "quiz-list";
+            model.addAttribute("quizzes", quizzes);
+            model.addAttribute("noQuizzes", false);
+            return "quiz-list";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to load quizzes.");
+            return "quiz-list";
+        }
     }
 }
-
-

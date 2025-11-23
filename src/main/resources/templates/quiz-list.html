@@ -26,7 +26,7 @@
         h1 {
             color: var(--white);
             font-weight: 700;
-            margin-top: 20px;
+            margin-bottom: 25px;
         }
 
         .quiz-card {
@@ -52,10 +52,11 @@
             margin-bottom: 10px;
         }
 
-        .quiz-card-time {
+        .quiz-time {
             font-size: 0.9rem;
             color: var(--cdps-slate);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+            opacity: 0.85;
         }
 
         .start-btn {
@@ -72,42 +73,66 @@
             color: var(--white);
         }
 
-        .message {
+        .message-box {
+            background-color: var(--cdps-blue);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
             text-align: center;
-            font-weight: bold;
-            margin-top: 40px;
         }
     </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
 <div th:replace="fragments/navbar.html :: navbar"></div>
 
 <div class="container mt-4">
+
     <h1>Available Quizzes</h1>
 
-    <div th:if="${dbError}" class="message text-danger" th:text="${dbError}"></div>
-
-
-    <div th:if="${noQuizzes}" class="message" style="color: var(--white);">
-        No quizzes available
+    <!-- Error message -->
+    <div th:if="${error}" class="message-box" th:text="${error}">
+        Error loading quizzes.
     </div>
 
-    <!-- Quiz cards -->
-    <div class="row mt-4" th:if="${quizzes}">
-        <div class="col-md-6 col-lg-4 mb-4" th:each="quiz : ${quizzes}">
+    <div th:if="${noQuizzes}" class="message-box">
+        No quizzes available.
+    </div>
+
+    <!-- Quiz list -->
+    <div th:if="${not #lists.isEmpty(quizzes)}" class="row mt-4">
+
+        <div class="col-md-6 col-lg-4 mb-4"
+             th:each="quiz : ${quizzes}">
+
             <div class="quiz-card">
-                <h5 class="quiz-card-title" th:text="${quiz.name}">Quiz Name</h5>
-                <p class="quiz-card-desc" th:text="${quiz.description}">Quiz Description</p>
-                <p class="quiz-card-time">Estimated time: <span th:text="${quiz.timeEstimate}"></span> mins</p>
+
+                <h5 class="quiz-card-title"
+                    th:text="${quiz.name}">
+                    Quiz Name
+                </h5>
+
+                <p class="quiz-card-desc"
+                   th:text="${quiz.description}">
+                    Quiz Description
+                </p>
+
+                <p class="quiz-time">
+                    Estimated time:
+                    <span th:text="${quiz.timeEstimate}">0</span> minutes
+                </p>
 
                 <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
-                   class="btn start-btn w-100 mt-3">
+                   class="btn start-btn w-100">
                     Start Quiz
                 </a>
+
             </div>
+
         </div>
+
     </div>
 </div>
 
