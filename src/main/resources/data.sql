@@ -52,3 +52,8 @@ values ("Resource 2", "High", 1);
 insert into resources (content, difficulty, capability_id)
 values ("testing this resource and hopefully it works", "Medium", 1);
 
+insert into capability_skills (capability_id, skill_id)
+values (1, 1);
+
+insert into capability_skills (capability_id, skill_id)
+values (1, 4);

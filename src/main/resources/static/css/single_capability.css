@@ -25,7 +25,7 @@
     align-self: flex-start;
 }
 
-#list-wrapper {
-    overflow-y: auto;
-    max-height: 100%;
+
+#skills-card {
+    align-self: flex-start;
 }
