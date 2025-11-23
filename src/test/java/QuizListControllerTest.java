@@ -29,10 +29,9 @@ public class QuizListController {
             }
         } catch (Exception e) {
             model.addAttribute("dbError", "Could not load quizzes. Please try again later.");
+            e.printStackTrace(); // optional, for debugging
         }
 
         return "quiz-list";
     }
 }
-
-
