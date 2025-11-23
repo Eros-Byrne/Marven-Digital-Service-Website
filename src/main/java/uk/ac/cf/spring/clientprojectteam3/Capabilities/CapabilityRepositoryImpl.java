@@ -1,11 +1,13 @@
 package uk.ac.cf.spring.clientprojectteam3.Capabilities;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import uk.ac.cf.spring.clientprojectteam3.Skills.Skill;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CapabilityRepositoryImpl implements CapabilityRepository {
@@ -45,9 +47,18 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         );
     }
 
-    public Capability getCapability(Long id) {
+    public Optional<Capability> getCapability(Long id) {
+
         String sql = "select * from capabilities where capability_id = ?";
-        return jdbc.queryForObject(sql, capabilityMapper, id);
+
+        try {
+            Capability capability = jdbc.queryForObject(sql, capabilityMapper, id);
+
+            return Optional.ofNullable(capability);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+
     }
 
     public List<Resource> getResourcesForACapability(Long id) {
