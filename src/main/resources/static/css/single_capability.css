@@ -22,4 +22,10 @@
 
 #resources-table-wrapper {
     border-color: #8089ff !important;
+    align-self: flex-start;
+}
+
+#list-wrapper {
+    overflow-y: auto;
+    max-height: 100%;
 }

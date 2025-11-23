@@ -14,7 +14,7 @@
 
         <p th:text="${capability.description}" id="capability_description" class="border rounded border-2 p-2 text-on-white-background"></p>
 
-        <div class="row mt-2 ms-0">
+        <div class="row mt-2 ms-0 me-0">
             <div id="resources-table-wrapper" class="border rounded border-2 p-0 col-md-8">
                 <table id="resources-table" class="table-bordered rounded w-100">
                     <thead>
@@ -29,12 +29,28 @@
                     </tbody>
                 </table>
             </div>
-            <ul class="list-group col-md-3 ms-auto">
-                <li class="list-group-item"> Just Testing the list placement</li>
-            </ul>
+<!--            <div class="col-md-3 ms-auto">-->
+<!--                <h4>Transferable Skills</h4>-->
+<!--                <ul class="list-group">-->
+<!--                    <li class="list-group-item"> Just Testing the list placement</li>-->
+<!--                    <li class="list-group-item"> Just Testing the list placement</li>-->
+<!--                    <li class="list-group-item"> Just Testing the list placement</li>-->
+<!--                    <li class="list-group-item"> Just Testing the list placement</li>-->
+<!--                    <li class="list-group-item"> Just Testing the list placement</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+            <div class="col-md-3 ms-auto card p-0">
+                <h4 class="card-title text-center">Transferable Skills</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"> Just Testing the list placement</li>
+                    <li class="list-group-item"> Just Testing the list placement</li>
+                    <li class="list-group-item"> Just Testing the list placement</li>
+                    <li class="list-group-item"> Just Testing the list placement</li>
+                    <li class="list-group-item"> Just Testing the list placement</li>
+                </ul>
+            </div>
         </div>
 
-    <!--    <list should contain all applicable skills-->
     </div>
 </body>
 </html>
