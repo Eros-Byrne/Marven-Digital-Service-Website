@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
+import uk.ac.cf.spring.clientprojectteam3.Skills.Skill;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class CapabilityController {
         mv.addObject("capability", capability);
         List<Resource> resources = capabilityService.getResources(id);
         mv.addObject("resources", resources);
+        List<Skill> skills = capabilityService.getSkills(id);
+        mv.addObject("skills", skills);
         return mv;
     }
 
