@@ -31,7 +31,7 @@ public class QuizController {
 
         Quiz quiz = quizService.getQuizForAttempt(quizId, attemptId);
 
-        if (index < 0 || index >= quiz.getQuestions().size()) {
+        if (index < 0 || index > quiz.getQuestions().size()) {
             return "redirect:/quiz/"+ quizId +"/attempt/" + attemptId + "/question/0"; // fallback
         }
 
