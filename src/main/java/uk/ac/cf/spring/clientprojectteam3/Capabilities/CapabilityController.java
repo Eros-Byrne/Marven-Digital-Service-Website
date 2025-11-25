@@ -1,14 +1,11 @@
 package uk.ac.cf.spring.clientprojectteam3.Capabilities;
 
-import ch.qos.logback.core.model.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.ModelAndView;
 import uk.ac.cf.spring.clientprojectteam3.Skills.Skill;
 
-import java.util.InputMismatchException;
 import java.util.List;
 
 @Controller
