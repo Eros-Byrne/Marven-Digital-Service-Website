@@ -31,7 +31,7 @@ public class QuizController {
 
         Quiz quiz = quizService.getQuizForAttempt(quizId, attemptId);
 
-        if (index < 0 || index > quiz.getQuestions().size()) {
+        if (index < 0 || index >= quiz.getQuestions().size()) {
             return "redirect:/quiz/"+ quizId +"/attempt/" + attemptId + "/question/0"; // fallback
         }
 
@@ -40,6 +40,7 @@ public class QuizController {
 
 
         model.addAttribute("quizTitle", quiz.getName());
+        model.addAttribute("questionNum", index+1);
         model.addAttribute("question", question);
         model.addAttribute("index", index);
         model.addAttribute("total", quiz.getQuestions().size());
@@ -67,22 +68,52 @@ public class QuizController {
         }
 
         attempt.setCurrentQuestionIndex(index);
-        // Save answer to session
-        if (answer != null) {
-            attempt.getAnswers().put(index, answer);
-        }
-        session.setAttribute("quizAttempt", attempt);
+        putAnswerInSession(index, session, attempt, answer);
 
         int newIndex;
         switch (nav) {
             case "next": newIndex = index + 1; break;
             case "prev": newIndex = index - 1; break;
-            case "saveclose": return "redirect:/dashboard"; // example
-            case "submit": return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/submit";
+            case "saveclose": return "redirect:/dashboard";
+            case "submit":
+                System.out.println(session.getAttribute("quizAttempt"));
+                return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/submit";
             default: return "redirect:/quiz/1/attempt/0/question/0";
         }
         return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + (newIndex);
     }
+
+    private void putAnswerInSession(Integer index, HttpSession session, QuizAttempt attempt, Integer answer) {
+        if (answer != null) {
+            attempt.getAnswers().put(index, answer);
+        }
+        session.setAttribute("quizAttempt", attempt);
+    }
+
+    @GetMapping("/attempt/{attemptId}/submit")
+    public String submitQuiz(@PathVariable int quizId,
+                             @PathVariable int attemptId,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        QuizAttempt attempt = getAttemptFromSession(session);
+        if (attempt == null) return "redirect:/quiz-list";
+
+        Quiz quiz = quizService.getQuizForAttempt(quizId, attemptId);
+        // checks if quiz is complete
+        if (!quizService.isComplete(attempt, quiz)) {
+            // finds first unanswered question to take the user back to
+            int firstUnanswered = quizService.firstUnansweredIndex(attempt, quiz);
+            redirectAttributes.addFlashAttribute("errorMessage", "Please answer all questions before submitting.");
+            return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + firstUnanswered;
+        }
+
+        quizService.submitAttempt(attemptId, attempt); // saves all answers and marks complete
+        session.removeAttribute("quizAttempt");
+
+        return "redirect:/quiz-list";
+    }
+
 
     private QuizAttempt getAttemptFromSession(HttpSession session) {
         return (QuizAttempt) session.getAttribute("quizAttempt");
