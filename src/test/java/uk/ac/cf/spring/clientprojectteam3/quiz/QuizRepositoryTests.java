@@ -82,7 +82,7 @@ public class QuizRepositoryTests {
 
     @Test
     void testGetQuestions() {
-        Question question = new Question(10L, 1L, "Title", "Text", 101L);
+        Question question = new Question(10L, 1L, "Text", 101L);
         List<Question> questionList = List.of(question);
 
         when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L))).thenReturn(questionList);

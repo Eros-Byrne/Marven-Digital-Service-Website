@@ -1,5 +1,6 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,35 @@ public class QuizServiceImpl implements QuizService {
     @Autowired
     private QuizRepository quizRepository;
 
+
+    public void storeAttempt(HttpSession session, QuizAttempt attempt) {
+        session.setAttribute("quizAttempt", attempt);
+    }
+
+    public void recordAnswer(QuizAttempt attempt, int index, Integer answer) {
+        if (answer != null) {
+            attempt.getAnswers().put(index, answer);
+        }
+    }
+
+    public void saveAttemptToSession(HttpSession session, QuizAttempt attempt) {
+        session.setAttribute("quizAttempt", attempt);
+    }
+
+
+    public QuizAttempt loadAttemptFromSession(int quizId, HttpSession session) {
+        QuizAttempt attempt = (QuizAttempt) session.getAttribute("quizAttempt");
+
+        if (attempt == null) {
+            attempt = new QuizAttempt();
+            attempt.setQuizId(quizId);
+        }
+        return attempt;
+    }
+
+    public boolean indexValid(Quiz quiz, int index) {
+        return index >= 0 && index < quiz.getQuestions().size();
+    }
 
     @Override
     public Quiz getQuizForAttempt(int quizId, int attemptId) {
