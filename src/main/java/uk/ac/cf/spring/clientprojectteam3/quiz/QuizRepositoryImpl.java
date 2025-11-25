@@ -5,11 +5,11 @@ import com.google.gson.reflect.TypeToken;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 @Repository
 public class QuizRepositoryImpl implements QuizRepository {
@@ -17,6 +17,7 @@ public class QuizRepositoryImpl implements QuizRepository {
     RowMapper<Quiz> quizRowMapper;
     RowMapper<Question> questionRowMapper;
     RowMapper<Answers> answerRowMapper;
+    RowMapper<AttemptDTO> attemptRowMapper;
 
     public QuizRepositoryImpl(JdbcTemplate aJdbc) {
         this.jdbcTemplate = aJdbc;
@@ -69,6 +70,34 @@ public class QuizRepositoryImpl implements QuizRepository {
                 , answerRowMapper
                 , quizId, userId);
         return answers;
+    }
+
+    @Override
+    public AttemptDTO getAttempt(long quizId, long userId, int attemptNumber) {
+        Quiz quiz = jdbcTemplate.query(
+                "select * from quiz where quiz.quiz_id = ?"
+                , quizRowMapper
+                , quizId).getFirst();//populate questions in quiz object
+        List<Question> questions = jdbcTemplate.query(
+                "select * from quiz_questions where quiz_id = ?"
+                , questionRowMapper
+                , quizId);
+        quiz.setQuestions(questions);
+        List<Answers> answers = jdbcTemplate.query(
+                "select * from user_answers where quiz_id = ? and user_id = ?",
+                answerRowMapper,
+                quizId, userId
+        );
+
+        HashMap<Question, Integer> questionAnswerPairs = new HashMap<>();
+        for(Answers answer : answers) {
+            for(Map.Entry<Long, Integer> questionScorePair : (answer.getAnswers().entrySet())){
+                Question question = quiz.getQuestions().stream().filter(questionSearch -> questionSearch.getQuestionId() == questionScorePair.getKey()).findFirst().orElse(null);
+                questionAnswerPairs.put(question, questionScorePair.getValue());
+            }
+        }
+
+        return new AttemptDTO(quiz, userId, questionAnswerPairs, attemptNumber);
     }
 
     @Override
