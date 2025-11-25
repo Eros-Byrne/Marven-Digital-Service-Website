@@ -10,10 +10,10 @@ import java.util.List;
 @Controller
 public class QuizListController {
 
-    private final QuizRepo quizRepo;
+    private final QuizRepository quizRepo;
 
     @Autowired
-    public QuizListController(QuizRepo quizRepo) {
+    public QuizListController(QuizRepository quizRepo) {
         this.quizRepo = quizRepo;
     }
 
