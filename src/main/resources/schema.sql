@@ -1,11 +1,18 @@
+drop table if exists answer;
+drop table if exists user_attempt;
 drop table if exists quiz_questions;
-drop table if exists user_answers;
-drop table if exists users;
 drop table if exists quiz;
-drop table if exists skills;
+drop table if exists capabilities;
+drop table if exists user_info;
 
-create table if not exists skills (
-    skill_id bigint auto_increment primary key,
+create table if not exists user_info
+(
+    user_id      bigint auto_increment primary key
+) engine = InnoDB;
+
+
+create table if not exists capabilities (
+    capability_id bigint auto_increment primary key,
     name varchar(128)
 ) engine=InnoDB;
 
@@ -21,25 +28,35 @@ create table if not exists quiz_questions
 (
     question_id    bigint auto_increment primary key,
     quiz_id        bigint,
-    title          varchar(128),
+    capability_id  bigint,
     text           TEXT,
-    skill_id       bigint,
     foreign key (quiz_id) references quiz(quiz_id),
-    foreign key (skill_id) references skills(skill_id)
+    foreign key (capability_id) references capabilities(capability_id)
 ) engine = InnoDB;
 
-create table if not exists users
+create table if not exists user_attempt
 (
-    user_id      bigint auto_increment primary key
-) engine = InnoDB;
-
-create table if not exists user_answers
-(
-    quiz_id             bigint,
     user_id             bigint,
-    attempt_number      int,
-    answer_json         text,
-    primary key (quiz_id, user_id, attempt_number),
-    foreign key (quiz_id) references quiz(quiz_id),
-    foreign key (user_id) references users(user_id)
-) engine = InnoDB;
+    user_attempt_id     bigint,
+    attempt             int,
+    complete            int,
+    primary key (user_attempt_id),
+    foreign key (user_id) references user_info(user_id)
+    ) engine = InnoDB;
+
+create table if not exists answer
+(
+    question_id         bigint,
+    user_attempt_id     bigint,
+    score               int,
+    primary key (question_id, user_attempt_id),
+    foreign key (question_id) references quiz_questions(question_id),
+    foreign key (user_attempt_id) references user_attempt(user_attempt_id)
+
+    ) engine = InnoDB;
+
+
+
+
+
+

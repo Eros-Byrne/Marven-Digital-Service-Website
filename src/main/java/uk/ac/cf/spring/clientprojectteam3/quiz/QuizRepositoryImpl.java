@@ -34,9 +34,8 @@ public class QuizRepositoryImpl implements QuizRepository {
         questionRowMapper = (rs, i) -> new Question(
                 rs.getLong("question_id"),
                 rs.getLong("quiz_id"),
-                rs.getString("title"),
                 rs.getString("text"),
-                rs.getLong("skill_id")
+                rs.getLong("capability_id")
         );
         answerRowMapper = (rs, i) -> {
             Gson gson = new Gson();
