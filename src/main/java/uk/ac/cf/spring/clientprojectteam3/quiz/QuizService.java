@@ -1,15 +1,31 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.util.List;
 
 public interface QuizService {
-    Quiz getQuizForAttempt(int quizId, int attemptId);
+    boolean isComplete(QuizAttempt attempt, Quiz quiz);
+
+    int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz);
+
+    void submitAttempt(long userId, long attemptId, QuizAttempt attempt);
+
+    boolean indexValid(Quiz quiz, int index);
+
+    void storeAttempt(HttpSession session, QuizAttempt attempt);
+
+    void recordAnswer(QuizAttempt attempt, int index, Integer answer);
+
+    void saveAttemptToSession(HttpSession session, QuizAttempt attempt);
+
+    QuizAttempt loadAttemptFromSession(int quizId, HttpSession session);
+
+    long startAttempt(long userId, int i);
+    Quiz getQuizForAttempt(long quizId, int attemptId);
 
     List<Quiz> getQuizNames();
 
     List<Question> getQuestionsForQuiz(int quizId);
-
-    AttemptDTO getAttemptForQuiz(int quizId, int userId, int attemptId);
-
     Long getCurrentAttempt(int userId);
 }
