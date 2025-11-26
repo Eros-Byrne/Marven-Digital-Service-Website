@@ -38,6 +38,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     public boolean indexValid(Quiz quiz, int index) {
+        // checks the question index is valid.
         return index >= 0 && index < quiz.getQuestions().size();
     }
 
@@ -52,6 +53,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     public boolean isComplete(QuizAttempt attempt, Quiz quiz) {
+        // checks the quiz has all questions answered
         for (int i = 0; i < quiz.getQuestions().size(); i++) {
             if (!attempt.getAnswers().containsKey(i)) return false;
         }
@@ -59,6 +61,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     public long startAttempt(long userId, int attemptNumber) {
+        // creates the user attempt when they start the quiz.
         return quizRepository.createUserAttempt(userId, attemptNumber);
     }
 
