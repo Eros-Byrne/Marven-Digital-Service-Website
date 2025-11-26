@@ -2,9 +2,9 @@ package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import jakarta.servlet.http.HttpSession;
 
-public interface QuizService {
-    Quiz getQuizForAttempt(long quizId, int attemptId);
+import java.util.List;
 
+public interface QuizService {
     boolean isComplete(QuizAttempt attempt, Quiz quiz);
 
     int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz);
@@ -22,4 +22,10 @@ public interface QuizService {
     QuizAttempt loadAttemptFromSession(int quizId, HttpSession session);
 
     long startAttempt(long userId, int i);
+    Quiz getQuizForAttempt(long quizId, int attemptId);
+
+    List<Quiz> getQuizNames();
+
+    List<Question> getQuestionsForQuiz(int quizId);
+    Long getCurrentAttempt(int userId);
 }

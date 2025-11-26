@@ -52,6 +52,19 @@ public class QuizServiceImpl implements QuizService {
         return quiz;
     }
 
+    @Override
+    public List<Quiz> getQuizNames() {
+        return quizRepository.getQuizNames();
+    }
+
+    public List<Question> getQuestionsForQuiz(int quizId){
+        return quizRepository.getQuestions(quizId);
+    }
+
+    public Long getCurrentAttempt(int userId){
+        return 1L;
+    }
+
     public boolean isComplete(QuizAttempt attempt, Quiz quiz) {
         // checks the quiz has all questions answered
         for (int i = 0; i < quiz.getQuestions().size(); i++) {
@@ -64,6 +77,8 @@ public class QuizServiceImpl implements QuizService {
         // creates the user attempt when they start the quiz.
         return quizRepository.createUserAttempt(userId, attemptNumber);
     }
+
+
 
     public int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz) {
         for (int i = 0; i < quiz.getQuestions().size(); i++) {
