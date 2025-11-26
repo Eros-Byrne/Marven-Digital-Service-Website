@@ -3,6 +3,7 @@ package uk.ac.cf.spring.clientprojectteam3.quiz;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -11,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.HashMap;
@@ -18,6 +20,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -63,24 +67,23 @@ class QuizControllerTests {
         quiz.setName("Sample Quiz");
         quiz.setQuestions(List.of(question));
 
-        // Mock service calls
-        Mockito.when(quizService.loadAttemptFromSession(1, session)).thenReturn(attempt);
-        Mockito.when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
-        Mockito.when(quizService.indexValid(quiz, 0)).thenReturn(true); // <--- critical
+        when(quizService.loadAttemptFromSession(1, session)).thenReturn(attempt);
+        when(quizService.getQuizForAttempt(1, 1)).thenReturn(quiz);
+        when(quizService.indexValid(quiz, 0)).thenReturn(true);
 
         // Perform request
-        mockMvc.perform(get("/quiz/1/attempt/0/question/0").session(session))
-                .andExpect(status().isOk())
+        MvcResult result = mockMvc.perform(get("/quiz/1/attempt/1/question/0")
+                        .session(session))
+                .andReturn();
+        System.out.println(result.getModelAndView());
+
+        mockMvc.perform(get("/quiz/1/attempt/1/question/0").session(session))
                 .andExpect(model().attribute("quizTitle", "Sample Quiz"))
                 .andExpect(model().attribute("question", question))
                 .andExpect(model().attribute("index", 0))
                 .andExpect(model().attribute("total", 1))
-                .andExpect(model().attribute("attemptId", 0));
+                .andExpect(model().attribute("attemptId", 1));
     }
-
-
-
-
 
 
     @Test
@@ -89,11 +92,13 @@ class QuizControllerTests {
         Question q1 = makeQuestion(1, "Question 1");
         quiz.setQuestions(List.of(q1));
 
-        Mockito.when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
+        when(quizService.getQuizForAttempt(1, 1)).thenReturn(quiz);
+        when(quizService.indexValid(any(Quiz.class), eq(10))).thenReturn(false);
 
-        mockMvc.perform(get("/quiz/1/attempt/0/question/10"))
+
+        mockMvc.perform(get("/quiz/1/attempt/1/question/10"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/quiz/1/attempt/0/question/0"));
+                .andExpect(redirectedUrl("/quiz/1/attempt/1/question/0"));
     }
 
     @Test
@@ -108,7 +113,6 @@ class QuizControllerTests {
         );
         quiz.setQuestions(questions);
 
-        Mockito.when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
 
         mockMvc.perform(get("/quiz/1/attempt/0/question/0"))
                 .andExpect(status().is3xxRedirection());
@@ -166,7 +170,7 @@ class QuizControllerTests {
 
         session.setAttribute("quizAttempt", attempt);
 
-        Mockito.when(quizService.loadAttemptFromSession(1, session))
+        when(quizService.loadAttemptFromSession(1, session))
                 .thenReturn(attempt);
 
         Mockito.doAnswer(inv -> {

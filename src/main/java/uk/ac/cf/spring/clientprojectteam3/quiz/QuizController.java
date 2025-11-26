@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Map;
-
 @Controller
 @RequestMapping("/quiz/{quizId}")
 public class QuizController {
@@ -26,6 +24,9 @@ public class QuizController {
                                      @PathVariable int index,
                                      @PathVariable int quizId,
                                      HttpSession session) {
+        if (attemptId == 0) {
+            return startAttempt(getUserId(), quizId, index);
+        }
 
         QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
         Quiz quiz = quizService.getQuizForAttempt(quizId, attemptId);
@@ -48,6 +49,12 @@ public class QuizController {
         return mav;
     }
 
+    public ModelAndView startAttempt(long userId, long quizId, long index) {
+        long newAttemptId = quizService.startAttempt(userId, 1);
+        return new ModelAndView(
+                "redirect:/quiz/" + quizId + "/attempt/" + newAttemptId + "/question/" + index
+        );
+    }
 
     @PostMapping("/attempt/{attemptId}/question/{index}/answer")
     public String answer(@PathVariable int quizId,
@@ -87,10 +94,15 @@ public class QuizController {
             redirectAttributes.addFlashAttribute("errorMessage", "Please answer all questions before submitting.");
             return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + firstUnanswered;
         }
-
-        quizService.submitAttempt(attemptId, attempt);
+        long userId = getUserId();
+        quizService.submitAttempt(userId, attemptId, attempt);
         session.removeAttribute("quizAttempt");
 
         return "redirect:/quiz-list";
+    }
+
+    private long getUserId() {
+        // dummy user until accounts are implemented
+        return 1L;
     }
 }

@@ -3,13 +3,13 @@ package uk.ac.cf.spring.clientprojectteam3.quiz;
 import jakarta.servlet.http.HttpSession;
 
 public interface QuizService {
-    Quiz getQuizForAttempt(int quizId, int attemptId);
+    Quiz getQuizForAttempt(long quizId, int attemptId);
 
     boolean isComplete(QuizAttempt attempt, Quiz quiz);
 
     int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz);
 
-    void submitAttempt(int attemptId, QuizAttempt attempt);
+    void submitAttempt(long userId, long attemptId, QuizAttempt attempt);
 
     boolean indexValid(Quiz quiz, int index);
 
@@ -20,4 +20,6 @@ public interface QuizService {
     void saveAttemptToSession(HttpSession session, QuizAttempt attempt);
 
     QuizAttempt loadAttemptFromSession(int quizId, HttpSession session);
+
+    long startAttempt(long userId, int i);
 }
