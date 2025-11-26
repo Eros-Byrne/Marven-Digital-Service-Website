@@ -50,6 +50,7 @@ public class QuizController {
     }
 
     public ModelAndView startAttempt(long userId, long quizId, long index) {
+        // TODO: check attempt doesn't already exist when resuming quiz.
         long newAttemptId = quizService.startAttempt(userId, 1);
         return new ModelAndView(
                 "redirect:/quiz/" + quizId + "/attempt/" + newAttemptId + "/question/" + index
@@ -69,7 +70,7 @@ public class QuizController {
         attempt.setCurrentQuestionIndex(index);
         quizService.recordAnswer(attempt, index, answer);
         quizService.saveAttemptToSession(session, attempt);
-
+        // switch statement to determine redirect based on user input.
         return switch (nav) {
             case "next" -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + (index + 1);
             case "prev" -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + (index - 1);
@@ -102,7 +103,7 @@ public class QuizController {
     }
 
     private long getUserId() {
-        // dummy user until accounts are implemented
+        // TODO: dummy user until accounts are implemented
         return 1L;
     }
 }
