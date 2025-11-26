@@ -1,0 +1,31 @@
+#capability_description {
+    white-space: pre-line;
+    background-color: #ffffff;
+    border-color: #8089ff !important;
+}
+
+#resource-col {
+    width: 85%;
+}
+
+#difficulty-col {
+    width: 15%;
+}
+
+#resources-table {
+    background-color: #ffffff;
+}
+
+#resources-table th, #resources-table tr {
+    border-color: #8089ff;
+}
+
+#resources-table-wrapper {
+    border-color: #8089ff !important;
+    align-self: flex-start;
+}
+
+
+#skills-card {
+    align-self: flex-start;
+}
