@@ -10,4 +10,10 @@ public interface QuizRepository {
     Quiz getQuiz(long quizId);
 
     void setRowMappers();
+
+    void saveAnswer(long userAttemptId, long questionId, Integer score);
+
+    void markAttemptComplete(long userAttemptId);
+
+    long createUserAttempt(long userId, int attemptNumber);
 }

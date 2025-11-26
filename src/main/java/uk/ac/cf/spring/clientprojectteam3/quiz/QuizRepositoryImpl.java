@@ -4,9 +4,13 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Type;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,5 +99,51 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Override
     public Quiz getQuiz(long quizId) {
         return jdbcTemplate.queryForObject("SELECT quiz_id, name, description, time_estimate FROM quiz WHERE quiz_id=?", quizRowMapper, quizId);
+    }
+
+    public void saveAnswer(long attemptId, long questionId, Integer score) {
+        System.out.println("SAVING ANSWER: " + attemptId + " " + questionId + " " + score);
+        String sql = """
+        INSERT INTO answer (question_id, user_attempt_id, score)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE score = VALUES(score)
+    """;
+
+        jdbcTemplate.update(sql, questionId, attemptId, score);
+    }
+
+    public void markAttemptComplete(long userAttemptId) {
+        String sql = """
+            UPDATE user_attempt
+            SET complete = 1
+            WHERE user_attempt_id = ?
+        """;
+
+        jdbcTemplate.update(sql, userAttemptId);
+    }
+
+
+    public long createUserAttempt(long userId, int attemptNumber) {
+    System.out.println("CREATING USER ATTEMPT: " + attemptNumber);
+        String sql = """
+            INSERT INTO user_attempt (user_id, attempt, complete)
+            VALUES (?, ?, 0)
+        """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    sql, Statement.RETURN_GENERATED_KEYS
+            );
+            ps.setObject(1, userId, java.sql.Types.BIGINT);
+            ps.setInt(2, attemptNumber);
+            return ps;
+        }, keyHolder);
+        Number key = keyHolder.getKey();
+        if (key == null) {
+            throw new IllegalStateException("Failed to generate user_attempt_id");
+        }
+        return key.longValue();
     }
 }

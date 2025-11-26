@@ -41,8 +41,8 @@ public class QuizServiceImpl implements QuizService {
         return index >= 0 && index < quiz.getQuestions().size();
     }
 
-    @Override
-    public Quiz getQuizForAttempt(int quizId, int attemptId) {
+
+    public Quiz getQuizForAttempt(long quizId, int attemptId) {
         Quiz quiz = quizRepository.getQuiz(quizId);
         quiz.setQuizId(quizId);
         List<Question> quizQuestions = quizRepository.getQuestions(quizId);
@@ -58,6 +58,10 @@ public class QuizServiceImpl implements QuizService {
         return true;
     }
 
+    public long startAttempt(long userId, int attemptNumber) {
+        return quizRepository.createUserAttempt(userId, attemptNumber);
+    }
+
     public int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz) {
         for (int i = 0; i < quiz.getQuestions().size(); i++) {
             if (!attempt.getAnswers().containsKey(i)) return i;
@@ -65,17 +69,19 @@ public class QuizServiceImpl implements QuizService {
         return -1; // all answered
     }
 
-    public void submitAttempt(int attemptId, QuizAttempt attempt) {
-        attempt.getAnswers().forEach((questionIndex, answerValue) -> saveAnswer(attemptId, questionIndex, answerValue));
-        markAttemptComplete(attemptId);
-    }
 
-    private void markAttemptComplete(int attemptId) {
-        System.out.println("Attempt " + attemptId + " has been marked as complete");
-    }
+    public void submitAttempt(long userId, long attemptId, QuizAttempt attempt) {
 
-    private void saveAnswer(int attemptId, Integer questionIndex, Integer answerValue) {
-        System.out.println("Score: " + answerValue + " has been saved to question: " + questionIndex + " for attempt: " + attemptId);
+        // Load quiz questions so we can map index -> questionId
+        Quiz quiz = getQuizForAttempt(attempt.getQuizId(), 0);
+        List<Question> questions = quiz.getQuestions();
+
+        attempt.getAnswers().forEach((index, score) -> {
+            long questionId = questions.get(index).getQuestionId();
+            quizRepository.saveAnswer(attemptId, questionId, score);
+        });
+
+        quizRepository.markAttemptComplete(attemptId);
     }
 
 }

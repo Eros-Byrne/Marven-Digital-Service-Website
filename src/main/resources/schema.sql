@@ -36,11 +36,10 @@ create table if not exists quiz_questions
 
 create table if not exists user_attempt
 (
+    user_attempt_id     bigint auto_increment primary key,
     user_id             bigint,
-    user_attempt_id     bigint,
     attempt             int,
     complete            int,
-    primary key (user_attempt_id),
     foreign key (user_id) references user_info(user_id)
     ) engine = InnoDB;
 

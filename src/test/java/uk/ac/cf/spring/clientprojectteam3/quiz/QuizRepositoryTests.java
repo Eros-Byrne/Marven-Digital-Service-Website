@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -14,62 +12,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class QuizRepositoryTests {
+
     QuizRepositoryImpl quizRepo;
 
     @Mock
     JdbcTemplate jdbcTemplate;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
-        // manually inject the mock
         quizRepo = new QuizRepositoryImpl(jdbcTemplate);
-        quizRepo.setRowMappers();
+
     }
+
     @Test
-    public void AddAnswerTest() {
-        // Mock empty list first (no previous attempt)
-        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L), eq(1L), eq(1)))
-                .thenReturn(Collections.emptyList());
+    void createUserAttempt_ShouldInsertAndReturnGeneratedKey() {
+        // Mock the JdbcTemplate.update that uses a PreparedStatementCreator and KeyHolder
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            // args[1] is the KeyHolder
+            ((org.springframework.jdbc.support.KeyHolder) args[1]).getKeyList().add(Map.of("GENERATED_KEY", 1L));
+            return 1; // rows affected
+        }).when(jdbcTemplate).update(any(org.springframework.jdbc.core.PreparedStatementCreator.class),
+                any(org.springframework.jdbc.support.KeyHolder.class));
 
-        // Mock empty list for attempt 2 as well
-        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L), eq(1L), eq(2)))
-                .thenReturn(Collections.emptyList());
+        long generatedId = quizRepo.createUserAttempt(1L, 1);
 
-        // Add answers (calls will hit the mocks above)
-        quizRepo.addAnswer(1, 1, 1, 1, 5);
-        quizRepo.addAnswer(1, 1, 1, 2, 1);
-        quizRepo.addAnswer(1, 1, 1, 3, 6);
-
-        quizRepo.addAnswer(1, 1, 2, 1, 50);
-        quizRepo.addAnswer(1, 1, 2, 2, 10);
-        quizRepo.addAnswer(1, 1, 2, 3, 60);
-
-        // Now mock getAnswers to return constructed Answers objects
-        Answers attempt1 = new Answers(1, 1, new HashMap<>(Map.of(1L,5, 2L,1, 3L,6)), 1);
-        Answers attempt2 = new Answers(1, 1, new HashMap<>(Map.of(1L,50, 2L,10, 3L,60)), 2);
-
-        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L), eq(1L)))
-                .thenReturn(List.of(attempt1, attempt2));
-
-        List<Answers> answers = quizRepo.getAnswers(1, 1);
-
-        assertEquals(2, answers.size());
-        assertEquals(3, answers.get(0).getAnswers().size());
-        assertEquals(5, (int) answers.get(0).getAnswers().get(1L));
-        assertEquals(60, (int) answers.get(1).getAnswers().get(3L));
+        assertTrue(generatedId > 0, "Generated ID should be > 0");
     }
 
     @Test
     void testGetQuizNames() {
         Quiz quiz = new Quiz(1L, "Sample Quiz", "Desc", 30);
+
         when(jdbcTemplate.query(anyString(), any(RowMapper.class)))
                 .thenReturn(List.of(quiz));
 
@@ -83,21 +63,21 @@ public class QuizRepositoryTests {
     @Test
     void testGetQuestions() {
         Question question = new Question(10L, 1L, "Text", 101L);
-        List<Question> questionList = List.of(question);
-
-        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L))).thenReturn(questionList);
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class), anyLong()))
+                .thenReturn(List.of(question));
 
         List<Question> result = quizRepo.getQuestions(1L);
 
         assertEquals(1, result.size());
-        assertEquals("Text", result.get(result.size() - 1).getText());
+        assertEquals("Text", result.get(0).getText());
         verify(jdbcTemplate, times(1)).query(anyString(), any(RowMapper.class), eq(1L));
     }
 
     @Test
     void testGetQuiz() {
         Quiz quiz = new Quiz(10L, "Sample", "Desc", 30);
-        when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class), eq(10L))).thenReturn(quiz);
+        when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class), anyLong()))
+                .thenReturn(quiz);
 
         Quiz result = quizRepo.getQuiz(10L);
 
@@ -105,4 +85,31 @@ public class QuizRepositoryTests {
         verify(jdbcTemplate, times(1)).queryForObject(anyString(), any(RowMapper.class), eq(10L));
     }
 
+    @Test
+    void testAddAnswer_ShouldStoreUserAnswers() {
+        // Arrange: simulate no previous answers for attempt 1
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L), eq(1L), eq(1)))
+                .thenReturn(Collections.emptyList());
+
+        // Act: add answers for attempt 1
+        quizRepo.addAnswer(1, 1, 1, 1, 5);
+        quizRepo.addAnswer(1, 1, 1, 2, 10);
+        quizRepo.addAnswer(1, 1, 1, 3, 15);
+
+        // Assert: verify JdbcTemplate.update was called correctly for each insert
+        verify(jdbcTemplate, times(3)).update(anyString(), eq(1L), eq(1L), eq(1), anyString());
+
+        // Arrange: simulate existing answers for attempt 2
+        HashMap<Long, Integer> existingAnswers = new HashMap<>(Map.of(1L, 50, 2L, 100));
+        Answers previousAttempt = new Answers(1, 1, existingAnswers, 2);
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class), eq(1L), eq(1L), eq(2)))
+                .thenReturn(List.of(previousAttempt));
+
+        // Act: add another answer for attempt 2 (should update existing)
+        quizRepo.addAnswer(1, 1, 2, 3, 150);
+
+        // Assert: verify JdbcTemplate.update was called for the update
+        verify(jdbcTemplate, times(1))
+                .update(startsWith("UPDATE user_answers SET answer_json"), anyString(), eq(1L), eq(1L), eq(2));
+    }
 }
