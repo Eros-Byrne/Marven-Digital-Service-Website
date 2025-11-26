@@ -1,9 +1,13 @@
+set foreign_key_checks = 0;
+
 drop table if exists answer;
 drop table if exists user_attempt;
 drop table if exists quiz_questions;
 drop table if exists quiz;
 drop table if exists capabilities;
 drop table if exists user_info;
+
+set foreign_key_checks = 1;
 
 create table if not exists user_info
 (
