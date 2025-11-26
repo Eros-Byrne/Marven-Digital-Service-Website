@@ -1,7 +1,6 @@
 package uk.ac.cf.spring.clientprojectteam3.Capabilities;
 
 import org.springframework.stereotype.Service;
-import uk.ac.cf.spring.clientprojectteam3.Skills.Skill;
 
 import java.util.List;
 import java.util.Optional;
