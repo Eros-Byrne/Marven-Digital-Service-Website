@@ -8,6 +8,7 @@ import java.util.Map;
 @Data
 public class QuizAttempt {
     private long quizId;
+    private long attemptId;
     private int currentQuestionIndex;
     private Map<Integer, Integer> answers = new HashMap<>();
 

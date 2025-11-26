@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class Question {
     private long questionId;
     private long quizId;
-    private String title;
     private String text;
-    private long skillId;
+    private long capabilityId;
 }

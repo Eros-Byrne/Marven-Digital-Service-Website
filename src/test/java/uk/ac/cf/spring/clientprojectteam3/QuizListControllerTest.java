@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import uk.ac.cf.spring.clientprojectteam3.quiz.Quiz;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizListController;
+import uk.ac.cf.spring.clientprojectteam3.quiz.QuizRepository;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class QuizListControllerTest {
 
     @Mock
-    private QuizRepo quizRepo;
+    private QuizRepository quizRepo;
 
     @Mock
     private Model model;

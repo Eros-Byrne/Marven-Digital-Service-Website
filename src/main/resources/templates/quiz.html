@@ -14,14 +14,16 @@
 <div th:replace="fragments/navbar.html :: navbar"></div>
 
 <div class="container py-5">
-
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <span th:text="${errorMessage}"></span>
+    </div>
     <div class="card shadow-sm">
         <div class="card-body">
 
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                 <h1 class="mb-0 text-on-white-background" th:text="${quizTitle}">Quiz Title</h1>
                 <h2 class="mb-0 text-on-white-background" th:text="'Attempt: ' + ${attemptId}">Attempt Number</h2>
-                <h2 class="mb-0 text-on-white-background" th:text="${question.questionId} + '/' + ${total}">Progress</h2>
+                <h2 class="mb-0 text-on-white-background" th:text="${questionNum} + '/' + ${total}">Progress</h2>
             </div>
             <hr>
 
@@ -68,8 +70,7 @@
                             <div>
                                 <button type="submit" class="btn btn-secondary"
                                         name="nav" value="prev"
-                                        th:if="${index > 0}"
-                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer(quizId=${quizId}, attemptId=${attemptId}, index=${index})}">
+                                        th:if="${index > 0}">
                                     Previous
                                 </button>
                             </div>
@@ -78,15 +79,13 @@
                             <div class="center-buttons">
                                 <button type="submit" class="btn btn-success"
                                         name="nav" value="saveclose"
-                                        th:if="${index != total - 1}"
-                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/saveclose(quizId=${quizId}, attemptId=${attemptId})}">
+                                        th:if="${index != total - 1}">
                                     Save & Close
                                 </button>
 
                                 <button type="submit" class="btn btn-success"
                                         name="nav" value="submit"
-                                        th:if="${index == total - 1}"
-                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/submit(quizId=${quizId}, attemptId=${attemptId})}">
+                                        th:if="${index == total - 1}">
                                     Submit Quiz
                                 </button>
                             </div>
@@ -95,8 +94,7 @@
                             <div>
                                 <button type="submit" class="btn btn-primary"
                                         name="nav" value="next"
-                                        th:if="${index < total - 1}"
-                                        th:formaction="@{/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer(quizId=${quizId}, attemptId=${attemptId}, index=${index})}">
+                                        th:if="${index < total - 1}">
                                     Next
                                 </button>
                             </div>
