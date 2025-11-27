@@ -1,0 +1,119 @@
+/* Outcome Page Styles */
+
+.content-wrapper {
+    font-family: 'Inter', sans-serif;
+    color: #1f2937;
+}
+
+/* Outcome Item Styling */
+.outcome-item {
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid #4f46e5;
+    border: 1px solid #e5e7eb;
+}
+
+/* Header Wrapper for Button and Accordion Button */
+.outcome-header-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    position: relative;
+    gap: 1rem;
+}
+
+/* Accordion Button Styling */
+.outcome-accordion-btn {
+    flex-grow: 1;
+    background-color: white;
+    border: none;
+    text-align: left;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #4338ca;
+    padding: 1.25rem;
+    transition: background-color 0.2s;
+    min-width: 0; /* Allow button to shrink */
+}
+
+.outcome-accordion-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.outcome-accordion-btn:focus {
+    box-shadow: none;
+    background-color: #f3f4f6;
+}
+
+.outcome-accordion-btn:not(.collapsed) {
+    background-color: white;
+    color: #4338ca;
+}
+
+/* Quiz Button Styling - Far Right */
+.outcome-quiz-btn {
+    flex-shrink: 0; /* Prevent button from shrinking */
+    margin-right: 1rem;
+    white-space: nowrap;
+    z-index: 10;
+    align-self: center;
+}
+
+/* Accordion Body (Details) */
+.outcome-details {
+    background-color: #fcfcfc;
+    padding: 1.5rem;
+    color: #4b5563;
+}
+
+.outcome-details p {
+    margin-bottom: 1rem;
+}
+
+/* Capability Items */
+.capability-item {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+.capability-item::before {
+    content: '';
+    display: block;
+    width: 0.4rem;
+    height: 0.4rem;
+    background-color: #f59e0b;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+}
+
+/* Remove default Bootstrap accordion styles we don't want */
+.outcome-item .accordion-button::after {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.outcome-item .accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%234338ca'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.outcome-item .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236366f1'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 576px) {
+    .outcome-accordion-btn {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .outcome-quiz-btn {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+}

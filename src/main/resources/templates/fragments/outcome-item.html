@@ -1,0 +1,29 @@
+<!-- Reusable fragment for outcome accordion items using Bootstrap Accordion -->
+<div th:fragment="outcome-item(outcome, index)" class="accordion-item outcome-item">
+    <h2 class="accordion-header" th:id="'heading-' + ${index}">
+        <div class="outcome-header-wrapper">
+            <button class="accordion-button collapsed outcome-accordion-btn" type="button"
+                    th:attr="data-bs-toggle='collapse', data-bs-target='#collapse-' + ${index}, aria-expanded='false', aria-controls='collapse-' + ${index}">
+                <span th:text="'Outcome ' + ${index} + ': ' + ${outcome.title}">Outcome 1: Title</span>
+            </button>
+            <a th:href="@{/quiz}" class="btn btn-primary btn-sm outcome-quiz-btn">Take Quiz</a>
+        </div>
+    </h2>
+    <div th:id="'collapse-' + ${index}" class="accordion-collapse collapse"
+         th:attr="aria-labelledby='heading-' + ${index}" data-bs-parent="#outcomes-accordion">
+        <div class="accordion-body outcome-details">
+<!--            <p class="mb-3" th:text="${outcome.description}">Outcome description</p>-->
+
+            <!-- Capabilities section -->
+            <div th:if="${outcome.capabilities != null && !outcome.capabilities.isEmpty()}" class="mt-3">
+                <h6 class="fw-bold mb-2">Capabilities:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a th:each="capability, iterStat : ${outcome.capabilities}"
+                       th:href="@{/capabilities(outcome=${index}, capability=${iterStat.index + 1})}"
+                       class="btn btn-sm btn-outline-primary"
+                       th:text="'C' + ${iterStat.index + 1}">C1</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

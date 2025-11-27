@@ -6,29 +6,26 @@ delete from capabilities;
 delete from user_info;
 delete from capability_skills;
 delete from resources;
-delete from capabilities;
 delete from skills;
 delete
-from quiz;
-delete
 from quiz_questions;
-delete
-from user_answers;
-delete
-from users;
+delete from outcomes;
 
 insert into user_info () values ();
 insert into user_info () values ();
 
-insert into skills (name) values ("skill1");
-insert into skills (name) values ("skill2");
-insert into skills (name) values ("skill3");
-insert into skills (name) values ("testSkill");
+insert into skills (name) values ('skill1');
+insert into skills (name) values ('skill2');
+insert into skills (name) values ('skill3');
+insert into skills (name) values ('testSkill');
 
-# insert into capabilities (name) values ("skill1");
-# insert into capabilities (name) values ("skill2");
-# insert into capabilities (name) values ("skill3");
-# insert into capabilities (name) values ("testSkill");
+
+insert into outcomes (title) values
+    ('Career Exploration'),
+    ('Skill Development'),
+    ('Professional Network'),
+    ('Job Readiness');
+
 
 insert into quiz (name, description, time_estimate)
 values ('Quiz 1 test', "A quiz of the number 1", 12345);
