@@ -1,0 +1,17 @@
+
+package uk.ac.cf.spring.clientprojectteam3.outcome;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Outcome {
+    private Long id;
+    private String title;
+    private List<String> capabilities; // Optional: for capability items
+}

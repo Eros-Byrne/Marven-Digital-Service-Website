@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Skills Outcomes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" th:href="@{/bootstrap-5.2.3-dist/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/project_colours.css}">
+    <link rel="stylesheet" th:href="@{/css/outcome_page.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="main-background-colour">
+
+<div th:replace="fragments/navbar.html :: navbar"></div>
+
+<div class="container mt-4 mb-5">
+
+    <div class="content-wrapper">
+
+        <header class="bg-white py-4 px-4 shadow-sm rounded mb-4">
+            <div class="mx-auto" style="max-width: 56rem;">
+                <h1 class="display-5 fw-bold text-dark mb-2">Digital Stuff You Need to Know</h1>
+                <p class="fs-5 text-secondary">
+                    These are the main digital skills that people working in public sector should learn.
+                </p>
+            </div>
+        </header>
+
+        <div class="mx-auto" style="max-width: 56rem;">
+            <div class="accordion" id="outcomes-accordion">
+                <!-- Loop through outcomes from the database -->
+                <div th:each="outcome, iterStat : ${outcomes}">
+                    <div th:replace="fragments/outcome-item :: outcome-item(${outcome}, ${iterStat.index + 1})"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap JS for accordion and navbar functionality -->
+<script th:src="@{/bootstrap-5.2.3-dist/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>
