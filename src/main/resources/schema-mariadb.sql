@@ -9,6 +9,7 @@ drop table if exists capabilities;
 drop table if exists quiz_questions;
 drop table if exists quiz;
 drop table if exists user_info;
+drop table if exists outcome; -- Added drop for the new table
 
 set foreign_key_checks = 1;
 
@@ -81,3 +82,9 @@ create table if not exists answer
     foreign key (user_attempt_id) references user_attempt(user_attempt_id)
 
     ) engine = InnoDB;
+
+create table if not exists outcomes
+(
+    outcome_id bigint auto_increment primary key,
+    title varchar(128)
+) engine = InnoDB;

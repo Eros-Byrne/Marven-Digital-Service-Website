@@ -26,4 +26,4 @@ INSERT INTO capability_skills (capability_id, skill_id)
 VALUES (2, 1);
 
 INSERT INTO resources (resource_id, content, difficulty, capability_id)
-VALUES (2, 'Resource 2', 'High', 2);
+VALUES (2, 'Resource 2', 'High', 3);
