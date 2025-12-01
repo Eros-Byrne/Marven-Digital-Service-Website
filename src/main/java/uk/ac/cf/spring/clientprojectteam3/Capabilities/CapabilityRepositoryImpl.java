@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,5 +71,31 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         String sql = "select * from skills where skill_id in (" +
                 "select skill_id from capability_skills where capability_id = ?)";
         return jdbc.query(sql, skillMapper, id);
+    }
+
+    public List<Outcome> findAllOutcomes() {
+        String sql = "SELECT * FROM outcomes";
+        return jdbc.query(sql, new CapabilityRepositoryImpl.OutcomeRowMapper());
+    }
+
+    public Outcome findOutcomeById(Long id) {
+        String sql = "SELECT * FROM outcomes WHERE outcome_id = ?";
+        return jdbc.queryForObject(sql, new CapabilityRepositoryImpl.OutcomeRowMapper(), id);
+    }
+
+    private static class OutcomeRowMapper implements RowMapper<Outcome> {
+        @Override
+        public Outcome mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Outcome outcome = new Outcome();
+            outcome.setId(rs.getLong("outcome_id"));
+            outcome.setTitle(rs.getString("title"));
+            return outcome;
+        }
+    }
+
+    public List<Capability> findAllCapabilitiesForAnOutcome(Long outcomeId) {
+        String sql = "select * from capabilities where outcome_id = ?";
+
+        return jdbc.query(sql, capabilityMapper, outcomeId);
     }
 }

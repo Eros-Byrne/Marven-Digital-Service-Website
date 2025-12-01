@@ -36,19 +36,21 @@ values ('Quiz 2 test', "A quiz of the number 2", 1);
 insert into quiz (name, description, time_estimate)
 values ('Quiz 3 test', "A quiz of the number 3", 15);
 
-insert into capabilities (title, description)
+insert into capabilities (title, description, outcome_id)
 values ("Identify the capabilities needed to deliver the service",
         "Users can:
   - show how they’ve assessed the capabilities needed to deliver the service.
   - create a core team that has the capabilities needed.
-  - plan how to engage with others to bring in specialist  knowledge or information, when needed.");
+  - plan how to engage with others to bring in specialist  knowledge or information, when needed.",
+        1);
 
-insert into capabilities (title, description)
-values ("Identify the capabilities needed to deliver the service",
+insert into capabilities (title, description,outcome_id)
+values ("Identify the capabilities needed to deliver the service 2",
         "Users can:
   - show how they’ve assessed the capabilities needed to deliver the service.
   - create a core team that has the capabilities needed.
-  - plan how to engage with others to bring in specialist  knowledge or information, when needed.");
+  - plan how to engage with others to bring in specialist  knowledge or information, when needed.",
+        2);
 
 insert into quiz_questions (quiz_id, capability_id, text)
 values (1, 1, 'how do you feel about skill 10');

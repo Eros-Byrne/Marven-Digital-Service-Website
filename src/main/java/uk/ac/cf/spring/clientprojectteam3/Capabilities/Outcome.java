@@ -1,5 +1,5 @@
 
-package uk.ac.cf.spring.clientprojectteam3.outcome;
+package uk.ac.cf.spring.clientprojectteam3.Capabilities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,5 +13,5 @@ import java.util.List;
 public class Outcome {
     private Long id;
     private String title;
-    private List<String> capabilities; // Optional: for capability items
+    private List<Capability> capabilities; // Optional: for capability items
 }
