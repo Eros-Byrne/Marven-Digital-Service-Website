@@ -14,4 +14,6 @@ public interface QuizRepository {
     void markAttemptComplete(long userAttemptId);
 
     long createUserAttempt(long userId, int attemptNumber);
+
+    void markAttemptIncomplete(int attemptId);
 }

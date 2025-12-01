@@ -59,7 +59,7 @@ class QuizServiceTests {
         MockHttpSession session = new MockHttpSession();
         QuizAttempt attempt = new QuizAttempt();
 
-        quizService.storeAttempt(session, attempt);
+        quizService.saveAttemptToSession(session, attempt);
 
         assertSame(attempt, session.getAttribute("quizAttempt"));
     }
