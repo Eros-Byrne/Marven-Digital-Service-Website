@@ -21,10 +21,17 @@
 
         <header class="bg-white py-4 px-4 shadow-sm rounded mb-4">
             <div class="mx-auto" style="max-width: 56rem;">
-                <h1 class="display-5 fw-bold text-dark mb-2">Digital Stuff You Need to Know</h1>
-                <p class="fs-5 text-secondary">
-                    These are the main digital skills that people working in public sector should learn.
-                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-5 fw-bold text-on-white-background mb-2">Digital Stuff You Need to Know</h1>
+                        <p class="fs-5 text-on-white-background">
+                            These are the main digital skills that people working in public sector should learn.
+                        </p>
+                    </div>
+                    <div>
+                        <a th:href="@{/quiz-list}" id="quiz-btn" class="btn btn-primary btn-sm outcome-quiz-btn">See all Quizzes</a>
+                    </div>
+                </div>
             </div>
         </header>
 

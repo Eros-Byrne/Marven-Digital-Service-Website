@@ -1,24 +1,27 @@
-package uk.ac.cf.spring.clientprojectteam3.outcome;
+package uk.ac.cf.spring.clientprojectteam3.outcomes;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.cf.spring.clientprojectteam3.Capabilities.CapabilityRepository;
+import uk.ac.cf.spring.clientprojectteam3.Capabilities.Outcome;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
 public class OutcomeRepositoryTest {
 
     @Autowired
-    private OutcomeRepository outcomeRepository;
+    private CapabilityRepository outcomeRepository;
 
     @Test
     void testFindAllOutcomes() {
-        List<Outcome> outcomes = outcomeRepository.findAll();
+        List<Outcome> outcomes = outcomeRepository.findAllOutcomes();
 
         assertThat(outcomes).isNotNull();
         assertThat(outcomes.size()).isGreaterThan(0);
@@ -26,7 +29,7 @@ public class OutcomeRepositoryTest {
 
     @Test
     void testFindAllOutcomesContainsExpectedData() {
-        List<Outcome> outcomes = outcomeRepository.findAll();
+        List<Outcome> outcomes = outcomeRepository.findAllOutcomes();
 
         assertThat(outcomes).isNotEmpty();
 
@@ -38,44 +41,15 @@ public class OutcomeRepositoryTest {
 
     @Test
     void testFindByIdReturnsCorrectOutcome() {
-        List<Outcome> outcomes = outcomeRepository.findAll();
+        List<Outcome> outcomes = outcomeRepository.findAllOutcomes();
         assertThat(outcomes).isNotEmpty();
 
         Long firstOutcomeId = outcomes.get(0).getId();
-        Outcome outcome = outcomeRepository.findById(firstOutcomeId);
+        Outcome outcome = outcomeRepository.findOutcomeById(firstOutcomeId);
 
         assertThat(outcome).isNotNull();
         assertThat(outcome.getId()).isEqualTo(firstOutcomeId);
         assertThat(outcome.getTitle()).isNotBlank();
     }
 
-    //Needs to be implemented once we have linked to capabilities page - probably in next sprint
-//    @Test
-//    void testOutcomesHaveCapabilities() {
-//        List<Outcome> outcomes = outcomeRepository.findAll();
-//
-//        assertThat(outcomes).isNotEmpty();
-//
-//        // Check if capabilities are loaded (at least one outcome should have capabilities)
-//        boolean hasCapabilities = outcomes.stream()
-//                .anyMatch(outcome -> outcome.getCapabilities() != null && !outcome.getCapabilities().isEmpty());
-//
-//        assertThat(hasCapabilities).isTrue();
-//    }
-//
-//
-//    @Test
-//    void testCapabilitiesAreCorrectlyParsed() {
-//        List<Outcome> outcomes = outcomeRepository.findAll();
-//
-//        // Find an outcome with capabilities
-//        Outcome outcomeWithCapabilities = outcomes.stream()
-//                .filter(outcome -> outcome.getCapabilities() != null && !outcome.getCapabilities().isEmpty())
-//                .findFirst()
-//                .orElse(null);
-//
-//        assertThat(outcomeWithCapabilities).isNotNull();
-//        assertThat(outcomeWithCapabilities.getCapabilities()).isInstanceOf(List.class);
-//        assertThat(outcomeWithCapabilities.getCapabilities().get(0)).isInstanceOf(String.class);
-//    }
 }
