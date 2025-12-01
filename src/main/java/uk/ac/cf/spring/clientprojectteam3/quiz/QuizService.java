@@ -13,8 +13,6 @@ public interface QuizService {
 
     boolean indexValid(Quiz quiz, int index);
 
-    void storeAttempt(HttpSession session, QuizAttempt attempt);
-
     void recordAnswer(QuizAttempt attempt, int index, Integer answer);
 
     void saveAttemptToSession(HttpSession session, QuizAttempt attempt);
@@ -22,10 +20,14 @@ public interface QuizService {
     QuizAttempt loadAttemptFromSession(int quizId, HttpSession session);
 
     long startAttempt(long userId, int i);
+
     Quiz getQuizForAttempt(long quizId, int attemptId);
 
     List<Quiz> getQuizNames();
 
     List<Question> getQuestionsForQuiz(int quizId);
+
     Long getCurrentAttempt(int userId);
+
+    void saveIncompleteAttempt(long userId, int attemptId, QuizAttempt attempt);
 }

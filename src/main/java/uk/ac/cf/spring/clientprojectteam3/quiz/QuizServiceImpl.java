@@ -12,20 +12,11 @@ public class QuizServiceImpl implements QuizService {
     private QuizRepository quizRepository;
 
 
-    public void storeAttempt(HttpSession session, QuizAttempt attempt) {
-        session.setAttribute("quizAttempt", attempt);
-    }
-
-    public void recordAnswer(QuizAttempt attempt, int index, Integer answer) {
-        if (answer != null) {
-            attempt.getAnswers().put(index, answer);
-        }
-    }
+    // session attempt handling.
 
     public void saveAttemptToSession(HttpSession session, QuizAttempt attempt) {
         session.setAttribute("quizAttempt", attempt);
     }
-
 
     public QuizAttempt loadAttemptFromSession(int quizId, HttpSession session) {
         QuizAttempt attempt = (QuizAttempt) session.getAttribute("quizAttempt");
@@ -37,11 +28,7 @@ public class QuizServiceImpl implements QuizService {
         return attempt;
     }
 
-    public boolean indexValid(Quiz quiz, int index) {
-        // checks the question index is valid.
-        return index >= 0 && index < quiz.getQuestions().size();
-    }
-
+    // quiz loading.
 
     public Quiz getQuizForAttempt(long quizId, int attemptId) {
         Quiz quiz = quizRepository.getQuiz(quizId);
@@ -51,6 +38,59 @@ public class QuizServiceImpl implements QuizService {
 
         return quiz;
     }
+
+    // answer recording.
+
+    public void recordAnswer(QuizAttempt attempt, int index, Integer answer) {
+        if (answer != null) {
+            attempt.getAnswers().put(index, answer);
+        }
+    }
+
+    public boolean indexValid(Quiz quiz, int index) {
+        // checks the question index is valid.
+        return index >= 0 && index < quiz.getQuestions().size();
+    }
+
+    public boolean isComplete(QuizAttempt attempt, Quiz quiz) {
+        // checks the quiz has all questions answered
+        for (int i = 0; i < quiz.getQuestions().size(); i++) {
+            if (!attempt.getAnswers().containsKey(i)) return false;
+        }
+        return true;
+    }
+
+    // persisting attempts.
+
+    public long startAttempt(long userId, int attemptNumber) {
+        // creates the user attempt when they start the quiz.
+        return quizRepository.createUserAttempt(userId, attemptNumber);
+    }
+
+    @Override
+    public void saveIncompleteAttempt(long userId, int attemptId, QuizAttempt attempt) {
+        saveAnswers(attemptId, attempt);
+        quizRepository.markAttemptIncomplete(attemptId);
+    }
+
+    @Override
+    public void submitAttempt(long userId, long attemptId, QuizAttempt attempt) {
+        saveAnswers(attemptId, attempt);
+        quizRepository.markAttemptComplete(attemptId);
+    }
+
+    private void saveAnswers(long attemptId, QuizAttempt attempt) {
+        Quiz quiz = getQuizForAttempt(attempt.getQuizId(), (int) attemptId);
+        List<Question> questions = quiz.getQuestions();
+
+        attempt.getAnswers().forEach((index, score) -> {
+            long questionId = questions.get(index).getQuestionId();
+            quizRepository.saveAnswer(attemptId, questionId, score);
+        });
+    }
+
+
+    // lookups.
 
     @Override
     public List<Quiz> getQuizNames() {
@@ -65,18 +105,11 @@ public class QuizServiceImpl implements QuizService {
         return 1L;
     }
 
-    public boolean isComplete(QuizAttempt attempt, Quiz quiz) {
-        // checks the quiz has all questions answered
-        for (int i = 0; i < quiz.getQuestions().size(); i++) {
-            if (!attempt.getAnswers().containsKey(i)) return false;
-        }
-        return true;
-    }
 
-    public long startAttempt(long userId, int attemptNumber) {
-        // creates the user attempt when they start the quiz.
-        return quizRepository.createUserAttempt(userId, attemptNumber);
-    }
+
+
+
+
 
 
 
@@ -88,18 +121,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
 
-    public void submitAttempt(long userId, long attemptId, QuizAttempt attempt) {
 
-        // Load quiz questions so we can map index -> questionId
-        Quiz quiz = getQuizForAttempt(attempt.getQuizId(), 0);
-        List<Question> questions = quiz.getQuestions();
-
-        attempt.getAnswers().forEach((index, score) -> {
-            long questionId = questions.get(index).getQuestionId();
-            quizRepository.saveAnswer(attemptId, questionId, score);
-        });
-
-        quizRepository.markAttemptComplete(attemptId);
-    }
 
 }

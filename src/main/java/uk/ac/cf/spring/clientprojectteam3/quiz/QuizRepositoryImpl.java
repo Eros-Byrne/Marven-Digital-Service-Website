@@ -120,4 +120,14 @@ public class QuizRepositoryImpl implements QuizRepository {
         }
         return key.longValue();
     }
+
+    public void markAttemptIncomplete(int userAttemptId) {
+        String sql = """
+            UPDATE user_attempt
+            SET complete = 0
+            WHERE user_attempt_id = ?
+        """;
+
+        jdbcTemplate.update(sql, userAttemptId);
+    }
 }
