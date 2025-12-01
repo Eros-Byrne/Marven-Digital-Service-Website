@@ -62,15 +62,21 @@ public class QuizServiceImpl implements QuizService {
 
     // persisting attempts.
 
-    public long startAttempt(long userId, int attemptNumber) {
+    public long startAttempt(long userId, long quizId) {
         // creates the user attempt when they start the quiz.
-        return quizRepository.createUserAttempt(userId, attemptNumber);
+        return quizRepository.createUserAttempt(userId, quizId);
     }
 
     @Override
     public void saveIncompleteAttempt(long userId, int attemptId, QuizAttempt attempt) {
         saveAnswers(attemptId, attempt);
         quizRepository.markAttemptIncomplete(attemptId);
+    }
+
+    @Override
+    public void deleteEmptyAttempt(int attemptId, HttpSession session) {
+        session.removeAttribute("quizAttempt");
+        quizRepository.deleteEmptyAttempt(attemptId);
     }
 
     @Override
@@ -100,18 +106,6 @@ public class QuizServiceImpl implements QuizService {
     public List<Question> getQuestionsForQuiz(int quizId){
         return quizRepository.getQuestions(quizId);
     }
-
-    public Long getCurrentAttempt(int userId){
-        return 1L;
-    }
-
-
-
-
-
-
-
-
 
     public int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz) {
         for (int i = 0; i < quiz.getQuestions().size(); i++) {
