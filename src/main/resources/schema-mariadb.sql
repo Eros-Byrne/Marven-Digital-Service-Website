@@ -9,7 +9,7 @@ drop table if exists capabilities;
 drop table if exists quiz_questions;
 drop table if exists quiz;
 drop table if exists user_info;
-drop table if exists outcome; -- Added drop for the new table
+drop table if exists outcomes; -- Added drop for the new table
 
 set foreign_key_checks = 1;
 
@@ -18,10 +18,18 @@ create table if not exists skills (
     name varchar(128)
 ) engine=InnoDB;
 
+create table if not exists outcomes
+(
+    outcome_id bigint primary key auto_increment,
+    title varchar(128)
+) engine = InnoDB;
+
 create table if not exists capabilities (
     capability_id bigint primary key auto_increment,
     title varchar(128),
-    description TEXT
+    description TEXT,
+    outcome_id bigint,
+    foreign key (outcome_id) references outcomes(outcome_id)
 ) engine = InnoDB;
 
 create table if not exists resources (
@@ -83,8 +91,3 @@ create table if not exists answer
 
     ) engine = InnoDB;
 
-create table if not exists outcomes
-(
-    outcome_id bigint auto_increment primary key,
-    title varchar(128)
-) engine = InnoDB;

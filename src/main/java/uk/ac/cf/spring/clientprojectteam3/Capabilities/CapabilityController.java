@@ -1,6 +1,7 @@
 package uk.ac.cf.spring.clientprojectteam3.Capabilities;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +34,17 @@ public class CapabilityController {
             mv = new ModelAndView("redirect:/outcomes");
             return mv;
         }
+    }
+
+    @GetMapping("/outcomes")
+    public ModelAndView showOutcomes() {
+        ModelAndView mv = new ModelAndView("capabilities/outcomes");
+        List<Outcome> outcomes = capabilityService.getAllOutcomes();
+        mv.addObject("outcomes", outcomes);
+        for (Outcome outcome : outcomes) {
+            capabilityService.setCapabilitiesForOutcome(outcome);
+        }
+        return mv;
     }
 
 }

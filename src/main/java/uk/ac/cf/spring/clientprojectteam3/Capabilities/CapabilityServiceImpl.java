@@ -36,4 +36,17 @@ public class CapabilityServiceImpl implements CapabilityService {
     public List<Skill> getSkills(Long id) {
         return capRepository.getSkillsForACapability(id);
     }
+
+    public List<Outcome> getAllOutcomes() {
+        return capRepository.findAllOutcomes();
+    }
+
+    public Outcome getOutcomeById(Long id) {
+        return capRepository.findOutcomeById(id);
+    }
+
+    public void setCapabilitiesForOutcome(Outcome outcome) {
+        List<Capability> capabilities = capRepository.findAllCapabilitiesForAnOutcome(outcome.getId());
+        outcome.setCapabilities(capabilities);
+    }
 }
