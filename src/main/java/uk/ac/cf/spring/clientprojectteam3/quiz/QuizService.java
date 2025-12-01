@@ -19,7 +19,7 @@ public interface QuizService {
 
     QuizAttempt loadAttemptFromSession(int quizId, HttpSession session);
 
-    long startAttempt(long userId, int i);
+    long startAttempt(long userId, long quizId);
 
     Quiz getQuizForAttempt(long quizId, int attemptId);
 
@@ -27,7 +27,8 @@ public interface QuizService {
 
     List<Question> getQuestionsForQuiz(int quizId);
 
-    Long getCurrentAttempt(int userId);
 
     void saveIncompleteAttempt(long userId, int attemptId, QuizAttempt attempt);
+
+    void deleteEmptyAttempt(int attemptId, HttpSession session);
 }

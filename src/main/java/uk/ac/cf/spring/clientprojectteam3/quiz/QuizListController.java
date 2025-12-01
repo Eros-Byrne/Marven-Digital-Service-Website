@@ -31,7 +31,7 @@ public class QuizListController {
             model.addAttribute("dbError", "Could not load quizzes. Please try again later.");
         }
 
-        return "quiz-list";
+        return "quizzes/quiz-list";
     }
 }
 
