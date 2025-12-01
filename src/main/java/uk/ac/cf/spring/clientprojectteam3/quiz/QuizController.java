@@ -91,7 +91,7 @@ public class QuizController {
         long userId = getUserId();
         quizService.submitAttempt(userId, attemptId, ctx.attempt());
         session.removeAttribute("quizAttempt");
-
+        redirectAttributes.addFlashAttribute("successMessage", "Quiz submitted successfully!");
         return "redirect:/quiz-list";
     }
 
@@ -108,18 +108,14 @@ public class QuizController {
 
         QuizContext ctx = quizContext(quizId, attemptId, session);
 
-        if (quizService.isComplete(ctx.attempt(), ctx.quiz())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "All questions answered");
-            return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/0";
-        }
-
         long userId = getUserId();
         if(ctx.attempt().getAnswers().isEmpty()) {
             quizService.deleteEmptyAttempt(attemptId, session);
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Quiz saved successfully!");
+            quizService.saveIncompleteAttempt(userId, attemptId, ctx.attempt());
         }
-        quizService.saveIncompleteAttempt(userId, attemptId, ctx.attempt());
         session.removeAttribute("quizAttempt");
-
         return "redirect:/quiz-list";
     }
 
