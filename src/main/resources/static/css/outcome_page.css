@@ -117,3 +117,21 @@
         padding: 0.375rem 0.75rem;
     }
 }
+
+/*Capability button colours - overwriting bootstrap colours*/
+#blue-btn {
+    border-color: #8089ff;
+    /*color: #8089ff;*/
+    color: #00313f;
+}
+
+#blue-btn:hover {
+    background-color: #8089ff;
+    color: #ffffff;
+}
+
+/*quiz button colours - overwriting bootstrap colours*/
+
+#quiz-btn {
+    background-color: #8089ff;
+}
