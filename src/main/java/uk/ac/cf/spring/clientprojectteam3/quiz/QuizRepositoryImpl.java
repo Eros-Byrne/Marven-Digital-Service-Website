@@ -158,4 +158,40 @@ public class QuizRepositoryImpl implements QuizRepository {
 
         jdbcTemplate.update(sql, userAttemptId);
     }
+
+    public List<QuizCardDTO> getQuizCardsByUserId(long userId) {
+
+        String sql = """
+            SELECT 
+                q.quiz_id,
+                q.name AS quiz_name,
+                q.description AS quiz_description,
+                q.time_estimate,
+                COALESCE(ua.attempt, 0) AS attempt_number,
+                COALESCE(ua.complete, 0) AS completed
+            FROM quiz q
+            LEFT JOIN user_attempt ua
+                ON ua.quiz_id = q.quiz_id
+                AND ua.user_id = ?
+                AND ua.attempt = (
+                    SELECT MAX(ua2.attempt)
+                    FROM user_attempt ua2
+                    WHERE ua2.quiz_id = q.quiz_id
+                      AND ua2.user_id = ?
+                )
+        """;
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{userId, userId},   // must bind twice
+                (rs, rowNum) -> new QuizCardDTO(
+                        rs.getInt("quiz_id"),
+                        rs.getString("quiz_name"),
+                        rs.getString("quiz_description"),
+                        rs.getInt("time_estimate"),
+                        rs.getInt("attempt_number"),
+                        rs.getInt("completed")
+                )
+        );
+    }
 }
