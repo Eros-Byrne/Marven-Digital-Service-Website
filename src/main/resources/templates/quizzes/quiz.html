@@ -64,10 +64,10 @@
                         </div>
 
                         <!-- Navigation Buttons -->
-                        <div class="nav-row mt-4">
+                        <div class="row mt-4 text-center align-items-center">
 
-                            <!-- Previous on far left -->
-                            <div>
+                            <!-- Previous (Left) -->
+                            <div class="col-4 text-start">
                                 <button type="submit" class="btn btn-secondary"
                                         name="nav" value="prev"
                                         th:if="${index > 0}">
@@ -75,8 +75,8 @@
                                 </button>
                             </div>
 
-                            <!-- Center buttons: Save & Close or Submit -->
-                            <div class="center-buttons">
+                            <!-- Center buttons (Save & Close or Submit) -->
+                            <div class="col-4">
                                 <button type="submit" class="btn btn-success"
                                         name="nav" value="saveclose"
                                         th:if="${answeredCount != total && questionNum != total}">
@@ -90,8 +90,8 @@
                                 </button>
                             </div>
 
-                            <!-- Next on far right -->
-                            <div>
+                            <!-- Next (Right) -->
+                            <div class="col-4 text-end">
                                 <button type="submit" class="btn btn-primary"
                                         name="nav" value="next"
                                         th:if="${index < total - 1}">
@@ -100,6 +100,7 @@
                             </div>
 
                         </div>
+
                     </form>
                 </div>
             </div>
