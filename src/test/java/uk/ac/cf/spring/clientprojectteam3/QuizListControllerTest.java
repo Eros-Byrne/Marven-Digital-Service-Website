@@ -44,7 +44,7 @@ class QuizListControllerTest {
 
         String view = quizListController.showQuizList(model);
 
-        assertEquals("quiz-list", view);
+        assertEquals("quizzes/quiz-list", view);
         verify(model).addAttribute("quizzes", quizzes);
         verify(model, never()).addAttribute(eq("noQuizzes"), any());
         verify(model, never()).addAttribute(eq("dbError"), any());
@@ -56,7 +56,7 @@ class QuizListControllerTest {
 
         String view = quizListController.showQuizList(model);
 
-        assertEquals("quiz-list", view);
+        assertEquals("quizzes/quiz-list", view);
         verify(model).addAttribute("noQuizzes", true);
         verify(model, never()).addAttribute(eq("quizzes"), any());
         verify(model, never()).addAttribute(eq("dbError"), any());
@@ -68,7 +68,7 @@ class QuizListControllerTest {
 
         String view = quizListController.showQuizList(model);
 
-        assertEquals("quiz-list", view);
+        assertEquals("quizzes/quiz-list", view);
         verify(model).addAttribute(eq("dbError"), anyString());
         verify(model, never()).addAttribute(eq("quizzes"), any());
         verify(model, never()).addAttribute(eq("noQuizzes"), any());
