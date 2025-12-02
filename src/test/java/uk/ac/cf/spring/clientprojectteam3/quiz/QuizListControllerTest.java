@@ -48,7 +48,7 @@ public class QuizListControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("quizzes"))
                 .andExpect(model().attribute("noQuizzes", false))
-                .andExpect(view().name("quiz-list"));
+                .andExpect(view().name("quizzes/quiz-list"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class QuizListControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("noQuizzes"))
                 .andExpect(model().attribute("noQuizzes", true))
-                .andExpect(view().name("quiz-list"));
+                .andExpect(view().name("quizzes/quiz-list"));
     }
 
     @Test
@@ -70,6 +70,6 @@ public class QuizListControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"))
                 .andExpect(model().attribute("error", "Failed to load quizzes."))
-                .andExpect(view().name("quiz-list"));
+                .andExpect(view().name("quizzes/quiz-list"));
     }
 }
