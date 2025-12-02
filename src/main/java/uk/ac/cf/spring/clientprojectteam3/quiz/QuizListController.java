@@ -11,6 +11,8 @@ import java.util.List;
 public class QuizListController {
 
     private final QuizRepository quizRepo;
+    @Autowired
+    private QuizController quizController;
 
     @Autowired
     public QuizListController(QuizRepository quizRepo) {
@@ -20,8 +22,10 @@ public class QuizListController {
     @GetMapping("/quiz-list")
     public String showQuizList(Model model) {
         try {
-            List<Quiz> quizzes = quizRepo.getQuizNames();
-
+//            List<Quiz> quizzes = quizRepo.getQuizNames();
+            long user_id = quizController.getUserId();
+            List<QuizCardDTO> quizzes = quizRepo.getQuizCardsByUserId(user_id);
+            System.out.println(quizzes.getFirst().getCompleted());
             if (quizzes.isEmpty()) {
                 model.addAttribute("noQuizzes", true);
             } else {

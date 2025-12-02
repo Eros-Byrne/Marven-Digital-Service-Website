@@ -95,7 +95,7 @@ public class QuizController {
         return "redirect:/quiz-list";
     }
 
-    private long getUserId() {
+    protected long getUserId() {
         // TODO: dummy user until accounts are implemented
         return 1L;
     }

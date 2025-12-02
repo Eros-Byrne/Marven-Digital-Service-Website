@@ -18,4 +18,6 @@ public interface QuizRepository {
     void markAttemptIncomplete(int attemptId);
 
     void deleteEmptyAttempt(int attemptId);
+
+    List<QuizCardDTO> getQuizCardsByUserId(long userId);
 }
