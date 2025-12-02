@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.Capabilities;
+package uk.ac.cf.spring.clientprojectteam3.capabilities;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
