@@ -2,10 +2,13 @@ package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,24 +39,29 @@ public class QuizServiceSaveAnswersTest {
     void saveAnswers_shouldPersistAllAnswers() {
         QuizAttempt attempt = new QuizAttempt();
         attempt.setQuizId(quizId);
-        // Add answers by index
+
+        // Map answers using actual question IDs from DB
+        attempt.setAnswers(new HashMap<>());
+        long q1Id = getQuestionId(0);
+        long q2Id = getQuestionId(1);
         attempt.getAnswers().put(0, 3);
         attempt.getAnswers().put(1, 5);
 
+        // Submit the attempt
         quizService.submitAttempt(userId, attemptId, attempt);
 
-        // Verify answers were saved in DB
+        // Verify answers were saved
         Integer scoreQ1 = jdbcTemplate.queryForObject(
                 "SELECT score FROM answer WHERE user_attempt_id = ? AND question_id = ?",
                 Integer.class,
                 attemptId,
-                getQuestionId(0)
+                q1Id
         );
         Integer scoreQ2 = jdbcTemplate.queryForObject(
                 "SELECT score FROM answer WHERE user_attempt_id = ? AND question_id = ?",
                 Integer.class,
                 attemptId,
-                getQuestionId(1)
+                q2Id
         );
 
         assertEquals(3, scoreQ1.intValue());
@@ -61,7 +69,7 @@ public class QuizServiceSaveAnswersTest {
     }
 
     private long getQuestionId(int index) {
-        // Helper to fetch the questionId from DB for the given quiz and index
+        // Fetch actual question ID for the quiz
         return jdbcTemplate.queryForObject(
                 "SELECT question_id FROM quiz_questions WHERE quiz_id = ? ORDER BY question_id LIMIT 1 OFFSET ?",
                 Long.class,
