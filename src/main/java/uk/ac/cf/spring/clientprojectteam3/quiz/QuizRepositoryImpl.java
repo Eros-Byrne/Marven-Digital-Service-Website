@@ -97,27 +97,65 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
 
-    public long createUserAttempt(long userId, int attemptNumber) {
-    System.out.println("CREATING USER ATTEMPT: " + attemptNumber);
+    public long createUserAttempt(long userId, long quizId) {
+        int nextAttempt = getNextAttemptNumber(userId, quizId);
+        return insertUserAttempt(userId, quizId, nextAttempt);
+    }
+
+    private int getNextAttemptNumber(long userId, long quizId) {
+        Integer maxAttempt = jdbcTemplate.queryForObject(
+                "SELECT MAX(attempt) FROM user_attempt WHERE user_id = ? AND quiz_id = ?",
+                Integer.class,
+                userId,
+                quizId
+        );
+        return (maxAttempt == null) ? 1 : maxAttempt + 1;
+    }
+
+    private long insertUserAttempt(long userId, long quizId, int attemptNumber) {
         String sql = """
-            INSERT INTO user_attempt (user_id, attempt, complete)
-            VALUES (?, ?, 0)
-        """;
+        INSERT INTO user_attempt (user_id, quiz_id, attempt, complete)
+        VALUES (?, ?, ?, 0)
+    """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    sql, Statement.RETURN_GENERATED_KEYS
-            );
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setObject(1, userId, java.sql.Types.BIGINT);
-            ps.setInt(2, attemptNumber);
+            ps.setObject(2, quizId, java.sql.Types.BIGINT);
+            ps.setInt(3, attemptNumber);
             return ps;
         }, keyHolder);
+
         Number key = keyHolder.getKey();
         if (key == null) {
             throw new IllegalStateException("Failed to generate user_attempt_id");
         }
+
+        System.out.println("CREATING USER ATTEMPT: id=" + key + ", quiz=" + quizId + ", attempt=" + attemptNumber);
         return key.longValue();
+    }
+
+
+    public void markAttemptIncomplete(int userAttemptId) {
+        String sql = """
+            UPDATE user_attempt
+            SET complete = 0
+            WHERE user_attempt_id = ?
+        """;
+
+        jdbcTemplate.update(sql, userAttemptId);
+    }
+
+    @Override
+    public void deleteEmptyAttempt(int userAttemptId) {
+        System.out.println("DELETING EMPTY ATTEMPT: " + userAttemptId);
+        String sql = """
+            DELETE FROM user_attempt
+            WHERE user_attempt_id = ?
+        """;
+
+        jdbcTemplate.update(sql, userAttemptId);
     }
 }

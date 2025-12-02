@@ -59,7 +59,7 @@ insert into quiz_questions (quiz_id, capability_id, text)
 values (1, 2, 'how do you feel about skill 2');
 
 insert into quiz_questions (quiz_id, capability_id, text)
-values (2, 1, 'how do you feel about skill 1 quiz 1');
+values (1, 1, 'how do you feel about skill 1 quiz 1');
 
 insert into resources (content, difficulty, capability_id)
 values ("Resource 1", "Low", 1);
