@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
+import static javafx.beans.binding.Bindings.when;
+
 @Controller
 public class QuizListController {
 
@@ -22,11 +24,9 @@ public class QuizListController {
     @GetMapping("/quiz-list")
     public String showQuizList(Model model) {
         try {
-//            List<Quiz> quizzes = quizRepo.getQuizNames();
             long user_id = quizController.getUserId();
             List<QuizCardDTO> quizzes = quizRepo.getQuizCardsByUserId(user_id);
-            System.out.println(quizzes.getFirst().getCompleted());
-            if (quizzes.isEmpty()) {
+            if (quizzes == null || quizzes.isEmpty()) {
                 model.addAttribute("noQuizzes", true);
             } else {
                 model.addAttribute("quizzes", quizzes);
