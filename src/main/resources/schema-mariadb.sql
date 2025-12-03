@@ -51,7 +51,7 @@ create table if not exists capability_skills (
 ) engine = InnoDB;
 
 create table if not exists users (
-                                     userid bigint auto_increment primary key ,
+                                     user_id bigint auto_increment primary key ,
                                      email varchar(255) not null unique ,
                                      password varchar(255) not null ,
                                      name varchar(255),
@@ -85,7 +85,7 @@ create table if not exists user_attempt
     attempt             int,
     complete            int,
     foreign key (quiz_id) references quiz(quiz_id),
-    foreign key (user_id) references users(userid)
+    foreign key (user_id) references users(user_id)
 ) engine = InnoDB;
 
 create table if not exists answer
@@ -110,5 +110,7 @@ create table if not exists team_members
     team_id bigint,
     user_id bigint,
     is_manager boolean,
-    primary key (team_id, user_id)
+    primary key (team_id, user_id),
+    foreign key (team_id) references teams(team_id),
+    foreign key (user_id) references users(user_id)
 ) engine = InnoDB;

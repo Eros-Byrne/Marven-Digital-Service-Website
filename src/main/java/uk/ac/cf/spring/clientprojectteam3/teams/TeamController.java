@@ -23,7 +23,7 @@ public class TeamController {
     }
 
     @PostMapping("/teams/create")
-    public ModelAndView createNewTeam(@ModelAttribute("newTeam") NewTeam newTeam) {
+    public ModelAndView createNewTeam(@ModelAttribute("team") NewTeam newTeam) {
         ModelAndView mv;
         teamService.createNewTeam(newTeam);
         // NEED TO REDIRECT TO /teams ONCE IT HAS BEEN IMPLEMENTED
