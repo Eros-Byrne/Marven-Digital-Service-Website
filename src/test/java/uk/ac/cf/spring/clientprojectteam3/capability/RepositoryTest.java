@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.*;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.*;
 
 import java.util.List;
 import java.util.Optional;

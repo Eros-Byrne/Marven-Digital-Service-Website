@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.Capabilities;
+package uk.ac.cf.spring.clientprojectteam3.capabilities;
 
 
 import java.util.List;
