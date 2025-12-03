@@ -1,0 +1,128 @@
+
+
+body.auth-page {
+    background-color: var(--powder-blue);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding-top: 20px;
+}
+
+
+.auth-card {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-title {
+    text-align: center;
+    color: var(--cdps-slate);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.auth-error {
+    color: var(--cdps-yellow);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.auth-success {
+    color: var(--cdps-blue);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.btn-auth {
+    width: 100%;
+    background-color: var(--powder-blue);
+    color: var(--white);
+    font-weight: bold;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn-auth:hover {
+    background-color: var(--light-powder-blue);
+}
+
+.auth-link {
+    color: var(--cdps-blue);
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+/* ===============================
+   CDPS SETTINGS PAGE
+================================ */
+
+.settings-wrapper {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    background-color: var(--powder-blue);
+}
+
+.settings-card {
+    background-color: var(--white);
+    width: 100%;
+    max-width: 800px;
+    border-radius: 10px;
+    padding: 2.5rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.settings-title {
+    color: var(--cdps-slate);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.settings-subtitle {
+    color: var(--cdps-blue);
+    margin-bottom: 2rem;
+}
+
+.settings-section {
+    margin-bottom: 2.5rem;
+}
+
+.settings-section h3 {
+    color: var(--cdps-slate);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.settings-divider {
+    border-top: 1px solid #ddd;
+    margin: 2rem 0;
+}
+
+/* Force CDPS buttons */
+.btn-cdps {
+    background-color: var(--powder-blue);
+    color: var(--white);
+    border: none;
+    font-weight: 600;
+}
+
+.btn-cdps:hover {
+    background-color: var(--light-powder-blue);
+    color: var(--white);
+}
+
