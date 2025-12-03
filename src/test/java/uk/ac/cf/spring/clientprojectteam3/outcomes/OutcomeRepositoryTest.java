@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.CapabilityRepository;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.Outcome;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityRepository;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.Outcome;
 
 import java.util.List;
 
