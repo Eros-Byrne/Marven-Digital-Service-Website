@@ -1,5 +1,6 @@
 set foreign_key_checks = 0;
 
+drop table if exists team_members;
 drop table if exists capability_skills;
 drop table if exists user_attempt;
 drop table if exists answer;
@@ -9,7 +10,8 @@ drop table if exists capabilities;
 drop table if exists quiz_questions;
 drop table if exists quiz;
 drop table if exists user_info;
-drop table if exists outcomes; -- Added drop for the new table
+drop table if exists outcomes;
+drop table if exists teams;
 
 set foreign_key_checks = 1;
 
@@ -92,4 +94,19 @@ create table if not exists answer
     foreign key (user_attempt_id) references user_attempt(user_attempt_id)
 
     ) engine = InnoDB;
+
+create table if not exists teams
+(
+    team_id bigint primary key auto_increment,
+    team_name varchar(255),
+    team_description TEXT
+) engine = InnoDB;
+
+create table if not exists team_members
+(
+    team_id bigint,
+    user_id bigint,
+    is_manager boolean,
+    primary key (team_id, user_id)
+) engine = InnoDB;
 
