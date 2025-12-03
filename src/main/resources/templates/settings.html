@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account Settings</title>
+
+    <link rel="stylesheet" th:href="@{/bootstrap-5.2.3-dist/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/project_colours.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="settings-wrapper">
+
+    <div class="settings-card">
+
+        <h1 class="settings-title">Account settings</h1>
+        <p class="settings-subtitle">
+            Signed in as <strong th:text="${user.name}"></strong>
+        </p>
+
+        <div class="settings-section">
+            <h3>Profile details</h3>
+
+            <form th:action="@{/settings/change-name}" method="post" class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">Full name</label>
+                    <input type="text" class="form-control"
+                           name="newName"
+                           th:value="${user.name}" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-cdps w-100">Update</button>
+                </div>
+            </form>
+
+            <form th:action="@{/settings/change-phone}" method="post" class="row g-3 mt-3">
+                <div class="col-md-8">
+                    <label class="form-label">Phone number</label>
+                    <input type="tel" class="form-control"
+                           name="newPhone"
+                           th:value="${user.phone}" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-cdps w-100">Update</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-section">
+            <h3>Email address</h3>
+
+            <form th:action="@{/settings/change-email}" method="post" class="row g-3">
+                <div class="col-md-8">
+                    <input type="email" class="form-control"
+                           name="newEmail"
+                           th:value="${user.email}" required>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-cdps w-100">Update</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-section">
+            <h3>Password</h3>
+
+            <form th:action="@{/settings/change-password}" method="post" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Current password</label>
+                    <input type="password" class="form-control"
+                           name="currentPassword" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">New password</label>
+                    <input type="password" class="form-control"
+                           name="newPassword" required>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-cdps mt-2">
+                        Change password
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script src="/bootstrap-5.2.3-dist/js/bootstrap.bundle.js"></script>
+</body>
+</html>

@@ -1,3 +1,11 @@
+:root {
+    --powder-blue: #6068ff;
+    --light-powder-blue: #8089ff;
+    --cdps-blue: #003761;
+    --cdps-slate: #00313f;
+    --cdps-yellow: #fdd300;
+    --white: #ffffff;
+}
 body {
     background-color: #6068ff;
 }

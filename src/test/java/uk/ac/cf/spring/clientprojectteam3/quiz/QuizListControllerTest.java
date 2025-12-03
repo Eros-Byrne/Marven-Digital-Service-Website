@@ -1,75 +1,66 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
-public class QuizListControllerTest {
+@WebMvcTest(QuizListController.class)
+@AutoConfigureMockMvc(addFilters = false)
+class QuizListControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private QuizRepository quizRepository;
-
-    @InjectMocks
-    private QuizListController quizListController;
-
-    private List<Quiz> sampleQuizzes;
-
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(quizListController).build();
-
-        sampleQuizzes = Arrays.asList(
-                new Quiz(1, "Quiz 1", "Desc 1", 10, null),
-                new Quiz(2, "Quiz 2", "Desc 2", 15, null)
-        );
-    }
+    @MockitoBean
+    private QuizRepository quizRepo;
 
     @Test
-    public void testQuizzesAreDisplayed() throws Exception {
-        when(quizRepository.getQuizNames()).thenReturn(sampleQuizzes);
+    void testQuizListDisplaysAllQuizzes() throws Exception {
+        Quiz quiz1 = new Quiz(1L, "Quiz 1", "Description 1", 10);
+        Quiz quiz2 = new Quiz(2L, "Quiz 2", "Description 2", 15);
+
+        Mockito.when(quizRepo.getQuizNames()).thenReturn(Arrays.asList(quiz1, quiz2));
 
         mockMvc.perform(get("/quiz-list"))
                 .andExpect(status().isOk())
+                .andExpect(view().name("quizzes/quiz-list"))
                 .andExpect(model().attributeExists("quizzes"))
-                .andExpect(model().attribute("noQuizzes", false))
-                .andExpect(view().name("quizzes/quiz-list"));
+                .andExpect(content().string(containsString("Quiz 1")))
+                .andExpect(content().string(containsString("Quiz 2")))
+                .andExpect(content().string(containsString("Description 1")))
+                .andExpect(content().string(containsString("Description 2")));
     }
 
     @Test
-    public void testNoQuizzesMessage() throws Exception {
-        when(quizRepository.getQuizNames()).thenReturn(Collections.emptyList());
+    void testQuizListShowsNoQuizzesMessageWhenEmpty() throws Exception {
+        Mockito.when(quizRepo.getQuizNames()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/quiz-list"))
                 .andExpect(status().isOk())
+                .andExpect(view().name("quizzes/quiz-list"))
                 .andExpect(model().attributeExists("noQuizzes"))
-                .andExpect(model().attribute("noQuizzes", true))
-                .andExpect(view().name("quizzes/quiz-list"));
+                .andExpect(content().string(containsString("No quizzes available")));
     }
 
     @Test
-    public void testRepositoryThrowsException() throws Exception {
-        when(quizRepository.getQuizNames()).thenThrow(new RuntimeException("DB failure"));
+    void testStartQuizButtonLinksCorrectly() throws Exception {
+        Quiz quiz = new Quiz(1L, "Quiz 1", "Description 1", 10);
+
+        Mockito.when(quizRepo.getQuizNames()).thenReturn(Arrays.asList(quiz));
 
         mockMvc.perform(get("/quiz-list"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("error"))
-                .andExpect(model().attribute("error", "Failed to load quizzes."))
-                .andExpect(view().name("quizzes/quiz-list"));
+                .andExpect(content().string(containsString("/quiz/1/attempt/0/question/0")));
     }
 }
