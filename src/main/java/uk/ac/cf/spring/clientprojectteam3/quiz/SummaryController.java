@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.Capability;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.CapabilityService;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.Capability;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
