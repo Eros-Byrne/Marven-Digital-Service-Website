@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Summary - Digital Skills</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" th:href="@{/bootstrap-5.2.3-dist/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/project_colours.css}">
+    <link rel="stylesheet" th:href="@{/css/summary_page.css}">
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar.html :: navbar"></div>
+
+<!-- HEADER -->
+<header class="cdps-header">
+    <div class="container">
+        <h1 class="fw-bold">Summary of Your Digital Skills</h1>
+        <p class="lead mb-0">Crynodeb o'ch sgiliau digidol – overview of your quiz results</p>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="container mb-5">
+
+    <!-- Error message -->
+    <div th:if="${hasError}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}">Error message</span>
+    </div>
+
+    <!-- Show content even if no data yet -->
+    <div th:if="${!hasError}" class="row g-4">
+
+        <!-- LEFT: TEXT SUMMARY -->
+        <div class="col-lg-5">
+            <div class="summary-card">
+                <div class="summary-card-header">
+                    <h5 class="mb-0">Your Quiz Results</h5>
+                </div>
+                <div class="summary-card-body">
+                    <p><strong>Quiz Name:</strong> <span th:text="${quizName}">Quiz Name</span></p>
+                    <p><strong>Attempt Number:</strong> <span th:text="${attemptNumber}">-</span></p>
+                    <p><strong>Date:</strong> <span th:text="${completionDate}">-</span></p>
+
+                    <h6 class="section-heading">Overall Score</h6>
+                    <p class="overall-score" th:text="${overallScore} + ' / 100'">0 / 100</p>
+
+                    <!-- Show message if no data -->
+                    <div th:if="${!hasData}" class="alert alert-info mt-3">
+                        <strong>No data yet!</strong> Complete a quiz to see your results here.
+                    </div>
+
+                    <!-- Show strengths/weaknesses only if there's data -->
+                    <div th:if="${hasData}">
+                        <h6 class="section-heading">Key Strengths</h6>
+                        <div th:if="${strengths != null && !strengths.isEmpty()}">
+                            <span th:each="strength : ${strengths}" class="skill-pill high" th:text="${strength}">Skill</span>
+                        </div>
+                        <div th:if="${strengths == null || strengths.isEmpty()}">
+                            <p class="text-muted">Complete more questions to identify strengths</p>
+                        </div>
+
+                        <h6 class="section-heading">Needs Improvement</h6>
+                        <div th:if="${weaknesses != null && !weaknesses.isEmpty()}">
+                            <span th:each="weakness : ${weaknesses}" class="skill-pill low" th:text="${weakness}">Skill</span>
+                        </div>
+                        <div th:if="${weaknesses == null || weaknesses.isEmpty()}">
+                            <p class="text-muted">No areas identified yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: BAR CHART -->
+        <div class="col-lg-7">
+            <div class="summary-card">
+                <div class="summary-card-header">
+                    <h5 class="mb-0">Outcomes Breakdown</h5>
+                </div>
+                <div class="summary-card-body">
+                    <p>Your confidence scores for each outcome</p>
+                    <div class="chart-container">
+                        <canvas id="capabilitiesChart"></canvas>
+                    </div>
+                    <div th:if="${!hasData}" class="text-center text-muted mt-3">
+                        <em>Chart will display when you complete a quiz</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILED TABLE -->
+    <div th:if="${hasData && capabilityResults != null && !capabilityResults.isEmpty()}" class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="summary-card">
+                <div class="summary-card-header">
+                    <h5 class="mb-0">Detailed Results by Capability</h5>
+                </div>
+                <div class="summary-card-body table-responsive">
+                    <table class="table table-bordered results-table align-middle">
+                        <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th style="width: 120px;">Score</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="result : ${capabilityResults}">
+                            <td th:text="${result.capabilityTitle}">Capability Title</td>
+                            <td class="text-center">
+                                <span th:if="${result.score >= 70}" class="badge bg-success" th:text="${result.score}">80</span>
+                                <span th:if="${result.score >= 40 && result.score < 70}" class="badge bg-warning text-dark" th:text="${result.score}">55</span>
+                                <span th:if="${result.score < 40}" class="badge bg-danger" th:text="${result.score}">30</span>
+                            </td>
+                            <td>
+                                <span th:if="${result.score >= 70}">Strong understanding and confidence</span>
+                                <span th:if="${result.score >= 40 && result.score < 70}">Moderate confidence – review resources</span>
+                                <span th:if="${result.score < 40}">Needs improvement – training recommended</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back button -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <a th:href="@{/quiz-list}" class="btn btn-back">
+                ← Back to Quizzes
+            </a>
+        </div>
+    </div>
+
+</main>
+
+<!-- Chart.js -->
+<script th:src="@{/js/chart.umd.min.js}"></script>
+
+<!-- Updated BAR CHART Code with Text Wrapping -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const capabilityLabels = /*[[${capabilityLabels}]]*/ [];
+    const capabilityScores = /*[[${capabilityScores}]]*/ [];
+    const hasData = /*[[${hasData}]]*/ false;
+
+    const ctx = document.getElementById('capabilitiesChart');
+
+    // Function to wrap text into multiple lines
+    function wrapText(text, maxLength) {
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = '';
+
+        words.forEach(word => {
+            if ((currentLine + word).length <= maxLength) {
+                currentLine += (currentLine ? ' ' : '') + word;
+            } else {
+                if (currentLine) lines.push(currentLine);
+                currentLine = word;
+            }
+        });
+        if (currentLine) lines.push(currentLine);
+
+        return lines;
+    }
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: capabilityLabels.length > 0 ? capabilityLabels : ['Awaiting Data'],
+            datasets: [{
+                label: 'Your Score',
+                data: capabilityScores.length > 0 ? capabilityScores : [0],
+                backgroundColor: 'rgba(96, 104, 255, 0.8)',
+                borderColor: '#6068FF',
+                borderWidth: 2,
+                borderRadius: 5,
+                hoverBackgroundColor: 'rgba(96, 104, 255, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10
+                }
+            },
+            scales: {
+                x: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    grid: {
+                        color: '#E5E7EB'
+                    },
+                    ticks: {
+                        stepSize: 20,
+                        color: '#6B7280',
+                        callback: value => value
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#00313F',
+                        font: {
+                            size: 10,
+                            weight: 'bold'
+                        },
+                        autoSkip: false,
+                        crossAlign: 'far',
+                        callback: function(value, index) {
+                            const label = this.getLabelForValue(value);
+                            // Wrap text at 35 characters per line
+                            return wrapText(label, 35);
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: hasData
+                },
+                tooltip: {
+                    enabled: hasData,
+                    backgroundColor: '#00313F',
+                    titleColor: '#FDD300',
+                    bodyColor: '#FFFFFF',
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return tooltipItems[0].label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>

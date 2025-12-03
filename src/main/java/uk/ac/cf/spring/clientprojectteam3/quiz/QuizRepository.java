@@ -1,6 +1,8 @@
+
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QuizRepository {
     List<Quiz> getQuizNames();
@@ -18,4 +20,9 @@ public interface QuizRepository {
     void markAttemptIncomplete(int attemptId);
 
     void deleteEmptyAttempt(int attemptId);
+
+    // New methods for summary page
+    Map<Long, Integer> getAttemptAnswers(long attemptId);
+
+    int getAttemptNumber(long attemptId);
 }
