@@ -34,8 +34,8 @@ public class QuizListControllerTest {
         when(quizController.getUserId()).thenReturn(1L);
 
         List<QuizCardDTO> sampleQuizzes = List.of(
-                new QuizCardDTO(1, "Quiz 1", "Desc 1", 10, 1, 1),
-                new QuizCardDTO(2, "Quiz 2", "Desc 2", 15, 1, 1)
+                new QuizCardDTO(1, "Quiz 1", "Desc 1", 10, 1, 1, 0,1),
+                new QuizCardDTO(2, "Quiz 2", "Desc 2", 15, 1, 1, 0,2)
         );
 
         when(quizRepository.getQuizCardsByUserId(1L)).thenReturn(sampleQuizzes);

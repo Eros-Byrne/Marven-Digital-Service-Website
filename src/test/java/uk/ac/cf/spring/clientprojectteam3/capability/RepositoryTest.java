@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.cf.spring.clientprojectteam3.Capabilities.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @JdbcTest
 @ActiveProfiles("test")
 @Import(CapabilityRepositoryImpl.class)
+@Transactional
 public class RepositoryTest {
 
     @Autowired

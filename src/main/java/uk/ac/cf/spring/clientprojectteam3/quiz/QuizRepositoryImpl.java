@@ -161,24 +161,40 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     public List<QuizCardDTO> getQuizCardsByUserId(long userId) {
 
+
         String sql = """
-            SELECT 
-                q.quiz_id,
-                q.name AS quiz_name,
-                q.description AS quiz_description,
-                q.time_estimate,
-                COALESCE(ua.attempt, 0) AS attempt_number,
-                COALESCE(ua.complete, 0) AS completed
-            FROM quiz q
-            LEFT JOIN user_attempt ua
-                ON ua.quiz_id = q.quiz_id
-                AND ua.user_id = ?
-                AND ua.attempt = (
-                    SELECT MAX(ua2.attempt)
-                    FROM user_attempt ua2
-                    WHERE ua2.quiz_id = q.quiz_id
-                      AND ua2.user_id = ?
-                )
+        SELECT 
+            q.quiz_id,
+            q.name AS quiz_name,
+            q.description AS quiz_description,
+            q.time_estimate,
+
+            COALESCE(ua.attempt, 0) AS attempt_number,
+            COALESCE(ua.complete, 0) AS completed,
+
+            (
+                SELECT COUNT(*)
+                FROM quiz_questions qq
+                WHERE qq.quiz_id = q.quiz_id
+            ) AS total_questions,
+
+            (
+                SELECT COUNT(*)
+                FROM answer a
+                WHERE a.user_attempt_id = ua.user_attempt_id
+            ) AS answered_questions
+
+        FROM quiz q
+        LEFT JOIN user_attempt ua
+            ON ua.quiz_id = q.quiz_id
+            AND ua.user_id = ?
+            AND ua.attempt = (
+                SELECT MAX(ua2.attempt)
+                FROM user_attempt ua2
+                WHERE ua2.quiz_id = q.quiz_id
+                  AND ua2.user_id = ?
+            )
+        ORDER BY q.quiz_id
         """;
 
         return jdbcTemplate.query(
@@ -190,7 +206,9 @@ public class QuizRepositoryImpl implements QuizRepository {
                         rs.getString("quiz_description"),
                         rs.getInt("time_estimate"),
                         rs.getInt("attempt_number"),
-                        rs.getInt("completed")
+                        rs.getInt("completed"),
+                        rs.getInt("answered_questions"),
+                        rs.getInt("total_questions")
                 )
         );
     }

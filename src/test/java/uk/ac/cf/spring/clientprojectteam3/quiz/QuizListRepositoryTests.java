@@ -42,7 +42,7 @@ public class QuizListRepositoryTests {
 
         jdbcTemplate.execute("""
             CREATE TABLE user_attempt (
-                user_attempt_id BIGINT PRIMARY KEY,
+                user_attempt_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                 quiz_id BIGINT,
                 user_id BIGINT,
                 attempt INT,
