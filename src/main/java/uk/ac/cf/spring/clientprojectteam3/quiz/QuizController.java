@@ -1,3 +1,4 @@
+
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import jakarta.servlet.http.HttpSession;
@@ -92,7 +93,9 @@ public class QuizController {
         quizService.submitAttempt(userId, attemptId, ctx.attempt());
         session.removeAttribute("quizAttempt");
         redirectAttributes.addFlashAttribute("successMessage", "Quiz submitted successfully!");
-        return "redirect:/quiz-list";
+
+        // CHANGED: Redirect to summary page instead of quiz-list
+        return "redirect:/summary/quiz/" + quizId + "/attempt/" + attemptId;
     }
 
     private long getUserId() {
@@ -102,9 +105,9 @@ public class QuizController {
 
     @GetMapping("/attempt/{attemptId}/save-close")
     public String saveClose(@PathVariable int quizId,
-                         @PathVariable int attemptId,
-                         HttpSession session,
-                         RedirectAttributes redirectAttributes) {
+                            @PathVariable int attemptId,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) {
 
         QuizContext ctx = quizContext(quizId, attemptId, session);
 
