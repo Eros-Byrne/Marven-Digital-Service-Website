@@ -15,4 +15,6 @@ public class QuizCardDTO {
     private int timeEstimate;
     private int attemptNumber;
     private int completed;
+    private int questionsCompleted;
+    private int totalQuestions;
 }

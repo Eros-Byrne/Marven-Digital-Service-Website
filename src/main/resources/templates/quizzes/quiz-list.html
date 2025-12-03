@@ -108,6 +108,9 @@
                 <p class="quiz-card-desc" th:text="${quiz.quizDescription}">Quiz Description</p>
                 <p class="quiz-card-desc" th:text="'Attempt Number: ' + ${quiz.attemptNumber}">Quiz Description</p>
                 <p class="quiz-card-time">Estimated time: <span th:text="${quiz.timeEstimate}"></span> mins</p>
+                <p class="quiz-card-time">Questions: <span th:text="${quiz.questionsCompleted} + '/' + ${quiz.totalQuestions}"></span></p>
+
+
 
                 <div th:if="${quiz.completed==1 || quiz.attemptNumber == 0}">
                     <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
