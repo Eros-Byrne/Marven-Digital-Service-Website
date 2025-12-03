@@ -3,16 +3,16 @@ delete from user_attempt;
 delete from quiz_questions;
 delete from quiz;
 delete from capabilities;
-delete from user_info;
 delete from capability_skills;
 delete from resources;
 delete from skills;
-delete
-from quiz_questions;
+delete from users;
 delete from outcomes;
 
-insert into user_info () values ();
-insert into user_info () values ();
+
+insert into users (email, password, name, phone, jobrole) values
+    ('test@example.com', 'password', 'Test User', '07123456789', 'Tester');
+
 
 insert into skills (name) values ('skill1');
 insert into skills (name) values ('skill2');

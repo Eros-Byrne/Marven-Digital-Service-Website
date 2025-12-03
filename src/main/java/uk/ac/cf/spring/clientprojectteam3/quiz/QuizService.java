@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 public interface QuizService {
+//    Quiz getQuizForAttempt(int quizId, int attemptId);
+    List<Quiz> getAllQuizzes();
     boolean isComplete(QuizAttempt attempt, Quiz quiz);
 
     int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz);

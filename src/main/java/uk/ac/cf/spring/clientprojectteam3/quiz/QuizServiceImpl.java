@@ -38,6 +38,9 @@ public class QuizServiceImpl implements QuizService {
 
         return quiz;
     }
+    public List<Quiz> getAllQuizzes() {
+        return quizRepository.getQuizNames();
+    }
 
     // answer recording.
 

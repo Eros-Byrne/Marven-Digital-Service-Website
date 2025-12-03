@@ -10,8 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
     @SpringBootTest
     @AutoConfigureMockMvc
     @Transactional
+    @WithMockUser(username = "test-user", roles = {"USER"})
     public class FullContainerSaveCloseTests {
 
         @Autowired
@@ -34,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @Autowired
         private QuizService quizService;
 
-        private int quizId = 1; // assume this exists in your DB
+        private int quizId = 1;
         private long userId = 1L;
         private long attemptId;
 
@@ -54,25 +58,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
             session.setAttribute("quizAttempt", attempt);
 
-            // Simulate answering the first question and clicking Save & Close
             mockMvc.perform(post("/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer",
                             quizId, attemptId, 0)
                             .param("answer", "3")
                             .param("nav", "saveclose")
                             .session(session)
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .with(csrf()))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrl("/quiz/1/attempt/2/save-close"));
 
-            // Save the attempt to DB using your existing service
+            // Save to DB
             quizService.saveIncompleteAttempt(userId, (int) attemptId, attempt);
 
-            // Verify that the answer was saved
+            // Verify
             Quiz quiz = quizService.getQuizForAttempt(quizId, (int) attemptId);
             List<Question> questions = quiz.getQuestions();
             assertNotNull(questions);
         }
-
 
         @Test
         void shouldDeleteAttemptWith0Answers() throws Exception {
@@ -80,25 +83,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
             session.setAttribute("quizAttempt", attempt);
 
-            // Simulate no answer and clicking Save & Close
             mockMvc.perform(post("/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer",
                             quizId, attemptId, 0)
                             .param("nav", "saveclose")
                             .session(session)
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .with(csrf()))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrl("/quiz/1/attempt/1/save-close"));
 
-            quizService.deleteEmptyAttempt((int) attemptId,session);
+            // Delete attempt
+            quizService.deleteEmptyAttempt((int) attemptId, session);
 
-            // Verify that the attempt no longer exists in the DB
             Integer count = jdbcTemplate.queryForObject(
                     "SELECT COUNT(*) FROM user_attempt WHERE user_attempt_id = ?",
                     Integer.class,
                     attemptId
             );
-
             assertEquals(0, count.intValue(), "Empty attempt should be deleted");
         }
     }
-
