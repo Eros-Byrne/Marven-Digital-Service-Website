@@ -1,0 +1,65 @@
+body {
+    font-family: "GDS Transport", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    object-fit: contain;
+}
+
+/* Banner styling */
+.homepage-title {
+    padding: 40px 0;
+    margin-bottom: 40px;
+}
+
+.homepage-title h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Content section styling */
+.content-section {
+    background-color: white;
+    padding: 30px;
+    border: solid;
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-top-width: 2px;
+    border-color: var(--campws-light-powder-blue);
+}
+
+.switch-colour.content-section {
+    background-color: rgb(23, 92, 76);
+}
+
+.content-section h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--text-on-white-background-colour);
+}
+.switch-colour.content-section h2 {
+    color: white;
+}
+
+.content-section p {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--text-on-white-background-colour);
+}
+
+.switch-colour.content-section p {
+    color: white;
+}
+
+.image {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
