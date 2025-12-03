@@ -1,5 +1,5 @@
 
-package uk.ac.cf.spring.clientprojectteam3.Capabilities;
+package uk.ac.cf.spring.clientprojectteam3.capabilities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
