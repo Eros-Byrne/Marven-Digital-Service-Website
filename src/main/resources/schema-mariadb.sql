@@ -1,5 +1,6 @@
 set foreign_key_checks = 0;
 
+drop table if exists team_members;
 drop table if exists capability_skills;
 drop table if exists user_attempt;
 drop table if exists answer;
@@ -8,8 +9,9 @@ drop table if exists resources;
 drop table if exists capabilities;
 drop table if exists quiz_questions;
 drop table if exists quiz;
-drop table if exists user_info;
-drop table if exists outcomes; -- Added drop for the new table
+drop table if exists users;
+drop table if exists outcomes;
+drop table if exists teams;
 
 set foreign_key_checks = 1;
 
@@ -48,10 +50,14 @@ create table if not exists capability_skills (
     foreign key (skill_id) references skills(skill_id)
 ) engine = InnoDB;
 
-create table if not exists user_info
-(
-    user_id      bigint auto_increment primary key
-) engine = InnoDB;
+create table if not exists users (
+                                     user_id bigint auto_increment primary key ,
+                                     email varchar(255) not null unique ,
+                                     password varchar(255) not null ,
+                                     name varchar(255),
+                                     phone varchar(50),
+                                     jobrole varchar(100)
+);
 
 create table if not exists quiz
 (
@@ -79,8 +85,8 @@ create table if not exists user_attempt
     attempt             int,
     complete            int,
     foreign key (quiz_id) references quiz(quiz_id),
-    foreign key (user_id) references user_info(user_id)
-    ) engine = InnoDB;
+    foreign key (user_id) references users(user_id)
+) engine = InnoDB;
 
 create table if not exists answer
 (
@@ -90,6 +96,21 @@ create table if not exists answer
     primary key (question_id, user_attempt_id),
     foreign key (question_id) references quiz_questions(question_id),
     foreign key (user_attempt_id) references user_attempt(user_attempt_id)
+) engine = InnoDB;
 
-    ) engine = InnoDB;
+create table if not exists teams
+(
+    team_id bigint primary key auto_increment,
+    team_name varchar(255),
+    team_description TEXT
+) engine = InnoDB;
 
+create table if not exists team_members
+(
+    team_id bigint,
+    user_id bigint,
+    is_manager boolean,
+    primary key (team_id, user_id),
+    foreign key (team_id) references teams(team_id),
+    foreign key (user_id) references users(user_id)
+) engine = InnoDB;

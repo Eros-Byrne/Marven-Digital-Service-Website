@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.Capabilities;
+package uk.ac.cf.spring.clientprojectteam3.capabilities;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

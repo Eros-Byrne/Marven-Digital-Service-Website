@@ -1,0 +1,22 @@
+.cdps-footer{
+    background-color: #003761;
+    padding: 10px;
+}
+
+.footer-list{
+    list-style:none;
+    padding-left: 0;
+    display: inline-block;
+}
+
+.footer-link{
+    color: var(--campws-light-powder-blue);
+    float: left;
+    margin-right: 1rem;
+}
+
+.footer-notice{
+    color: var(--campws-light-powder-blue);
+    width: 100%;
+    margin-right: 1rem;
+}

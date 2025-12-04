@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.*;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.*;
 
 import java.util.List;
 import java.util.Optional;
