@@ -2,16 +2,62 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
-  <link rel="stylesheet" href="/css/project_colours.css">
+  <link rel="stylesheet" th:href="@{/css/home_page.css}">
+  <link rel="stylesheet" th:href="@{/css/project_colours.css}">
 </head>
+<body>
 
-<!-- EXAMPLE for importing the navbar -->
 <div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div class="container">
-  <h1 class="white-text">Welcome</h1>
-  <p class="white-text">This is the homepage.</p>
+<div class="homepage-title white-text">
+  <div class="container">
+    <h1>Center for digital public services (tool name here)</h1>
+  </div>
 </div>
+
+<!-- Main Content -->
+<div class="">
+  <section class="content-section">
+    <div class="row align-items-center">
+      <div class="col-md-4 mb-3 mb-md-0 h-100">
+        <img class="image" alt="center for digital public services" th:src="@{/images/CDPS.png}">
+      </div>
+      <div class="col-md-8 h-75">
+        <h2>Who we are?</h2>
+        <p>Self description of the Center for digital public services</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section switch-colour">
+    <div class="row align-items-center">
+      <div class="col-md-4 mb-3 mb-md-0 h-100">
+        <img class="image" alt="tool description" th:src="@{/images/learning.png}">
+      </div>
+      <div class="col-md-8 h-75">
+        <h2>What is this tool?</h2>
+        <p>(insert tool name here) is a project directed by the center for digital services to help people upskill in various digital skills. Small government teams in Wales do not have the luxury of dedicated teams so we offer regular teams the chance to assess and train themselves to have all the skills they need combined.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="row align-items-center">
+      <div class="col-md-4 mb-3 mb-md-0 h-100">
+        <img class="image" alt="image of the quiz process" th:src="@{/images/quiz.png}">
+      </div>
+      <div class="col-md-8 h-75">
+        <h2>How to use this tool?</h2>
+        <p>This tool is designed around self assessment. You will take <span><a href="quiz-list">quizzes</a></span> for various "outcomes". These are related to tasks that your team can do. Each of these outcomes has skills that make is up called capabilities. When you take the quiz you will be assessed on the individual capabilities and given an overall score for the outcome. Your <span><a href="/results">results</a></span> should show you what you can improve at and allow you to access resources related to those skills.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div th:replace="fragments/footer.html :: footer"></div>
+
+<!-- Bootstrap JS for accordion and navbar functionality -->
+<script th:src="@{/bootstrap-5.2.3-dist/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 </html>

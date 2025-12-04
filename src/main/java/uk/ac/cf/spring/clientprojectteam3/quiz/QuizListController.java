@@ -16,8 +16,8 @@ public class QuizListController {
     @Autowired
     private QuizController quizController;
 
-    @Autowired
     public QuizListController(QuizRepository quizRepo) {
+
         this.quizRepo = quizRepo;
     }
 

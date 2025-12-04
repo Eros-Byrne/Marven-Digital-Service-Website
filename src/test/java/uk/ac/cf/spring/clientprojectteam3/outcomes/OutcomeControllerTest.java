@@ -3,13 +3,14 @@ package uk.ac.cf.spring.clientprojectteam3.outcomes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.Capability;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.CapabilityController;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.CapabilityService;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.Outcome;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.Capability;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityController;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityService;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.Outcome;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 @WebMvcTest(CapabilityController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class OutcomeControllerTest {
 
     @Autowired

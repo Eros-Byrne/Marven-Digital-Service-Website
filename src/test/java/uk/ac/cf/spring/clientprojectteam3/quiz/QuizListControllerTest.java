@@ -3,6 +3,7 @@ package uk.ac.cf.spring.clientprojectteam3.quiz;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QuizListController.class)
+@WithMockUser(username = "test", roles = {"USER"})
 public class QuizListControllerTest {
 
     @Autowired
@@ -97,6 +99,6 @@ public class QuizListControllerTest {
         String content = result.getResponse().getContentAsString();
 
         // Check that the error message appears in the HTML
-        assertTrue(content.contains("Could not load quizzes"));
+        assertTrue(content.contains("No quizzes available."));
     }
 }

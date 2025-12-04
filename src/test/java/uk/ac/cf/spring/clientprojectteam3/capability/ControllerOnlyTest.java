@@ -2,11 +2,12 @@ package uk.ac.cf.spring.clientprojectteam3.capability;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import uk.ac.cf.spring.clientprojectteam3.Capabilities.*;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.*;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CapabilityController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class ControllerOnlyTest {
 
     @Autowired

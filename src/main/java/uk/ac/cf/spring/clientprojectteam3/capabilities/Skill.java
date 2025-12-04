@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.Capabilities;
+package uk.ac.cf.spring.clientprojectteam3.capabilities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Capability {
-
+public class Skill {
     private Long id;
-    private String title;
-    private String description;
-
+    private String name;
 }

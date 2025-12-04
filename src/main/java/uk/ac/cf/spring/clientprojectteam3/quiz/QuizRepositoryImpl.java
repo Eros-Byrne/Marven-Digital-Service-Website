@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
@@ -15,8 +14,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
-import java.util.function.Predicate;
 
 @Repository
 public class QuizRepositoryImpl implements QuizRepository {
@@ -28,7 +25,6 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     public QuizRepositoryImpl(JdbcTemplate aJdbc) {
         this.jdbcTemplate = aJdbc;
-
         setRowMappers();
     }
 
@@ -58,7 +54,6 @@ public class QuizRepositoryImpl implements QuizRepository {
         };
     }
 
-
     @Override
     public List<Quiz> getQuizNames() {
         return jdbcTemplate.query("select * from quiz", quizRowMapper);
@@ -69,23 +64,24 @@ public class QuizRepositoryImpl implements QuizRepository {
         return jdbcTemplate.query("select * from quiz_questions where quiz_id = ?", questionRowMapper, quizId);
     }
 
-
     @Override
     public Quiz getQuiz(long quizId) {
         return jdbcTemplate.queryForObject("SELECT quiz_id, name, description, time_estimate FROM quiz WHERE quiz_id=?", quizRowMapper, quizId);
     }
 
+    @Override
     public void saveAnswer(long attemptId, long questionId, Integer score) {
         System.out.println("SAVING ANSWER: " + attemptId + " " + questionId + " " + score);
         String sql = """
         INSERT INTO answer (question_id, user_attempt_id, score)
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE score = VALUES(score)
-    """;
+        """;
 
         jdbcTemplate.update(sql, questionId, attemptId, score);
     }
 
+    @Override
     public void markAttemptComplete(long userAttemptId) {
         String sql = """
             UPDATE user_attempt
@@ -96,7 +92,7 @@ public class QuizRepositoryImpl implements QuizRepository {
         jdbcTemplate.update(sql, userAttemptId);
     }
 
-
+    @Override
     public long createUserAttempt(long userId, long quizId) {
         int nextAttempt = getNextAttemptNumber(userId, quizId);
         return insertUserAttempt(userId, quizId, nextAttempt);
@@ -116,7 +112,7 @@ public class QuizRepositoryImpl implements QuizRepository {
         String sql = """
         INSERT INTO user_attempt (user_id, quiz_id, attempt, complete)
         VALUES (?, ?, ?, 0)
-    """;
+        """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -137,7 +133,7 @@ public class QuizRepositoryImpl implements QuizRepository {
         return key.longValue();
     }
 
-
+    @Override
     public void markAttemptIncomplete(int userAttemptId) {
         String sql = """
             UPDATE user_attempt
@@ -211,5 +207,38 @@ public class QuizRepositoryImpl implements QuizRepository {
                         rs.getInt("total_questions")
                 )
         );
+    }
+
+
+    @Override
+    public Map<Long, Integer> getAttemptAnswers(long attemptId) {
+        String sql = """
+            SELECT question_id, score
+            FROM answer
+            WHERE user_attempt_id = ?
+        """;
+
+        Map<Long, Integer> answers = new HashMap<>();
+        jdbcTemplate.query(sql, rs -> {
+            answers.put(rs.getLong("question_id"), rs.getInt("score"));
+        }, attemptId);
+
+        return answers;
+    }
+
+    @Override
+    public int getAttemptNumber(long attemptId) {
+        String sql = """
+            SELECT attempt
+            FROM user_attempt
+            WHERE user_attempt_id = ?
+        """;
+
+        try {
+            Integer attempt = jdbcTemplate.queryForObject(sql, Integer.class, attemptId);
+            return attempt != null ? attempt : 0;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
