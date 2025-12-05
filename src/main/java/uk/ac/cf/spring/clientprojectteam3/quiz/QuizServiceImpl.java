@@ -38,9 +38,6 @@ public class QuizServiceImpl implements QuizService {
 
         return quiz;
     }
-    public List<Quiz> getAllQuizzes() {
-        return quizRepository.getQuizNames();
-    }
 
     // answer recording.
 
@@ -102,12 +99,12 @@ public class QuizServiceImpl implements QuizService {
     // lookups.
 
     @Override
-    public List<Quiz> getQuizNames() {
-        return quizRepository.getQuizNames();
-    }
-
-    public List<Question> getQuestionsForQuiz(int quizId){
-        return quizRepository.getQuestions(quizId);
+    public List<QuizCardDTO> getQuizCards(Integer userId) {
+        if(userId == null){
+            return quizRepository.getBlankQuizCards();
+        } else {
+            return quizRepository.getQuizCardsByUserId(userId);
+        }
     }
 
     public int firstUnansweredIndex(QuizAttempt attempt, Quiz quiz) {

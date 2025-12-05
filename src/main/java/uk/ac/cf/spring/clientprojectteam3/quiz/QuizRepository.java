@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface QuizRepository {
-    List<Quiz> getQuizNames();
+    List<QuizCardDTO> getBlankQuizCards();
     List<Question> getQuestions(long quizId);
     Quiz getQuiz(long quizId);
 
