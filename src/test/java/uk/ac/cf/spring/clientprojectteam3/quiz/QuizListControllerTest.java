@@ -7,6 +7,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,11 +30,13 @@ public class QuizListControllerTest {
 
     @MockitoBean
     private QuizController quizController;
+    @Autowired
+    private CurrentUserService currentUserService;
 
     @Test
     public void shouldDisplayQuizzes() throws Exception {
         // Arrange
-        when(quizController.getUserId()).thenReturn(1L);
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
 
         List<QuizCardDTO> sampleQuizzes = List.of(
                 new QuizCardDTO(1, "Quiz 1", "Desc 1", 10, 1, 1, 0,1),
@@ -64,7 +67,7 @@ public class QuizListControllerTest {
     @Test
     public void shouldDisplayNoQuizzesMessage() throws Exception {
         // Arrange
-        when(quizController.getUserId()).thenReturn(1L);
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
         when(quizRepository.getQuizCardsByUserId(1L)).thenReturn(Collections.emptyList());
 
         // Act & Assert
@@ -84,7 +87,7 @@ public class QuizListControllerTest {
     @Test
     public void shouldHandleRepositoryException() throws Exception {
         // Arrange
-        when(quizController.getUserId()).thenReturn(1L);
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
         when(quizRepository.getQuizCardsByUserId(1L))
                 .thenThrow(new RuntimeException("DB failure"));
 

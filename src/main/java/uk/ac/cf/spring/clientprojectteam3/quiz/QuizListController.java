@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
 import java.util.List;
 
@@ -13,8 +14,9 @@ import static javafx.beans.binding.Bindings.when;
 public class QuizListController {
 
     private final QuizRepository quizRepo;
+
     @Autowired
-    private QuizController quizController;
+    private CurrentUserService currentUserService;
 
     public QuizListController(QuizRepository quizRepo) {
 
@@ -24,7 +26,7 @@ public class QuizListController {
     @GetMapping("/quiz-list")
     public String showQuizList(Model model) {
         try {
-            long user_id = quizController.getUserId();
+            long user_id = currentUserService.getCurrentUserId();
             List<QuizCardDTO> quizzes = quizRepo.getQuizCardsByUserId(user_id);
             if (quizzes == null || quizzes.isEmpty()) {
                 model.addAttribute("noQuizzes", true);
