@@ -1,11 +1,10 @@
-
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import java.util.List;
 import java.util.Map;
 
 public interface QuizRepository {
-    List<Quiz> getQuizNames();
+    List<QuizCardDTO> getBlankQuizCards();
     List<Question> getQuestions(long quizId);
     Quiz getQuiz(long quizId);
 
@@ -25,4 +24,6 @@ public interface QuizRepository {
     Map<Long, Integer> getAttemptAnswers(long attemptId);
 
     int getAttemptNumber(long attemptId);
+
+    List<QuizCardDTO> getQuizCardsByUserId(long userId);
 }

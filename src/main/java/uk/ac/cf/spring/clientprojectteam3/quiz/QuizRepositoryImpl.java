@@ -1,4 +1,3 @@
-
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import com.google.gson.*;
@@ -19,10 +18,11 @@ import java.util.Map;
 @Repository
 public class QuizRepositoryImpl implements QuizRepository {
     JdbcTemplate jdbcTemplate;
-    RowMapper<Quiz> quizRowMapper;
+    RowMapper<QuizCardDTO> quizBlankCardRowMapper;
     RowMapper<Question> questionRowMapper;
-    RowMapper<Answers> answerRowMapper;
-    RowMapper<AttemptDTO> attemptRowMapper;
+    RowMapper<QuizCardDTO> quizUserCardRowMapper;
+    RowMapper<Quiz> quizRowMapper;
+
 
     public QuizRepositoryImpl(JdbcTemplate aJdbc) {
         this.jdbcTemplate = aJdbc;
@@ -30,11 +30,15 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     public void setRowMappers() {
-        quizRowMapper = (rs, i) -> new Quiz(
+        quizBlankCardRowMapper = (rs, i) -> new QuizCardDTO(
                 rs.getLong("quiz_id"),
-                rs.getString("name"),
-                rs.getString("description"),
-                rs.getInt("time_estimate")
+                rs.getString("quiz_name"),
+                rs.getString("quiz_description"),
+                rs.getInt("time_estimate"),
+                0,    // attemptNumber
+                0,    // isCompleted?
+                0,    // questionsCompleted
+                rs.getInt("total_questions")
         );
         questionRowMapper = (rs, i) -> new Question(
                 rs.getLong("question_id"),
@@ -42,22 +46,43 @@ public class QuizRepositoryImpl implements QuizRepository {
                 rs.getString("text"),
                 rs.getLong("capability_id")
         );
-        answerRowMapper = (rs, i) -> {
-            Gson gson = new Gson();
-            Type empMapType = new TypeToken<Map<Long, Integer>>() {}.getType();
-            Map<Long, Integer> scoresMap = gson.fromJson(rs.getString("answer_json"), empMapType);
-            return new Answers(
-                    rs.getLong("quiz_id"),
-                    rs.getLong("user_id"),
-                    new HashMap<>(scoresMap),
-                    rs.getInt("attempt_number")
-            );
-        };
+        quizUserCardRowMapper = (rs, rowNum) -> new QuizCardDTO(
+                rs.getLong("quiz_id"),
+                rs.getString("quiz_name"),
+                rs.getString("quiz_description"),
+                rs.getInt("time_estimate"),
+                rs.getInt("attempt_number"),
+                rs.getInt("completed"),
+                rs.getInt("answered_questions"),
+                rs.getInt("total_questions")
+        );
+        quizRowMapper = (rs, i) -> new Quiz(
+                rs.getLong("quiz_id"),
+                rs.getString("name"),
+                rs.getString("description"),
+                rs.getInt("time_estimate")
+        );
     }
 
     @Override
-    public List<Quiz> getQuizNames() {
-        return jdbcTemplate.query("select * from quiz", quizRowMapper);
+    public List<QuizCardDTO> getBlankQuizCards() {
+
+        String sql = """
+        SELECT
+            q.quiz_id,
+            q.name AS quiz_name,
+            q.description AS quiz_description,
+            q.time_estimate,
+            (
+                SELECT COUNT(*) 
+                FROM quiz_questions qq
+                WHERE qq.quiz_id = q.quiz_id
+            ) AS total_questions
+        FROM quiz q
+        ORDER BY q.quiz_id
+        """;
+
+        return jdbcTemplate.query(sql, quizBlankCardRowMapper);
     }
 
     @Override
@@ -155,6 +180,50 @@ public class QuizRepositoryImpl implements QuizRepository {
 
         jdbcTemplate.update(sql, userAttemptId);
     }
+
+    public List<QuizCardDTO> getQuizCardsByUserId(long userId) {
+        String sql = """
+        SELECT 
+            q.quiz_id,
+            q.name AS quiz_name,
+            q.description AS quiz_description,
+            q.time_estimate,
+
+            COALESCE(ua.attempt, 0) AS attempt_number,
+            COALESCE(ua.complete, 0) AS completed,
+
+            (
+                SELECT COUNT(*)
+                FROM quiz_questions qq
+                WHERE qq.quiz_id = q.quiz_id
+            ) AS total_questions,
+
+            (
+                SELECT COUNT(*)
+                FROM answer a
+                WHERE a.user_attempt_id = ua.user_attempt_id
+            ) AS answered_questions
+
+        FROM quiz q
+        LEFT JOIN user_attempt ua
+            ON ua.quiz_id = q.quiz_id
+            AND ua.user_id = ?
+            AND ua.attempt = (
+                SELECT MAX(ua2.attempt)
+                FROM user_attempt ua2
+                WHERE ua2.quiz_id = q.quiz_id
+                  AND ua2.user_id = ?
+            )
+        ORDER BY q.quiz_id
+        """;
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{userId, userId},
+                quizUserCardRowMapper
+        );
+    }
+
 
     @Override
     public Map<Long, Integer> getAttemptAnswers(long attemptId) {
