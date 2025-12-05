@@ -15,6 +15,8 @@ public class QuizListController {
 
     @Autowired
     private CurrentUserService currentUserService;
+    @Autowired
+    private QuizService quizService;
 
     public QuizListController(QuizRepository quizRepo) {
 
@@ -24,15 +26,17 @@ public class QuizListController {
     @GetMapping("/quiz-list")
     public String showQuizList(Model model) {
         try {
-            long user_id = currentUserService.getCurrentUserId();
-            List<QuizCardDTO> quizzes = quizRepo.getQuizCardsByUserId(user_id);
+            Integer user_id = currentUserService.getCurrentUserId();
+            List<QuizCardDTO> quizzes = quizService.getQuizCards(user_id);
+
+
             if (quizzes == null || quizzes.isEmpty()) {
                 model.addAttribute("noQuizzes", true);
             } else {
                 model.addAttribute("quizzes", quizzes);
             }
         } catch (Exception e) {
-            model.addAttribute("dbError", "Could not load quizzes. Please try again later.");
+            model.addAttribute("dbError", true);
         }
 
         return "quizzes/quiz-list";

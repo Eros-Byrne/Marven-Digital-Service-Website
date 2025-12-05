@@ -32,6 +32,8 @@ public class QuizListControllerTest {
     private QuizController quizController;
     @MockitoBean
     private CurrentUserService currentUserService;
+    @MockitoBean
+    private QuizService quizService;
 
     @Test
     public void shouldDisplayQuizzes() throws Exception {
@@ -43,7 +45,7 @@ public class QuizListControllerTest {
                 new QuizCardDTO(2, "Quiz 2", "Desc 2", 15, 1, 1, 0,2)
         );
 
-        when(quizRepository.getQuizCardsByUserId(1L)).thenReturn(sampleQuizzes);
+        when(quizService.getQuizCards(1)).thenReturn(sampleQuizzes);
 
         // Act & Assert
         MvcResult result = mvc.perform(get("/quiz-list"))
@@ -68,7 +70,7 @@ public class QuizListControllerTest {
     public void shouldDisplayNoQuizzesMessage() throws Exception {
         // Arrange
         when(currentUserService.getCurrentUserId()).thenReturn(1);
-        when(quizRepository.getQuizCardsByUserId(1L)).thenReturn(Collections.emptyList());
+        when(quizService.getQuizCards(1)).thenReturn(Collections.emptyList());
 
         // Act & Assert
         MvcResult result = mvc.perform(get("/quiz-list"))
@@ -81,14 +83,14 @@ public class QuizListControllerTest {
         String content = result.getResponse().getContentAsString();
 
         // Check that the "no quizzes" message appears in the HTML
-        assertTrue(content.contains("No quizzes available"));
+        assertTrue(content.contains("No quizzes available."));
     }
 
     @Test
     public void shouldHandleRepositoryException() throws Exception {
         // Arrange
         when(currentUserService.getCurrentUserId()).thenReturn(1);
-        when(quizRepository.getQuizCardsByUserId(1L))
+        when(quizService.getQuizCards(1))
                 .thenThrow(new RuntimeException("DB failure"));
 
         // Act & Assert
@@ -96,12 +98,12 @@ public class QuizListControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("quizzes/quiz-list"))
-                .andExpect(model().attributeExists("dbError"))
+                .andExpect(model().attribute("dbError", true))
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
 
         // Check that the error message appears in the HTML
-        assertTrue(content.contains("No quizzes available."));
+        assertTrue(content.contains("Error fetching quizzes."));
     }
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuizCardDTO {
 
-    private int quizId;
+    private long quizId;
     private String quizName;
     private String quizDescription;
     private int timeEstimate;
@@ -17,4 +17,11 @@ public class QuizCardDTO {
     private int completed;
     private int questionsCompleted;
     private int totalQuestions;
+
+    public QuizCardDTO(long quizId, String name, String description, int timeEstimate) {
+        this.quizId = quizId;
+        this.quizName = name;
+        this.quizDescription = description;
+        this.timeEstimate = timeEstimate;
+    }
 }
