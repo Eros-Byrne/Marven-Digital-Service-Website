@@ -30,7 +30,7 @@ public class QuizListControllerTest {
 
     @MockitoBean
     private QuizController quizController;
-    @Autowired
+    @MockitoBean
     private CurrentUserService currentUserService;
 
     @Test
