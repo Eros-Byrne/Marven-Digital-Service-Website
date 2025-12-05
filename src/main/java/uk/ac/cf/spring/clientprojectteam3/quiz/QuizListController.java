@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
 import java.util.List;
 
@@ -11,6 +12,11 @@ import java.util.List;
 public class QuizListController {
 
     private final QuizRepository quizRepo;
+
+    @Autowired
+    private CurrentUserService currentUserService;
+    @Autowired
+    private QuizService quizService;
 
     public QuizListController(QuizRepository quizRepo) {
 
@@ -20,15 +26,17 @@ public class QuizListController {
     @GetMapping("/quiz-list")
     public String showQuizList(Model model) {
         try {
-            List<Quiz> quizzes = quizRepo.getQuizNames();
+            Integer user_id = currentUserService.getCurrentUserId();
+            List<QuizCardDTO> quizzes = quizService.getQuizCards(user_id);
 
-            if (quizzes.isEmpty()) {
+
+            if (quizzes == null || quizzes.isEmpty()) {
                 model.addAttribute("noQuizzes", true);
             } else {
                 model.addAttribute("quizzes", quizzes);
             }
         } catch (Exception e) {
-            model.addAttribute("dbError", "Could not load quizzes. Please try again later.");
+            model.addAttribute("dbError", true);
         }
 
         return "quizzes/quiz-list";

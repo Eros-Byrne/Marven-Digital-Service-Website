@@ -1,5 +1,5 @@
 
-package uk.ac.cf.spring.clientprojectteam3.quiz;
+package uk.ac.cf.spring.clientprojectteam3.summaries;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.ac.cf.spring.clientprojectteam3.capabilities.Capability;
 import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityService;
+import uk.ac.cf.spring.clientprojectteam3.quiz.Question;
+import uk.ac.cf.spring.clientprojectteam3.quiz.Quiz;
+import uk.ac.cf.spring.clientprojectteam3.quiz.QuizRepository;
+import uk.ac.cf.spring.clientprojectteam3.quiz.QuizService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
