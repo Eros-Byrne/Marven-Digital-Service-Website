@@ -8,8 +8,6 @@ import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
 import java.util.List;
 
-import static javafx.beans.binding.Bindings.when;
-
 @Controller
 public class QuizListController {
 
