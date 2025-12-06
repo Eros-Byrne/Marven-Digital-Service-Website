@@ -5,7 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 import uk.ac.cf.spring.clientprojectteam3.user.User;
-import uk.ac.cf.spring.clientprojectteam3.user.UserRepository;
+import uk.ac.cf.spring.clientprojectteam3.user.UserJdbcRepository;
 
 import java.util.Collections;
 
@@ -13,17 +13,15 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserJdbcRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(email);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
 
         return new CustomUserDetails(
                 user.getEmail(),
@@ -33,3 +31,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
     }
 }
+
