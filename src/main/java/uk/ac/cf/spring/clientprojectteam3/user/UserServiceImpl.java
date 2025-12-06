@@ -8,19 +8,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserJdbcRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void registerUser(User user) {
-        String encoded = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encoded);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override
@@ -32,27 +31,27 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(Integer userId, String newPassword) {
         User user = userRepository.findById(userId).orElseThrow();
         user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
+        userRepository.update(user);
     }
 
     @Override
     public void updateEmail(Integer userId, String newEmail) {
         User user = userRepository.findById(userId).orElseThrow();
         user.setEmail(newEmail);
-        userRepository.save(user);
+        userRepository.update(user);
     }
 
     @Override
     public void updateName(Integer userId, String newName) {
         User user = userRepository.findById(userId).orElseThrow();
         user.setName(newName);
-        userRepository.save(user);
+        userRepository.update(user);
     }
+
     @Override
     public void updatePhone(Integer userId, String newPhone) {
         User user = userRepository.findById(userId).orElseThrow();
         user.setPhone(newPhone);
-        userRepository.save(user);
+        userRepository.update(user);
     }
 }
-
