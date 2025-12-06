@@ -7,7 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import uk.ac.cf.spring.clientprojectteam3.user.User;
-import uk.ac.cf.spring.clientprojectteam3.user.UserRepository;
+import uk.ac.cf.spring.clientprojectteam3.user.UserJdbcRepository;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -16,7 +18,7 @@ import static org.mockito.Mockito.when;
 class CustomUserDetailsServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserJdbcRepository userRepository;
 
     @InjectMocks
     private CustomUserDetailsService service;
@@ -32,7 +34,7 @@ class CustomUserDetailsServiceTest {
         );
 
         when(userRepository.findByEmail("test@email.com"))
-                .thenReturn(user);
+                .thenReturn(Optional.of(user));
 
         UserDetails details =
                 service.loadUserByUsername("test@email.com");
