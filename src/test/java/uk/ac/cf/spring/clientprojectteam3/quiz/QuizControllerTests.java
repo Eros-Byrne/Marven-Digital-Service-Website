@@ -14,11 +14,11 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
 import java.util.HashMap;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -34,6 +34,9 @@ class QuizControllerTests {
 
     @Mock
     private QuizService quizService;
+
+    @Mock
+    private CurrentUserService currentUserService;
 
     @InjectMocks
     private QuizController controller;
@@ -105,7 +108,7 @@ class QuizControllerTests {
     void shouldTakeUserToNextQuestion() throws Exception {
         Quiz quiz = new Quiz();
         quiz.setName("Sample Quiz");
-
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
         List<Question> questions = List.of(
                 makeQuestion(1, "Question 1"),
                 makeQuestion(2, "Question 2"),

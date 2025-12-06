@@ -7,12 +7,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
 @Controller
 @RequestMapping("/quiz/{quizId}")
 public class QuizController {
     @Autowired
     private QuizService quizService;
+    @Autowired
+    private CurrentUserService currentUserService;
 
 
     @GetMapping("/attempt/{attemptId}/question/{index}")
@@ -21,7 +24,7 @@ public class QuizController {
                                      @PathVariable int quizId,
                                      HttpSession session) {
         if (attemptId == 0) {
-            return startAttempt(getUserId(), quizId, index);
+            return startAttempt(currentUserService.getCurrentUserId(), quizId, index);
         }
 
         QuizContext ctx = quizContext(quizId, attemptId, session);
@@ -89,18 +92,13 @@ public class QuizController {
             redirectAttributes.addFlashAttribute("errorMessage", "Please answer all questions before submitting.");
             return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + firstUnanswered;
         }
-        long userId = getUserId();
+        long userId = currentUserService.getCurrentUserId();
         quizService.submitAttempt(userId, attemptId, ctx.attempt());
         session.removeAttribute("quizAttempt");
         redirectAttributes.addFlashAttribute("successMessage", "Quiz submitted successfully!");
 
         // CHANGED: Redirect to summary page instead of quiz-list
         return "redirect:/summary/quiz/" + quizId + "/attempt/" + attemptId;
-    }
-
-    private long getUserId() {
-        // TODO: dummy user until accounts are implemented
-        return 1L;
     }
 
     @GetMapping("/attempt/{attemptId}/save-close")
@@ -111,7 +109,7 @@ public class QuizController {
 
         QuizContext ctx = quizContext(quizId, attemptId, session);
 
-        long userId = getUserId();
+        long userId = currentUserService.getCurrentUserId();
         if(ctx.attempt().getAnswers().isEmpty()) {
             quizService.deleteEmptyAttempt(attemptId, session);
         } else {

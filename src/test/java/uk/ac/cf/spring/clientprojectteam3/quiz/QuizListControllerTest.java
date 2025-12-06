@@ -1,66 +1,109 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QuizListController.class)
-@AutoConfigureMockMvc(addFilters = false)
-class QuizListControllerTest {
+@WithMockUser(username = "test", roles = {"USER"})
+public class QuizListControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mvc;
 
     @MockitoBean
-    private QuizRepository quizRepo;
+    private QuizRepository quizRepository;
+
+    @MockitoBean
+    private QuizController quizController;
+    @MockitoBean
+    private CurrentUserService currentUserService;
+    @MockitoBean
+    private QuizService quizService;
 
     @Test
-    void testQuizListDisplaysAllQuizzes() throws Exception {
-        Quiz quiz1 = new Quiz(1L, "Quiz 1", "Description 1", 10);
-        Quiz quiz2 = new Quiz(2L, "Quiz 2", "Description 2", 15);
+    public void shouldDisplayQuizzes() throws Exception {
+        // Arrange
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
 
-        Mockito.when(quizRepo.getQuizNames()).thenReturn(Arrays.asList(quiz1, quiz2));
+        List<QuizCardDTO> sampleQuizzes = List.of(
+                new QuizCardDTO(1, "Quiz 1", "Desc 1", 10, 1, 1, 0,1),
+                new QuizCardDTO(2, "Quiz 2", "Desc 2", 15, 1, 1, 0,2)
+        );
 
-        mockMvc.perform(get("/quiz-list"))
+        when(quizService.getQuizCards(1)).thenReturn(sampleQuizzes);
+
+        // Act & Assert
+        MvcResult result = mvc.perform(get("/quiz-list"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("quizzes/quiz-list"))
-                .andExpect(model().attributeExists("quizzes"))
-                .andExpect(content().string(containsString("Quiz 1")))
-                .andExpect(content().string(containsString("Quiz 2")))
-                .andExpect(content().string(containsString("Description 1")))
-                .andExpect(content().string(containsString("Description 2")));
+                .andExpect(model().attribute("quizzes", sampleQuizzes))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        // Check that quiz titles appear in the HTML
+        assertTrue(content.contains("Quiz 1"));
+        assertTrue(content.contains("Quiz 2"));
+
+        // Check that quiz descriptions appear in the HTML
+        assertTrue(content.contains("Desc 1"));
+        assertTrue(content.contains("Desc 2"));
     }
 
     @Test
-    void testQuizListShowsNoQuizzesMessageWhenEmpty() throws Exception {
-        Mockito.when(quizRepo.getQuizNames()).thenReturn(Collections.emptyList());
+    public void shouldDisplayNoQuizzesMessage() throws Exception {
+        // Arrange
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
+        when(quizService.getQuizCards(1)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/quiz-list"))
+        // Act & Assert
+        MvcResult result = mvc.perform(get("/quiz-list"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("quizzes/quiz-list"))
-                .andExpect(model().attributeExists("noQuizzes"))
-                .andExpect(content().string(containsString("No quizzes available")));
+                .andExpect(model().attribute("noQuizzes", true))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        // Check that the "no quizzes" message appears in the HTML
+        assertTrue(content.contains("No quizzes available."));
     }
 
     @Test
-    void testStartQuizButtonLinksCorrectly() throws Exception {
-        Quiz quiz = new Quiz(1L, "Quiz 1", "Description 1", 10);
+    public void shouldHandleRepositoryException() throws Exception {
+        // Arrange
+        when(currentUserService.getCurrentUserId()).thenReturn(1);
+        when(quizService.getQuizCards(1))
+                .thenThrow(new RuntimeException("DB failure"));
 
-        Mockito.when(quizRepo.getQuizNames()).thenReturn(Arrays.asList(quiz));
-
-        mockMvc.perform(get("/quiz-list"))
+        // Act & Assert
+        MvcResult result = mvc.perform(get("/quiz-list"))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("/quiz/1/attempt/0/question/0")));
+                .andExpect(view().name("quizzes/quiz-list"))
+                .andExpect(model().attribute("dbError", true))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        // Check that the error message appears in the HTML
+        assertTrue(content.contains("Error fetching quizzes."));
     }
 }

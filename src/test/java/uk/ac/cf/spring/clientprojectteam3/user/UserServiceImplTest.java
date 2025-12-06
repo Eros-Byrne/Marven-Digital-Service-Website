@@ -12,7 +12,7 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserJdbcRepository userRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
