@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -28,7 +28,7 @@ public class FullContainerMockRepoTest {
     private TeamRepository teamRepo;
 
     @MockitoBean
-    private CurrentUserService currentUserService;
+    private UserService currentUserService;
 
     @Test
     public void createTeamShouldCallBothRepoFunctionsAndRedirect() throws Exception {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 @Controller
 @RequestMapping("/quiz/{quizId}")
@@ -15,7 +15,7 @@ public class QuizController {
     @Autowired
     private QuizService quizService;
     @Autowired
-    private CurrentUserService currentUserService;
+    private UserService currentUserService;
 
 
     @GetMapping("/attempt/{attemptId}/question/{index}")
