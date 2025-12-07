@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import uk.ac.cf.spring.clientprojectteam3.admin.outcome.AdminOutcome;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,12 +18,14 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
     private RowMapper<Capability> capabilityMapper;
     private RowMapper<Resource> resourceMapper;
     private RowMapper<Skill> skillMapper;
+    private RowMapper<AdminOutcome> adminOutcomeMapper;
 
     public CapabilityRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbc = jdbcTemplate;
         setCapabilityRowMapper();
         setResourceRowMapper();
         setSkillRowMapper();
+        setAdminRowMapper();
     }
 
     private void setCapabilityRowMapper() {
@@ -48,6 +51,14 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         );
     }
 
+    private void setAdminRowMapper() {
+        adminOutcomeMapper = (rs, i) -> new AdminOutcome(
+                rs.getString("title"),
+                rs.getInt("capability_count")
+        );
+    }
+
+    // CAPABILITY LOGIC
     public Optional<Capability> getCapability(Long id) {
 
         String sql = "select * from capabilities where capability_id = ?";
@@ -73,6 +84,8 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         return jdbc.query(sql, skillMapper, id);
     }
 
+    //OUTCOMES LOGIC
+
     public List<Outcome> findAllOutcomes() {
         String sql = "SELECT * FROM outcomes";
         return jdbc.query(sql, new CapabilityRepositoryImpl.OutcomeRowMapper());
@@ -97,5 +110,20 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         String sql = "select * from capabilities where outcome_id = ?";
 
         return jdbc.query(sql, capabilityMapper, outcomeId);
+    }
+
+    // ADMIN OUTCOMES LOGIC
+
+
+    public List<AdminOutcome> findAllOutcomesWithNumberOfCapabilities() {
+
+        String sql = """
+                select o.title as title, count(c.capability_id) as capability_count
+                from outcomes o
+                left join capabilities c on c.outcome_id = o.outcome_id
+                group by o.outcome_id
+                order by o.title""";
+
+        return jdbc.query(sql, adminOutcomeMapper);
     }
 }
