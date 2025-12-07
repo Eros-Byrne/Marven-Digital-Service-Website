@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+
     <link rel="stylesheet" th:href="@{/bootstrap-5.2.3-dist/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/project_colours.css}">
     <link rel="stylesheet" th:href="@{/css/auth.css}">
-
 </head>
-
 
 <body class="auth-page">
 
@@ -17,39 +17,95 @@
 <div class="auth-wrapper">
     <div class="auth-card">
 
-    <h1 class="auth-title">Login</h1>
+        <h1 class="auth-title">Login</h1>
 
-    <form th:action="@{/login}" method="post">
 
-        <div class="mb-3">
-            <label>Email</label>
-            <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+        <div th:if="${param.passwordChanged}" class="auth-success mb-2">
+            Password changed successfully. Please log in again.
         </div>
 
-        <div class="mb-3">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
+        <div th:if="${profileUpdated}" class="auth-success mb-2">
+            <span th:text="${profileUpdated}"></span>
         </div>
 
-        <button type="submit" class="btn btn-auth">Login</button>
-
-        <div th:if="${param.error}" class="auth-error">
-            Invalid email or password.
-        </div>
-
-        <div th:if="${param.logout}" class="auth-success">
+        <div th:if="${param.logout}" class="auth-success mb-2">
             Logged out successfully.
         </div>
 
-    </form>
+        <div th:if="${param.error}" class="auth-error mb-2">
+            Invalid email or password.
+        </div>
 
-    <div class="text-center mt-3">
-        <a class="auth-link" th:href="@{/register}">Create an Account</a>
+
+        <form th:action="@{/login}" method="post">
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email"
+                       class="form-control"
+                       name="email"
+                       placeholder="Enter your email"
+                       required>
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password"
+                       class="form-control"
+                       name="password"
+                       placeholder="Enter your password"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-auth w-100">
+                Login
+            </button>
+        </form>
+
+        <div class="text-center mt-2">
+            <a href="#"
+               class="auth-link"
+               data-bs-toggle="modal"
+               data-bs-target="#forgotPasswordModal">
+                Forgot your password?
+            </a>
+        </div>
+
+        <div class="text-center mt-3">
+            <a class="auth-link" th:href="@{/register}">
+                Create an Account
+            </a>
+        </div>
+
     </div>
+</div>
 
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Forgot password</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>Password resets are handled by the system administrator.</p>
+                <p>Please contact support to reset your password.</p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <script src="/bootstrap-5.2.3-dist/js/bootstrap.bundle.js"></script>
-
 </body>
 </html>
