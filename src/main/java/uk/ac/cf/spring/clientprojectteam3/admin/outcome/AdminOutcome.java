@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminOutcome {
 
+    private Long id;
     private String title;
     private Integer capabilityCount;
 }

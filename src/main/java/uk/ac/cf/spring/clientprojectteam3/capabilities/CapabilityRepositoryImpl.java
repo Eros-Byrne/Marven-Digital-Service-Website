@@ -53,6 +53,7 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
 
     private void setAdminRowMapper() {
         adminOutcomeMapper = (rs, i) -> new AdminOutcome(
+                rs.getLong("id"),
                 rs.getString("title"),
                 rs.getInt("capability_count")
         );
@@ -118,7 +119,7 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
     public List<AdminOutcome> findAllOutcomesWithNumberOfCapabilities() {
 
         String sql = """
-                select o.title as title, count(c.capability_id) as capability_count
+                select o.outcome_id as id, o.title as title, count(c.capability_id) as capability_count
                 from outcomes o
                 left join capabilities c on c.outcome_id = o.outcome_id
                 group by o.outcome_id

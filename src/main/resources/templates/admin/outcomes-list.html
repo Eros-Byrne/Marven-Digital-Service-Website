@@ -15,23 +15,30 @@
         <a class="btn btn-primary" href="/admin/outcomes/add">Add Outcome</a>
     </div>
 
-    <!--    if not outcomes-->
-    <div id="no-outcomes-warning" class="warning alert alert-info">No outcomes yet.</div>
+    <div th:if="${outcomes.isEmpty()}" id="no-outcomes-warning" class="warning alert alert-info">No outcomes yet.</div>
 
-    <!--    if outcomes-->
-    <ul class="list-group list-group-flush bg-white">
-        <!--        for each outcome-->
-        <li class="list-group-item bg-white d-flex justify-content-between align-items-center">
-            <!--            Needs actual outcome title-->
-            <p class="mb-0">Outcome title<p>
+    <ul th:unless="${outcomes.isEmpty()}" class="list-group list-group-flush bg-white list-rounded">
 
-<!--            Needs to show how many capabilities are in the outcome-->
-            <p class="mb-0">How Many capabilities in the outcome</p>
+        <li class="list-group-item bg-white d-flex justify-content-between align-items-center flex-nowrap rounded"
+            th:each="outcome : ${outcomes}">
 
-<!--            Need to link to a delete URL-->
-            <form>
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+            <div class="col-9">
+                <p th:text="${outcome.title}" class="mb-0 text-truncate text-on-white-background"></p>
+            </div>
+
+<!--            Shows how many capabilities in outcomes-->
+<!--            Query was made myself using th:if and th:unless but AI gave refined version-->
+            <div class="col-2">
+                <span th:text="${outcome.capabilityCount} + ' ' +
+                (${outcome.capabilityCount} == 1 ? 'capability' : 'capabilities')"
+                      class="mb-0 text-on-white-background"></span>
+            </div>
+
+            <div class="col-2">
+                <form method="post" th:action="@{/outcome/delete/{id} (id=${outcome.id})}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
         </li>
     </ul>
 </div>
