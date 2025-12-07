@@ -32,7 +32,8 @@ class SettingsControllerTest {
                 "Test User",
                 "test@email.com",
                 "07123456789",
-                "encodedPassword"
+                "encodedPassword",
+                "job role"
         );
 
         when(userService.findByEmail("test@email.com"))

@@ -15,7 +15,7 @@ public class AdminOutcomeController {
         adminOutcomeService = aAdminOutcomeService;
     }
 
-    @GetMapping("/outcome")
+    @GetMapping("/outcomes")
     public ModelAndView ListOfOutcomes() {
         ModelAndView mv = new ModelAndView("admin/outcomes-list");
         return mv;

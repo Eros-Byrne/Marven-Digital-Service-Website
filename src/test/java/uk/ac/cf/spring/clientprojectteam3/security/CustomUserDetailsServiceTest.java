@@ -30,7 +30,8 @@ class CustomUserDetailsServiceTest {
                 "Test User",
                 "test@email.com",
                 "07123456789",
-                "encodedPassword"
+                "encodedPassword",
+                "job role"
         );
 
         when(userRepository.findByEmail("test@email.com"))
