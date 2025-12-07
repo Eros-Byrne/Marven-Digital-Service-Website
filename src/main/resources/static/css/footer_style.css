@@ -1,5 +1,5 @@
 .cdps-footer{
-    background-color: #003761;
+    background-color: var(--cdps-blue);
     padding: 10px;
 }
 
@@ -10,13 +10,13 @@
 }
 
 .footer-link{
-    color: var(--campws-light-powder-blue);
+    color: var(--light-powder-blue);
     float: left;
     margin-right: 1rem;
 }
 
 .footer-notice{
-    color: var(--campws-light-powder-blue);
+    color: var(--light-powder-blue);
     width: 100%;
     margin-right: 1rem;
 }
