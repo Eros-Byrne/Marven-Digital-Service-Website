@@ -1,0 +1,26 @@
+#no-teams-warning {
+    background-color: #003761;
+    color: #ffffff;
+    border-color: #003761;
+}
+
+.team-name {
+    max-width: 40ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-rounded {
+    border-radius: 12px;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: 40ch 1fr auto;
+    align-items: center;
+    column-gap: 25px;
+    row-gap: 10px;
+    padding: 15px;
+    background-color: #ffffff;
+}
