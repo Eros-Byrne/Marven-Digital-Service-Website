@@ -21,8 +21,8 @@ insert into skills (name) values ('testSkill');
 
 insert into outcomes (title) values
     ('Building a team'),
-    ('Managing data for service'),
     ('Designing a user journey'),
+    ('Managing data for service'),
     ('Designing content');
 
 -- Create quizzes
@@ -30,7 +30,7 @@ insert into quiz (name, description, time_estimate)
 values ('Building a team', 'Reflect on how you build and support your team.', 15);
 
 insert into quiz (name, description, time_estimate)
-values ('Quiz 2 test', "A quiz of the number 2", 1);
+values ('Designing a user journey', 'Reflect on how confident you feel about understanding, designing and improving the user journey.', 20);
 
 insert into quiz (name, description, time_estimate)
 values ('Quiz 3 test', "A quiz of the number 3", 15);
@@ -77,13 +77,38 @@ values ('Identify the capabilities needed to deliver the service',
   1
 );
 
-insert into capabilities (title, description, outcome_id)
-values ("Identify the capabilities needed to deliver the service 2",
-        "Users can:
-  - show how they’ve assessed the capabilities needed to deliver the service.
-  - create a core team that has the capabilities needed.
-  - plan how to engage with others to bring in specialist  knowledge or information, when needed.",
-        2);
+insert into capabilities (title, description, outcome_id) values
+ (
+ 'Understand how users currently interact with the service',
+ 'Users can use quantitative and qualitative data from diverse users to understand the current state of the service, create a user journey map, and identify needs, pain points and opportunities.',
+2
+),
+(
+'Ideate potential solutions',
+'Users can prioritise pain points and consider potential solutions for the highest priority problems.',
+2
+),
+(
+'Test potential solutions',
+'Users can test potential solutions with users, gather feedback, and judge whether solutions address the problem before implementation.',
+2
+),
+(
+'Implement solutions',
+'Users can implement tested solutions, update the user journey map, and use data to measure improvement.',
+2
+),
+(
+'Share improvements',
+'Users can share information about changes and demonstrate impact using data.',
+2
+),
+(
+'Improve a service regularly',
+'Users can continually monitor and improve the service using data to inform priorities, design/test/implement solutions, and show impact.',
+2
+);
+
 
 -- Create questions for Quiz 1
 -- Capability 1: Identify the capabilities needed to deliver the service
@@ -118,6 +143,45 @@ insert into quiz_questions (quiz_id, capability_id, text) values
 (1, 5, 'How confident are you that you can reflect on your team’s performance?'),
 (1, 5, 'How confident are you that you can suggest and act on improvements based on what your team learns?');
 
+-- Questions for quiz 2
+-- Capability 1: Understand how users currently interact with the service (capability_id = 6)
+insert into quiz_questions (quiz_id, capability_id, text) values
+(2, 6, 'How confident are you that you can use quantitative data (for example web analytics, call logs or performance metrics) to understand how users interact with the service?'),
+(2, 6, 'How confident are you that you can use qualitative data (for example interviews or surveys) to understand how users interact with the service?'),
+(2, 6, 'How confident are you that you can gather data from a diverse range of users?'),
+(2, 6, 'How confident are you that you can create a user journey map using available data?'),
+(2, 6, 'How confident are you that you can identify user needs, pain points and opportunities to improve the service from a user journey map?');
+
+-- Capability 2: Ideate potential solutions (capability_id = 7)
+insert into quiz_questions (quiz_id, capability_id, text) values
+(2, 7, 'How confident are you that you can prioritise the most important pain points in the user journey?'),
+(2, 7, 'How confident are you that you can generate potential solutions to address the highest priority problems?');
+
+-- Capability 3: Test potential solutions (capability_id = 8)
+insert into quiz_questions (quiz_id, capability_id, text) values
+(2, 8, 'How confident are you that you can test potential solutions with users?'),
+(2, 8, 'How confident are you that you can gather useful feedback from users about potential solutions?'),
+(2, 8, 'How confident are you that you can judge whether a potential solution addresses the problem before it is implemented?');
+
+-- Capability 4: Implement solutions (capability_id = 9)
+insert into quiz_questions (quiz_id, capability_id, text) values
+(2, 9, 'How confident are you that you can implement solutions that have been successfully tested with users?'),
+(2, 9, 'How confident are you that you can update the user journey map to reflect changes made to the service?'),
+(2, 9, 'How confident are you that you can use data to measure whether an implemented solution has improved the service?');
+
+-- Capability 5: Share improvements (capability_id = 10)
+insert into quiz_questions (quiz_id, capability_id, text) values
+(2, 10, 'How confident are you that you can clearly explain the changes that have been made to the service?'),
+(2, 10, 'How confident are you that you can use data to show how a change has improved the service for users?');
+
+-- Capability 6: Improve a service regularly (capability_id = 11)
+insert into quiz_questions (quiz_id, capability_id, text) values
+(2, 11, 'How confident are you that you can continually monitor the service and identify when it needs improvement?'),
+(2, 11, 'How confident are you that you can use data to monitor the current state of the service?'),
+(2, 11, 'How confident are you that you can use data to decide which problems to prioritise?'),
+(2, 11, 'How confident are you that you can design, test and implement solutions on an ongoing basis?'),
+(2, 11, 'How confident are you that you can regularly share information about changes made to the service?'),
+(2, 11, 'How confident are you that you can use data to demonstrate how changes have improved the service for users?');
 -- Create resources
 insert into resources (content, difficulty, capability_id)
 values ("Resource 1", "Low", 1);
