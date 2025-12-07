@@ -9,9 +9,9 @@ delete from skills;
 delete from users;
 delete from outcomes;
 
-
-insert into users (email, password, name, phone, jobrole) values
-    ('test@example.com', 'password', 'Test User', '07123456789', 'Tester');
+# password for this user is password
+insert into users (user_id, email, password, name, phone) values
+    (1, 'test@example.com', '$2a$10$G9GYd3lS9lAHXKrUpiYsmO6M1FsK8LO.HuZPd6mfFVcvQfyWMzuzS', 'Test User', '07123456789');
 
 
 insert into skills (name) values ('skill1');
