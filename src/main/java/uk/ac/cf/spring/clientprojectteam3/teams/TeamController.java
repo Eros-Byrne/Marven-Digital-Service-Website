@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class TeamController {
 
@@ -26,8 +28,15 @@ public class TeamController {
     public ModelAndView createNewTeam(@ModelAttribute("team") NewTeam newTeam) {
         ModelAndView mv;
         teamService.createNewTeam(newTeam);
-        // NEED TO REDIRECT TO /teams ONCE IT HAS BEEN IMPLEMENTED
-        mv = new ModelAndView("redirect:/");
+        mv = new ModelAndView("redirect:/teams");
+        return mv;
+    }
+
+    @GetMapping("/teams")
+    public ModelAndView userTeams() {
+        ModelAndView mv = new ModelAndView("teams/teams-list");
+        List<UserTeam> teams = teamService.listOfTeamsForCurrentUser();
+        mv.addObject("teams", teams);
         return mv;
     }
 
