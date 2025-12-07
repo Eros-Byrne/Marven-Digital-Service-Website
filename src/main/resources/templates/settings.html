@@ -16,7 +16,6 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="settings-wrapper">
-
     <div class="settings-card">
 
         <h1 class="settings-title">Account settings</h1>
@@ -24,15 +23,34 @@
             Signed in as <strong th:text="${user.name}"></strong>
         </p>
 
+        <div th:if="${passwordError}" class="auth-error mb-3">
+            <span th:text="${passwordError}"></span>
+        </div>
+
+        <div th:if="${error}" class="auth-error mb-3">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div th:if="${emailSuccess}" class="auth-success mb-3">
+            <span th:text="${emailSuccess}"></span>
+        </div>
+
+        <div th:if="${phoneSuccess}" class="auth-success mb-3">
+            <span th:text="${phoneSuccess}"></span>
+        </div>
+
+
         <div class="settings-section">
             <h3>Profile details</h3>
 
             <form th:action="@{/settings/change-name}" method="post" class="row g-3">
                 <div class="col-md-8">
                     <label class="form-label">Full name</label>
-                    <input type="text" class="form-control"
+                    <input type="text"
+                           class="form-control"
                            name="newName"
-                           th:value="${user.name}" required>
+                           th:value="${user.name}"
+                           required>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button class="btn btn-cdps w-100">Update</button>
@@ -42,9 +60,11 @@
             <form th:action="@{/settings/change-phone}" method="post" class="row g-3 mt-3">
                 <div class="col-md-8">
                     <label class="form-label">Phone number</label>
-                    <input type="tel" class="form-control"
+                    <input type="tel"
+                           class="form-control"
                            name="newPhone"
-                           th:value="${user.phone}" required>
+                           th:value="${user.phone}"
+                           required>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button class="btn btn-cdps w-100">Update</button>
@@ -59,9 +79,11 @@
 
             <form th:action="@{/settings/change-email}" method="post" class="row g-3">
                 <div class="col-md-8">
-                    <input type="email" class="form-control"
+                    <input type="email"
+                           class="form-control"
                            name="newEmail"
-                           th:value="${user.email}" required>
+                           th:value="${user.email}"
+                           required>
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-cdps w-100">Update</button>
@@ -71,20 +93,25 @@
 
         <div class="settings-divider"></div>
 
+
         <div class="settings-section">
             <h3>Password</h3>
 
             <form th:action="@{/settings/change-password}" method="post" class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Current password</label>
-                    <input type="password" class="form-control"
-                           name="currentPassword" required>
+                    <input type="password"
+                           class="form-control"
+                           name="currentPassword"
+                           required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">New password</label>
-                    <input type="password" class="form-control"
-                           name="newPassword" required>
+                    <input type="password"
+                           class="form-control"
+                           name="newPassword"
+                           required>
                 </div>
 
                 <div class="col-12">
