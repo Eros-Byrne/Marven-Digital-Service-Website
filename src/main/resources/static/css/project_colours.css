@@ -24,6 +24,10 @@ body {
     border-color: #003761;
 }
 
+.list-rounded {
+    border-radius: 12px;
+}
+
 :root {
     --text-on-white-background-colour: #00313f;
     --campws-light-powder-blue: #8089ff;
