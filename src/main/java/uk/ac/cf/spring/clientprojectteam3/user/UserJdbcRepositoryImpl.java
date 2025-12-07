@@ -23,7 +23,8 @@ public class UserJdbcRepositoryImpl implements UserJdbcRepository {
                     rs.getString("name"),
                     rs.getString("email"),
                     rs.getString("phone"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    rs.getString("role")
             );
 
     @Override

@@ -36,6 +36,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/quiz/**", "/summary/**", "/settings/**")
                         .authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().permitAll()
                 )
