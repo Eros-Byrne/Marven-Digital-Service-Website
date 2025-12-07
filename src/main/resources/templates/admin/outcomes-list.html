@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | Outcomes</title>
+    <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/project_colours.css">
+</head>
+<body>
+<div th:replace="/fragments/navbar.html :: navbar"></div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="white-text mb-0">Outcomes</h1>
+        <!--        Will need to be changed to correct project colours button-->
+        <a class="btn btn-primary" href="/admin/outcomes/add">Add Outcome</a>
+    </div>
+
+    <!--    if not outcomes-->
+    <div id="no-outcomes-warning" class="warning alert alert-info">No outcomes yet.</div>
+
+    <!--    if outcomes-->
+    <ul class="list-group list-group-flush bg-white">
+        <!--        for each outcome-->
+        <li class="list-group-item bg-white d-flex justify-content-between align-items-center">
+            <!--            Needs actual outcome title-->
+            <p class="mb-0">Outcome title<p>
+
+<!--            Needs to show how many capabilities are in the outcome-->
+            <p class="mb-0">How Many capabilities in the outcome</p>
+
+<!--            Need to link to a delete URL-->
+            <form>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
