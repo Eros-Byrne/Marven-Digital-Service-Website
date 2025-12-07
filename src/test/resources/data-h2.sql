@@ -30,3 +30,15 @@ VALUES (2, 1);
 
 INSERT INTO resources (resource_id, content, difficulty, capability_id)
 VALUES (2, 'Resource 2', 'High', 3);
+
+INSERT INTO teams (team_id, team_name, team_description)
+VALUES (1, 'Test team 1', 'Test description 1');
+
+INSERT INTO team_members (team_id, user_id, is_manager)
+VALUES (1, 1, false);
+
+INSERT INTO teams (team_id, team_name, team_description)
+VALUES (2, 'Test team 2', 'Test description 2');
+
+INSERT INTO team_members (team_id, user_id, is_manager)
+VALUES (2, 1, true);
