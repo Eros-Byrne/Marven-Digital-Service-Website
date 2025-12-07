@@ -7,7 +7,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +31,7 @@ public class QuizListControllerTest {
     @MockitoBean
     private QuizController quizController;
     @MockitoBean
-    private CurrentUserService currentUserService;
+    private UserService currentUserService;
     @MockitoBean
     private QuizService quizService;
 
