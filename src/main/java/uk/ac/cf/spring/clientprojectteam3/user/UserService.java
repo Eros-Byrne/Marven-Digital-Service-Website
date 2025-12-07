@@ -8,4 +8,5 @@ public interface UserService {
     void updateName(Integer userId, String newName);
     void updatePhone(Integer userId, String newPhone);
     boolean checkPassword(User user, String rawPassword);
+    Integer getCurrentUserId();
 }

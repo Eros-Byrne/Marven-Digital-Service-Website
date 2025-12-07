@@ -2,12 +2,12 @@ set foreign_key_checks = 0;
 
 drop table if exists team_members;
 drop table if exists capability_skills;
-drop table if exists user_attempt;
 drop table if exists answer;
+drop table if exists user_attempt;
 drop table if exists skills;
 drop table if exists resources;
-drop table if exists capabilities;
 drop table if exists quiz_questions;
+drop table if exists capabilities;
 drop table if exists quiz;
 drop table if exists users;
 drop table if exists outcomes;

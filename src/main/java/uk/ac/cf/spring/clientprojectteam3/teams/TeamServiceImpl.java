@@ -1,22 +1,22 @@
 package uk.ac.cf.spring.clientprojectteam3.teams;
 
 import org.springframework.stereotype.Service;
-import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 @Service
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
-    private final CurrentUserService currentUserService;
+    private final UserService userService;
 
-    public TeamServiceImpl(TeamRepository aTeamRepository, CurrentUserService aCurrentUserService) {
+    public TeamServiceImpl(TeamRepository aTeamRepository, UserService aCurrentUserService) {
         this.teamRepository = aTeamRepository;
-        this.currentUserService = aCurrentUserService;
+        this.userService = aCurrentUserService;
     }
 
     public void createNewTeam(NewTeam newTeam) {
         Long teamId = teamRepository.createTeam(newTeam);
-        Long userId = currentUserService.getCurrentUserId().longValue();
+        Long userId = userService.getCurrentUserId().longValue();
 
         teamRepository.setUserAsManager(userId, teamId);
     }
