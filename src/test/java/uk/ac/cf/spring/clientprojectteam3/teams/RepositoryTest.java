@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -55,5 +57,16 @@ public class RepositoryTest {
                 Integer.class, teamId, 1L, true);
 
         assertEquals(1, count);
+    }
+
+    @Test
+    public void shouldReturnTeamsForUserOrderedByRole() {
+        List<UserTeam> teams = teamRepo.getAllTeamsForAUser(1L);
+
+        assertEquals(2, teams.size());
+        assertEquals("Test team 2", teams.getFirst().getTeamName());
+        assertEquals(true, teams.getFirst().getIsManager());
+        assertEquals("Test team 1", teams.get(1).getTeamName());
+        assertEquals(false, teams.get(1).getIsManager());
     }
 }

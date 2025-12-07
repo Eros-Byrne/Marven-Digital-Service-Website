@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Teams</title>
+    <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/project_colours.css">
+    <link rel="stylesheet" href="/css/teams-list.css">
+</head>
+<body>
+<div th:replace="/fragments/navbar.html :: navbar"></div>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="white-text">My Teams</h1>
+<!--        Temp colours for buttons - will be changed once the button styling has been confirmed with team-->
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary">Join</button>
+            <a class="btn btn-primary" href="teams/create">Create</a>
+        </div>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(teams)}" class="list-rounded bg-white overflow-hidden">
+        <ul class="list-group list-group-flush bg-white m-0">
+        <li class="list-group-item bg-white rounded" th:each="team : ${teams}" >
+            <div class="team-grid">
+                <div th:text="${team.teamName}" class="team-name flex-shrink-1 pe-3 text-on-white-background"></div>
+
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <span th:if="${team.isManager}" class="pe-3 text-on-white-background">Role:   Manager</span>
+                    <span th:unless="${team.isManager}" class="pe-3 text-on-white-background">Role:   Member</span>
+
+                    <span class="text-on-white-background" th:text="${team.memberCount} + ' ' + (${team.memberCount} == 1 ? 'member' : 'members')"></span>
+                </div>
+
+                <div class="ms-auto d-flex align-items-center gap-2">
+    <!--                This button should change colour once project button styling has been confirmed-->
+                    <a class="btn btn-primary" th:href="@{/team/{id} (id=${team.teamId})}">View</a>
+
+                    <form th:action="@{/team/{id}/leave (id=${team.teamId})}" method="post">
+                        <button type="submit" class="btn btn-danger">Leave</button>
+                    </form>
+                </div>
+            </div>
+        </li>
+        </ul>
+    </div>
+
+
+    <div id="no-teams-warning" th:if="${teams.isEmpty()}" class="alert alert-info">
+        You are not currently a member of any teams.
+    </div>
+</div>
+</body>
+</html>
