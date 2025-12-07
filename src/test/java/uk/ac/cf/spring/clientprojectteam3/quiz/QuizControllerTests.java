@@ -14,7 +14,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ class QuizControllerTests {
     private QuizService quizService;
 
     @Mock
-    private CurrentUserService currentUserService;
+    private UserService currentUserService;
 
     @InjectMocks
     private QuizController controller;
