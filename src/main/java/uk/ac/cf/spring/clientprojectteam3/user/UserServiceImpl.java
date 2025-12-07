@@ -1,6 +1,9 @@
 package uk.ac.cf.spring.clientprojectteam3.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +56,28 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow();
         user.setPhone(newPhone);
         userRepository.update(user);
+    }
+
+    @Override
+    public Integer getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return null;
+        }
+
+        // AI Generated code - START
+
+        String email = null;
+        Object principal = auth.getPrincipal();
+
+        if (principal instanceof UserDetails userDetails) {
+            email = userDetails.getUsername();
+        } else if (principal instanceof String s && !"anonymousUser".equals(s)) {
+            email = s;
+        }
+
+        return (email != null) ? userRepository.findUserIdByEmail(email) : null;
+
+        // AI Generated code - END
     }
 }

@@ -1,3 +1,6 @@
+INSERT INTO users (name, email, phone, password)
+VALUES ('Test user', 'test@email.com', '07123456789', 'password');
+
 INSERT INTO capabilities (capability_id, title, description)
 VALUES (1, 'Normal Capability1', 'Description');
 

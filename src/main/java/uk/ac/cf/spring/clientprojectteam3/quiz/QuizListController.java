@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import uk.ac.cf.spring.clientprojectteam3.security.CurrentUserService;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class QuizListController {
     private final QuizRepository quizRepo;
 
     @Autowired
-    private CurrentUserService currentUserService;
+    private UserService currentUserService;
     @Autowired
     private QuizService quizService;
 
