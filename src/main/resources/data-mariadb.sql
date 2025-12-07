@@ -55,7 +55,8 @@ insert into outcomes (title) values
     ('Designing a user journey'),
     ('Designing content'),
     ('Managing a service'),
-    ('Managing technology for a service');
+    ('Managing technology for a service'),
+    ('Managing data for a service');
 
 
 -- Create quizzes
@@ -74,6 +75,8 @@ values ('Managing a service','Reflect on how confident you feel about managing a
 insert into quiz (name, description, time_estimate)
 values ('Managing technology for a service','Reflect on how confident you feel about selecting, managing and assuring technology for a service.',20);
 
+insert into quiz (name, description, time_estimate)
+values ('Managing data for a service','Reflect on how confident you feel about managing data legally, ethically and effectively.',20);
 -- Create capabilities
 insert into capabilities (title, description, outcome_id)
 values ('Identify the capabilities needed to deliver the service',
@@ -332,7 +335,50 @@ When building users can:
 - follow relevant processes to ensure compliance with legislation and policy.',
 5
 );
-
+insert into capabilities (title, description, outcome_id) values
+(
+'Use data legally and ethically',
+'Users can:
+- demonstrate an awareness of legal responsibilities such as GDPR and the Data Protection Act.
+- differentiate between different categories of data.
+- explain safeguards for different categories of data.
+- apply principles from the Data Ethics Framework.',
+6
+),
+(
+'Identify the data the service needs',
+'Users can:
+- identify the types of data a service collects.
+- explain why the data is needed to deliver the service.',
+6
+),
+(
+'Store data appropriately',
+'Users can:
+- explain how data is stored, processed and retained.
+- identify potential risks and ways to mitigate them.',
+6
+),
+(
+'Ensure data is usable',
+'Users can:
+- explain the importance of data quality, consistency and structure.
+- identify how and when to seek specialist support.',
+6
+),
+(
+'Share and reuse data responsibly',
+'Users can:
+- identify opportunities to share or reuse data where it benefits users.
+- ensure data is shared securely, ethically and legally.',
+6
+),
+(
+'Identify where to get advice and assurance',
+'Users can:
+- demonstrate awareness of when to involve data specialists such as DPOs or Information Governance leads.',
+6
+);
 -- Create questions for Quiz 1
 -- Capability 1: Identify the capabilities needed to deliver the service
 insert into quiz_questions (quiz_id, capability_id, text) values
@@ -517,6 +563,34 @@ insert into quiz_questions (quiz_id, capability_id, text) values
 insert into quiz_questions (quiz_id, capability_id, text) values
 (5, 29, 'How confident are you that you can identify legislation and policies relevant to your service?'),
 (5, 29, 'How confident are you that you can follow processes to ensure compliance with legislation and policy?');
+-- Capability 30: Use data legally and ethically
+insert into quiz_questions (quiz_id, capability_id, text) values
+(6, 30, 'How confident are you that you understand your legal responsibilities when managing data?'),
+(6, 30, 'How confident are you that you can apply ethical principles to data-related decisions?');
+
+-- Capability 31: Identify the data the service needs
+insert into quiz_questions (quiz_id, capability_id, text) values
+(6, 31, 'How confident are you that you can identify the data a service needs to operate effectively?'),
+(6, 31, 'How confident are you that you can explain why specific data is required?');
+
+-- Capability 32: Store data appropriately
+insert into quiz_questions (quiz_id, capability_id, text) values
+(6, 32, 'How confident are you that data is stored, processed and retained appropriately?'),
+(6, 32, 'How confident are you that you can identify and mitigate data storage risks?');
+
+-- Capability 33: Ensure data is usable
+insert into quiz_questions (quiz_id, capability_id, text) values
+(6, 33, 'How confident are you that you can ensure data quality and consistency?'),
+(6, 33, 'How confident are you that you know when to seek specialist data support?');
+
+-- Capability 34: Share and reuse data responsibly
+insert into quiz_questions (quiz_id, capability_id, text) values
+(6, 34, 'How confident are you that you can identify opportunities to reuse or share data responsibly?'),
+(6, 34, 'How confident are you that data sharing is secure and compliant?');
+
+-- Capability 35: Identify where to get advice and assurance
+insert into quiz_questions (quiz_id, capability_id, text) values
+(6, 35, 'How confident are you that you know when and where to seek data governance advice?');
 -- Create resources
 insert into resources (content, difficulty, capability_id)
 values ("Resource 1", "Low", 1);
