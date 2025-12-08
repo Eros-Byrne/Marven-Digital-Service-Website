@@ -15,6 +15,14 @@
     border-radius: 12px;
 }
 
+
+.leave-btn {
+    background-color: #dc3545;
+}
+.leave-btn:hover {
+    background-color: var(--bs-btn-hover-bg);
+}
+
 .team-grid {
     display: grid;
     grid-template-columns: 40ch 1fr auto;
