@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 "/quiz-list"
                         ).permitAll()
 
-                        .requestMatchers("/quiz/**", "/summary/**", "/settings/**")
+                        .requestMatchers("/quiz/**", "/summary/**", "/settings/**", "/teams/**")
                         .authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
