@@ -2,6 +2,8 @@ package uk.ac.cf.spring.clientprojectteam3.admin.outcome;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,8 +28,16 @@ public class AdminOutcomeController {
     }
 
     @GetMapping("/outcomes/add")
-    public ModelAndView AddNewOutcome() {
+    public ModelAndView AddOutcomeForm() {
         ModelAndView mv = new ModelAndView("admin/create-outcome");
+        return mv;
+    }
+
+    @PostMapping("/outcomes/add")
+    public ModelAndView AddNewOutcome(@ModelAttribute("title") String title) {
+        ModelAndView mv;
+        adminOutcomeService.createOutcome(title);
+        mv = new ModelAndView("redirect:/admin/outcomes");
         return mv;
     }
 }

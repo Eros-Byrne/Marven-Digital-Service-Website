@@ -20,4 +20,5 @@ public interface CapabilityRepository {
 
     // ADMIN OUTCOMES LOGIC
     List<AdminOutcome> findAllOutcomesWithNumberOfCapabilities();
+    void CreateOutcome(String title);
 }

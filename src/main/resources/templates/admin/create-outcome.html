@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <title>New Outcome</title>
     <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/css/project_colours.css">
+    <link rel="stylesheet" href="/css/project_colours_admin.css">
     <link rel="stylesheet" href="/css/admin_outcomes.css">
 </head>
 <body>
-<div th:replace="/fragments/navbar.html :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container py-4 mt-5">
-    <div class="card bg-white p-2" id="create-outcome-card">
+    <div class="card grey-background-colour p-2" id="create-outcome-card">
         <h2 class="mb-3 card-title">Add Outcome</h2>
 
-        <form action="/admin/outcome/add" method="post">
+        <form th:action="@{/admin/outcomes/add}" method="post">
             <div class="mb-3">
                 <label class="form-label text-on-white-background fw-bold">Title:</label>
                 <input type="text" name="title" class="form-control" placeholder="Outcome title" required>

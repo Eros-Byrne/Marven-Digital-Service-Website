@@ -17,4 +17,8 @@ public class AdminOutcomeServiceImpl implements AdminOutcomeService {
     public List<AdminOutcome> getAllOutcomesWithCapabilityCount() {
         return capRepo.findAllOutcomesWithNumberOfCapabilities();
     }
+
+    public void createOutcome(String outcomeTitle) {
+        capRepo.CreateOutcome(outcomeTitle);
+    }
 }

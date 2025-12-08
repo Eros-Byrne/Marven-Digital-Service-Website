@@ -1,0 +1,26 @@
+body {
+    background-color: #175C4C;
+}
+
+.white-text {
+    color: white;
+}
+
+.text-on-white-background {
+    color: #00313f;
+}
+
+.warning {
+    background-color: #003761;
+    color: #ffffff;
+    border-color: #003761;
+}
+
+.list-rounded {
+    border-radius: 12px;
+}
+
+.grey-background-colour {
+    background-color: #e5e5e5;
+}
+
