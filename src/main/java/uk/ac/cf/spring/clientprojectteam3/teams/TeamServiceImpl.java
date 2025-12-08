@@ -3,6 +3,8 @@ package uk.ac.cf.spring.clientprojectteam3.teams;
 import org.springframework.stereotype.Service;
 import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
+import java.util.List;
+
 @Service
 public class TeamServiceImpl implements TeamService {
 
@@ -21,4 +23,9 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.setUserAsManager(userId, teamId);
     }
 
+    public List<UserTeam> listOfTeamsForCurrentUser() {
+        Long userID = userService.getCurrentUserId().longValue();
+
+        return teamRepository.getAllTeamsForAUser(userID);
+    }
 }
