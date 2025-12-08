@@ -1,3 +1,4 @@
+
 package uk.ac.cf.spring.clientprojectteam3.summaries;
 
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import uk.ac.cf.spring.clientprojectteam3.quiz.Question;
 import uk.ac.cf.spring.clientprojectteam3.quiz.Quiz;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizRepository;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizService;
+import uk.ac.cf.spring.clientprojectteam3.user.User;
 import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.time.LocalDateTime;
@@ -53,6 +55,10 @@ public class SummaryController {
         model.addAttribute("hasData", false);
 
         try {
+            // Get user information
+            User currentUser = userService.getUserById((int) userId);
+            String userName = currentUser != null ? currentUser.getName() : "User";
+
             // Get all 6 outcomes
             List<Outcome> allOutcomes = capabilityService.getAllOutcomes();
 
@@ -61,9 +67,11 @@ public class SummaryController {
             List<Integer> capabilityScoresList = new ArrayList<>();
             List<CapabilityResult> capabilityResults = new ArrayList<>();
 
+            int completedQuizCount = 0;
+
             // For each outcome, calculate the score from completed quiz
             for (Outcome outcome : allOutcomes) {
-                Long outcomeId = outcome.getId();  // CHANGED: getId() instead of getOutcomeId()
+                Long outcomeId = outcome.getId();
                 Long quizId = outcomeId; // Quiz IDs match outcome IDs (1-6)
 
                 try {
@@ -71,6 +79,8 @@ public class SummaryController {
                     Long latestAttemptId = quizRepository.findLatestCompletedAttempt(userId, quizId);
 
                     if (latestAttemptId != null) {
+                        completedQuizCount++;
+
                         // Get the quiz questions
                         Quiz quiz = quizService.getQuizForAttempt(quizId, 0);
                         List<Question> questions = quiz.getQuestions();
@@ -107,19 +117,19 @@ public class SummaryController {
                 }
             }
 
-            // Calculate strengths and weaknesses
+            // Calculate strengths and weaknesses - FIXED LOGIC
             List<CapabilityResult> sortedResults = new ArrayList<>(capabilityResults);
             sortedResults.sort((a, b) -> Integer.compare(b.getScore(), a.getScore()));
 
+            // Top 3 highest scores are strengths (even if below 60)
             List<String> strengths = sortedResults.stream()
-                    .filter(r -> r.getScore() >= 60)
                     .limit(3)
                     .map(CapabilityResult::getCapabilityTitle)
                     .collect(Collectors.toList());
 
+            // Bottom scores below 60 are weaknesses
             List<String> weaknesses = sortedResults.stream()
                     .filter(r -> r.getScore() < 60)
-                    .limit(3)
                     .map(CapabilityResult::getCapabilityTitle)
                     .collect(Collectors.toList());
 
@@ -130,8 +140,9 @@ public class SummaryController {
                             .orElse(0.0));
 
             // Add to model
+            model.addAttribute("userName", userName);
             model.addAttribute("quizName", "All Outcomes Summary");
-            model.addAttribute("attemptNumber", "-");
+            model.addAttribute("attemptNumber", completedQuizCount + " of 6 completed");
             model.addAttribute("completionDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")));
             model.addAttribute("overallScore", overallScore);
             model.addAttribute("strengths", strengths);
