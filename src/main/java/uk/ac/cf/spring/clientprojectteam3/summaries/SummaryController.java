@@ -1,6 +1,8 @@
 
 package uk.ac.cf.spring.clientprojectteam3.summaries;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,7 @@ import uk.ac.cf.spring.clientprojectteam3.quiz.Question;
 import uk.ac.cf.spring.clientprojectteam3.quiz.Quiz;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizRepository;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizService;
-import uk.ac.cf.spring.clientprojectteam3.user.User;
+import uk.ac.cf.spring.clientprojectteam3.security.CustomUserDetails;
 import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.time.LocalDateTime;
@@ -55,9 +57,13 @@ public class SummaryController {
         model.addAttribute("hasData", false);
 
         try {
-            // Get user information
-            User currentUser = userService.getUserById((int) userId);
-            String userName = currentUser != null ? currentUser.getName() : "User";
+            // Get user name from Spring Security context
+            String userName = "User"; // Default fallback
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                userName = userDetails.getName();
+            }
 
             // Get all 6 outcomes
             List<Outcome> allOutcomes = capabilityService.getAllOutcomes();
