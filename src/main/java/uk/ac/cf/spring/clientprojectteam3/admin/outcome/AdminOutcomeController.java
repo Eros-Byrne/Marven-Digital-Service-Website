@@ -24,4 +24,10 @@ public class AdminOutcomeController {
         mv.addObject("outcomes", outcomes);
         return mv;
     }
+
+    @GetMapping("/outcomes/add")
+    public ModelAndView AddNewOutcome() {
+        ModelAndView mv = new ModelAndView("admin/create-outcome");
+        return mv;
+    }
 }

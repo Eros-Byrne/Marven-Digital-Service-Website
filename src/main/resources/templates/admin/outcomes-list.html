@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | Outcomes</title>
+    <title>Admin Outcomes</title>
     <link rel="stylesheet" href="/bootstrap-5.2.3-dist/css/bootstrap.css">
     <link rel="stylesheet" href="/css/project_colours.css">
 </head>
@@ -15,7 +15,7 @@
         <a class="btn btn-primary" href="/admin/outcomes/add">Add Outcome</a>
     </div>
 
-    <div th:if="${outcomes.isEmpty()}" id="no-outcomes-warning" class="warning alert alert-info">No outcomes yet.</div>
+    <div th:if="${outcomes.isEmpty()}" class="warning alert alert-info">No outcomes yet.</div>
 
     <ul th:unless="${outcomes.isEmpty()}" class="list-group list-group-flush bg-white list-rounded">
 
