@@ -127,4 +127,10 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
 
         return jdbc.query(sql, adminOutcomeMapper);
     }
+
+    public void CreateOutcome(String title) {
+        String sql = "insert into outcomes (title) values (?)";
+
+        jdbc.update(sql, title);
+    }
 }
