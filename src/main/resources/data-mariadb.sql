@@ -9,7 +9,7 @@ delete from skills;
 delete from users;
 delete from outcomes;
 
-# password for this user is password
+-- password for this user is password
 insert into users (user_id, email, password, name, phone) values
     (1, 'test@example.com', '$2a$10$G9GYd3lS9lAHXKrUpiYsmO6M1FsK8LO.HuZPd6mfFVcvQfyWMzuzS', 'Test User', '07123456789');
 
