@@ -19,6 +19,6 @@ public class HomePageTest {
     @Test
     public void testHomePage() throws Exception {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/",
-                String.class)).contains("Center for digital public services");
+                String.class)).contains("Center for Digital Public Services");
     }
 }
