@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.quiz;
+package uk.ac.cf.spring.clientprojectteam3.summaries;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,19 +10,17 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.cf.spring.clientprojectteam3.quiz.QuizService;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Integration test for Summary Page - tests the full container with real database
- */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser(username = "test-user", roles = {"USER"})
+@WithMockUser(username = "test@example.com", roles = {"USER"})
 public class SummaryPageIntegrationTest {
 
     @Autowired
@@ -40,10 +38,8 @@ public class SummaryPageIntegrationTest {
 
     @BeforeEach
     void setup() {
-        // Create a new quiz attempt with some answers
         attemptId = quizService.startAttempt(userId, quizId);
 
-        // Insert test answers
         jdbcTemplate.update(
                 "INSERT INTO answer (question_id, user_attempt_id, score) VALUES (?, ?, ?)",
                 1L, attemptId, 4
@@ -57,7 +53,6 @@ public class SummaryPageIntegrationTest {
                 3L, attemptId, 2
         );
 
-        // Mark attempt as complete
         jdbcTemplate.update(
                 "UPDATE user_attempt SET complete = 1 WHERE user_attempt_id = ?",
                 attemptId
@@ -66,7 +61,7 @@ public class SummaryPageIntegrationTest {
 
     @Test
     void summaryPage_shouldLoadSuccessfully() throws Exception {
-        MvcResult result = mockMvc.perform(get("/summary/quiz/" + quizId + "/attempt/" + attemptId))
+        MvcResult result = mockMvc.perform(get("/summary/user/" + userId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("summary"))
@@ -80,7 +75,6 @@ public class SummaryPageIntegrationTest {
 
         String content = result.getResponse().getContentAsString();
 
-        // Page elements
         assertTrue(content.contains("<canvas id=\"capabilitiesChart\"></canvas>"));
         assertTrue(content.contains("chart.umd.min.js"));
         assertTrue(content.contains("Your Quiz Results"));
@@ -89,7 +83,7 @@ public class SummaryPageIntegrationTest {
 
     @Test
     void summaryPage_shouldDisplayChartDataCorrectly() throws Exception {
-        MvcResult result = mockMvc.perform(get("/summary/quiz/" + quizId + "/attempt/" + attemptId))
+        MvcResult result = mockMvc.perform(get("/summary/user/" + userId))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("capabilityLabels"))
                 .andExpect(model().attributeExists("capabilityScores"))
@@ -97,24 +91,17 @@ public class SummaryPageIntegrationTest {
 
         String content = result.getResponse().getContentAsString();
 
-        // Chart.js initialization
-        assertTrue(content.contains("new Chart("));     // generic, works with ctx or element ID
-
-        // Updated for BAR chart
+        assertTrue(content.contains("new Chart("));
         assertTrue(content.contains("type: 'bar'"));
-
-        // Data arrays
         assertTrue(content.contains("capabilityLabels"));
         assertTrue(content.contains("capabilityScores"));
-
-        // Chart config range
         assertTrue(content.contains("suggestedMin: 0"));
         assertTrue(content.contains("suggestedMax: 100"));
     }
 
     @Test
     void summaryPage_shouldDisplayStrengthsAndWeaknesses() throws Exception {
-        MvcResult result = mockMvc.perform(get("/summary/quiz/" + quizId + "/attempt/" + attemptId))
+        MvcResult result = mockMvc.perform(get("/summary/user/" + userId))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("strengths"))
                 .andExpect(model().attributeExists("weaknesses"))
@@ -122,11 +109,8 @@ public class SummaryPageIntegrationTest {
 
         String content = result.getResponse().getContentAsString();
 
-        // Strengths/weaknesses sections
         assertTrue(content.contains("Key Strengths"));
         assertTrue(content.contains("Needs Improvement"));
-
-        // Capability table
         assertTrue(content.contains("Detailed Results by Capability"));
         assertTrue(content.contains("<th>Capability</th>"));
         assertTrue(content.contains("<th style=\"width: 120px;\">Score</th>"));
