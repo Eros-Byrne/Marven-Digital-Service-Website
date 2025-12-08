@@ -20,7 +20,12 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     padding: 18px;
-    transition: transform 0.2s;
+
+    display: flex;
+    flex-direction: column;
+
+    height:100%;
+    min-height: 360px;
 }
 .quiz-card:hover {
     transform: translateY(-4px);
@@ -47,4 +52,11 @@
 .start-btn:hover {
     background-color: var(--light-powder-blue);
     color: #ffffff;
+}
+.quiz-card .start-btn {
+    margin-top: auto;
+}
+
+.quiz-card-footer {
+    margin-top: auto;
 }
