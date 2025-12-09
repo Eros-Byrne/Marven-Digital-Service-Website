@@ -1,18 +1,10 @@
 /* Summary Page Styles - Welsh Government Theme */
 
-:root {
-    --powder-blue: #6068FF;
-    --powder-blue-light: #8089FF;
-    --cdps-blue: #003761;
-    --cdps-slate: #00313F;
-    --cdps-yellow: #FDD300;
-    --white: #FFFFFF;
-}
 
 /* Header section */
 .cdps-header {
     background-color: var(--cdps-blue);
-    color: var(--white);
+    color: #ffffff;
     padding: 2rem 0;
     margin-bottom: 2rem;
 }
@@ -32,7 +24,7 @@
 
 .summary-card-header {
     background-color: var(--cdps-blue);
-    color: var(--white);
+    color: #ffffff;
     padding: 1rem 1.25rem;
     border-radius: 0.75rem 0.75rem 0 0;
 }
@@ -44,7 +36,7 @@
 /* Skill pills */
 .skill-pill {
     background-color: var(--powder-blue);
-    color: var(--white);
+    color: #ffffff;
     display: inline-block;
     padding: 0.35rem 0.75rem;
     border-radius: 50px;
@@ -60,7 +52,7 @@
 
 .skill-pill.high {
     background-color: var(--powder-blue);
-    color: var(--white);
+    color: #ffffff;
 }
 
 /* Overall score display */
@@ -103,13 +95,13 @@
 /* Back button */
 .btn-back {
     background-color: var(--powder-blue);
-    color: var(--white);
+    color: #ffffff;
     border: none;
 }
 
 .btn-back:hover {
-    background-color: var(--powder-blue-light);
-    color: var(--white);
+    background-color: var(--light-powder-blue);
+    color: #ffffff;
 }
 
 /* Responsive adjustments */

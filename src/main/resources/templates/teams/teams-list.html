@@ -15,8 +15,8 @@
         <h1 class="white-text">My Teams</h1>
 <!--        Temp colours for buttons - will be changed once the button styling has been confirmed with team-->
         <div class="d-flex gap-2">
-            <button class="btn btn-primary">Join</button>
-            <a class="btn btn-primary" href="teams/create">Create</a>
+            <button class="btn btn-primary project-button">Join</button>
+            <a class="btn btn-primary project-button" href="teams/create">Create</a>
         </div>
     </div>
 
@@ -35,10 +35,10 @@
 
                 <div class="ms-auto d-flex align-items-center gap-2">
     <!--                This button should change colour once project button styling has been confirmed-->
-                    <a class="btn btn-primary" th:href="@{/team/{id} (id=${team.teamId})}">View</a>
+                    <a class="btn btn-primary project-button" th:href="@{/team/{id} (id=${team.teamId})}">View</a>
 
                     <form th:action="@{/team/{id}/leave (id=${team.teamId})}" method="post">
-                        <button type="submit" class="btn btn-danger">Leave</button>
+                        <button type="submit" class="btn project-button leave-btn">Leave</button>
                     </form>
                 </div>
             </div>
