@@ -12,4 +12,9 @@ public class Question {
     private long quizId;
     private String text;
     private long capabilityId;
+
+    public Question(long l, String q1) {
+        this.questionId = l;
+        this.text = q1;
+    }
 }

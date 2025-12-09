@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.summaries;
+package uk.ac.cf.spring.clientprojectteam3.summary;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,7 +111,7 @@ public class SummaryPageIntegrationTest {
 
         assertTrue(content.contains("Key Strengths"));
         assertTrue(content.contains("Needs Improvement"));
-        assertTrue(content.contains("Detailed Results by Capability"));
+        assertTrue(content.contains("Detailed Results by Outcome"));
         assertTrue(content.contains("<th>Capability</th>"));
         assertTrue(content.contains("<th style=\"width: 120px;\">Score</th>"));
         assertTrue(content.contains("<th>Status</th>"));

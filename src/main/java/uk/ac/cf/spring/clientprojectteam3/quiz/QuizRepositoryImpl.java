@@ -1,14 +1,12 @@
 package uk.ac.cf.spring.clientprojectteam3.quiz;
 
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -225,16 +223,44 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public Map<Long, Integer> getAttemptAnswers(long attemptId) {
+    public Integer getLatestAttemptId(long userId, int quizId) {
+        String sql = """
+        SELECT user_attempt_id
+        FROM user_attempt
+        WHERE user_id = ? AND quiz_id = ?
+        ORDER BY attempt DESC
+        LIMIT 1
+    """;
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, userId, quizId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public int getAttemptStatus(int attemptId) {
+        String sql = """
+        SELECT complete
+        FROM user_attempt
+        WHERE user_attempt_id = ?
+        """;
+
+        return jdbcTemplate.queryForObject(sql, Integer.class, attemptId);
+    }
+
+
+    @Override
+    public Map<Integer, Integer> getAttemptAnswers(long attemptId) {
         String sql = """
             SELECT question_id, score
             FROM answer
             WHERE user_attempt_id = ?
         """;
 
-        Map<Long, Integer> answers = new HashMap<>();
+        Map<Integer, Integer> answers = new HashMap<>();
         jdbcTemplate.query(sql, rs -> {
-            answers.put(rs.getLong("question_id"), rs.getInt("score"));
+            answers.put(rs.getInt("question_id"), rs.getInt("score"));
         }, attemptId);
 
         return answers;
