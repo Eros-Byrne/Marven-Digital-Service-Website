@@ -84,14 +84,14 @@ public class SummaryController {
                         Quiz quiz = quizService.getQuizForAttempt(quizId, 0);
                         List<Question> questions = quiz.getQuestions();
 
-                        Map<Long, Integer> attemptAnswers = quizRepository.getAttemptAnswers(latestAttemptId);
+                        Map<Integer, Integer> attemptAnswers = quizRepository.getAttemptAnswers(latestAttemptId);
 
                         if (!attemptAnswers.isEmpty()) {
                             List<Integer> scores = new ArrayList<>();
 
                             for (Question question : questions) {
-                                if (attemptAnswers.containsKey(question.getQuestionId())) {
-                                    scores.add(attemptAnswers.get(question.getQuestionId()));
+                                if (attemptAnswers.containsKey((int) question.getQuestionId())) {
+                                    scores.add(attemptAnswers.get((int) question.getQuestionId()));
                                 }
                             }
 
