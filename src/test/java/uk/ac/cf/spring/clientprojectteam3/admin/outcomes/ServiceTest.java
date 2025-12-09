@@ -46,4 +46,12 @@ public class ServiceTest {
 
         verify(capRepo).CreateOutcome("Test outcome");
     }
+
+    @Test
+    public void deleteOutcomeCallsRepoFunction() {
+
+        adminOutcomeService.deleteOutcome(27L);
+
+        verify( capRepo ).deleteOutcome(27L);
+    }
 }

@@ -78,4 +78,15 @@ public class ControllerOnlyTest {
 
         verify(adminOutcomeService).createOutcome("Outcome 1");
     }
+
+    @Test
+    public void deleteCallsServiceAndRedirects() throws Exception {
+
+        mvc.perform(post("/admin/outcome/delete/4"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/outcomes"));
+
+        verify(adminOutcomeService).deleteOutcome(4L);
+    }
 }

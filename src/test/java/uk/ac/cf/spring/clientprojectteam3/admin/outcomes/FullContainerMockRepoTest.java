@@ -66,4 +66,15 @@ public class FullContainerMockRepoTest {
         verify(capRepo).CreateOutcome("Test Outcome");
     }
 
+    @Test
+    public void deleteOutcomeCallsRepoAndRedirects() throws Exception {
+
+        mvc.perform(post("/admin/outcome/delete/2")
+                        .with(csrf()))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/outcomes"));
+
+        verify(capRepo).deleteOutcome(2L);
+    }
 }
