@@ -34,6 +34,7 @@
     <!-- Show content even if no data yet -->
     <div th:if="${!hasError}" class="row g-4">
 
+
         <!-- LEFT: TEXT SUMMARY -->
         <div class="col-lg-5">
             <div class="summary-card">
@@ -41,8 +42,9 @@
                     <h5 class="mb-0">Your Quiz Results</h5>
                 </div>
                 <div class="summary-card-body">
-                    <p><strong>Quiz Name:</strong> <span th:text="${quizName}">Quiz Name</span></p>
-                    <p><strong>Attempt Number:</strong> <span th:text="${attemptNumber}">-</span></p>
+                    <p><strong>User:</strong> <span th:text="${userName}">User Name</span></p>
+                    <p><strong>Summary:</strong> <span th:text="${quizName}">Quiz Name</span></p>
+                    <p><strong>Completion:</strong> <span th:text="${attemptNumber}">-</span></p>
                     <p><strong>Date:</strong> <span th:text="${completionDate}">-</span></p>
 
                     <h6 class="section-heading">Overall Score</h6>
@@ -60,7 +62,7 @@
                             <span th:each="strength : ${strengths}" class="skill-pill high" th:text="${strength}">Skill</span>
                         </div>
                         <div th:if="${strengths == null || strengths.isEmpty()}">
-                            <p class="text-muted">Complete more questions to identify strengths</p>
+                            <p class="text-muted">Complete more quizzes to identify strengths</p>
                         </div>
 
                         <h6 class="section-heading">Needs Improvement</h6>
@@ -68,7 +70,7 @@
                             <span th:each="weakness : ${weaknesses}" class="skill-pill low" th:text="${weakness}">Skill</span>
                         </div>
                         <div th:if="${weaknesses == null || weaknesses.isEmpty()}">
-                            <p class="text-muted">No areas identified yet</p>
+                            <p class="text-muted">Great! All outcomes above 60%</p>
                         </div>
                     </div>
                 </div>
@@ -99,7 +101,7 @@
         <div class="col-12">
             <div class="summary-card">
                 <div class="summary-card-header">
-                    <h5 class="mb-0">Detailed Results by Capability</h5>
+                    <h5 class="mb-0">Detailed Results by Outcomes</h5>
                 </div>
                 <div class="summary-card-body table-responsive">
                     <table class="table table-bordered results-table align-middle">

@@ -224,7 +224,6 @@ public class QuizRepositoryImpl implements QuizRepository {
         );
     }
 
-
     @Override
     public Map<Long, Integer> getAttemptAnswers(long attemptId) {
         String sql = """
@@ -254,6 +253,23 @@ public class QuizRepositoryImpl implements QuizRepository {
             return attempt != null ? attempt : 0;
         } catch (Exception e) {
             return 0;
+        }
+    }
+
+    @Override
+    public Long findLatestCompletedAttempt(long userId, long quizId) {
+        String sql = """
+            SELECT user_attempt_id
+            FROM user_attempt
+            WHERE user_id = ? AND quiz_id = ? AND complete = 1
+            ORDER BY attempt DESC
+            LIMIT 1
+        """;
+
+        try {
+            return jdbcTemplate.queryForObject(sql, Long.class, userId, quizId);
+        } catch (Exception e) {
+            return null;
         }
     }
 }
