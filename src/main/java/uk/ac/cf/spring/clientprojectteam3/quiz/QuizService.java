@@ -19,7 +19,7 @@ public interface QuizService {
 
     void saveAttemptToSession(HttpSession session, QuizAttempt attempt);
 
-    QuizAttempt loadAttemptFromSession(int quizId, HttpSession session);
+    QuizAttempt loadAttemptFromSession(int quizId, int attemptId, HttpSession session);
 
     long startAttempt(long userId, long quizId);
 
@@ -30,4 +30,8 @@ public interface QuizService {
     void deleteEmptyAttempt(int attemptId, HttpSession session);
 
     List<QuizCardDTO> getQuizCards(Integer userId);
+
+    int getOrStartAttempt(long userId, int quizId);
+
+    int getAttemptNumber(long attemptId);
 }

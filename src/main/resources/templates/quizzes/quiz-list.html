@@ -24,6 +24,7 @@
             <div class="quiz-card">
                 <h5 class="quiz-card-title" th:text="${quiz.quizName}">Quiz Name</h5>
                 <p class="quiz-card-desc" th:text="${quiz.quizDescription}">Quiz Description</p>
+                <div class ="quiz-card-footer">
                 <p class="quiz-card-desc" th:text="'Attempt Number: ' + ${quiz.attemptNumber}" sec:authorize="isAuthenticated()">Quiz Description</p>
                 <p class="quiz-card-time">Estimated time: <span th:text="${quiz.timeEstimate}"></span> mins</p>
                 <p class="quiz-card-time" sec:authorize="isAuthenticated()">Questions: <span th:text="${quiz.questionsCompleted} + '/' + ${quiz.totalQuestions}" ></span></p>
@@ -32,18 +33,18 @@
 
 
                 <div th:if="${quiz.completed==1 || quiz.attemptNumber == 0}">
-                    <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
+                    <a th:href="@{/quiz/{quizId}/attempt/question/0(quizId=${quiz.quizId})}"
                        class="btn start-btn w-100 mt-3">
                         Start Quiz
                     </a>
                 </div>
                 <div th:if="${quiz.completed==0 && quiz.attemptNumber>0}" sec:authorize="isAuthenticated()">
-                    <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
+                    <a th:href="@{/quiz/{quizId}/attempt/question/0(quizId=${quiz.quizId})}"
                        class="btn start-btn w-100 mt-3">
                         Resume Quiz
                     </a>
                 </div>
-
+                </div>
             </div>
         </div>
         <div class="col-12" th:if="${noQuizzes}">

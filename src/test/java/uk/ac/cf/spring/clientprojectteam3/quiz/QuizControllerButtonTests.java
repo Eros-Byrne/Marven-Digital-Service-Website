@@ -6,10 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.ac.cf.spring.clientprojectteam3.user.UserServiceImpl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +22,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
+@WithMockUser(username = "test@example.com")
 class QuizControllerButtonTests {
 
     @Mock
     private QuizService quizService;
+
+    @Mock
+    private UserServiceImpl currentUserService;
 
     private MockMvc mockMvc;
 
@@ -30,7 +37,9 @@ class QuizControllerButtonTests {
     void setup() {
         QuizController controller = new QuizController();
         ReflectionTestUtils.setField(controller, "quizService", quizService);
+        ReflectionTestUtils.setField(controller, "currentUserService", currentUserService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        Mockito.lenient().when(currentUserService.getCurrentUserId()).thenReturn(1);
     }
 
     private Quiz makeQuiz() {
@@ -67,7 +76,7 @@ class QuizControllerButtonTests {
         quiz.setQuestions(List.of(new Question(), new Question()));
 
         // Make stubs lenient to avoid unnecessary stubbing errors
-        Mockito.lenient().when(quizService.loadAttemptFromSession(1, session)).thenReturn(attempt);
+        Mockito.lenient().when(quizService.loadAttemptFromSession(1, 0, session)).thenReturn(attempt);
         Mockito.lenient().when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
 
         Mockito.doAnswer(invocation -> {
@@ -80,12 +89,12 @@ class QuizControllerButtonTests {
             return null;
         }).when(quizService).recordAnswer(Mockito.any(), Mockito.anyInt(), Mockito.any());
 
-        mockMvc.perform(post("/quiz/1/attempt/0/question/0/answer")
+        mockMvc.perform(post("/quiz/1/attempt/question/0/answer")
                         .param("nav", "next")
                         .param("answer", "1")
                         .session(session))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/quiz/1/attempt/0/question/1"));
+                .andExpect(redirectedUrl("/quiz/1/attempt/question/1"));
 
         // Verify that the answer was recorded
         assertEquals(1, attempt.getAnswers().get(0));
@@ -98,7 +107,7 @@ class QuizControllerButtonTests {
     void testPreviousButtonRedirectsToPreviousQuestion() throws Exception {
         MockHttpSession session = new MockHttpSession();
 
-        // Setup a QuizAttempt in session
+        // Set up a QuizAttempt in session
         QuizAttempt attempt = new QuizAttempt();
         attempt.setQuizId(1);
         attempt.setCurrentQuestionIndex(1); // starting at question 1
@@ -109,7 +118,7 @@ class QuizControllerButtonTests {
         quiz.setQuestions(List.of(new Question(), new Question()));
 
         // Stub service methods leniently to avoid unnecessary stubbing errors
-        Mockito.lenient().when(quizService.loadAttemptFromSession(1, session)).thenReturn(attempt);
+        Mockito.lenient().when(quizService.loadAttemptFromSession(1, 0, session)).thenReturn(attempt);
         Mockito.lenient().when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
 
         Mockito.doAnswer(invocation -> {
@@ -122,12 +131,12 @@ class QuizControllerButtonTests {
             return null;
         }).when(quizService).recordAnswer(Mockito.any(), Mockito.anyInt(), Mockito.any());
 
-        mockMvc.perform(post("/quiz/1/attempt/0/question/1/answer")
+        mockMvc.perform(post("/quiz/1/attempt/question/1/answer")
                         .param("nav", "prev")
                         .param("answer", "2")
                         .session(session))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/quiz/1/attempt/0/question/0"));
+                .andExpect(redirectedUrl("/quiz/1/attempt/question/0"));
 
         assertEquals(2, attempt.getAnswers().get(1));
 

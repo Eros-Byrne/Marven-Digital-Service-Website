@@ -36,7 +36,13 @@ public class OutcomeRepositoryTest {
         // Test that at least one outcome has the expected title
         assertThat(outcomes)
                 .extracting(Outcome::getTitle)
-                .contains("Career Exploration");
+                .contains(
+                        "Building a team",
+                        "Designing a user journey",
+                        "Designing content",
+                        "Managing a service",
+                        "Managing technology for a service"
+                );
     }
 
     @Test

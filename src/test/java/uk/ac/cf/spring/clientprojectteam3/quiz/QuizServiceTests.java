@@ -36,7 +36,7 @@ class QuizServiceTests {
     void loadAttemptFromSession_shouldReturnNewAttemptWhenNoneExists() {
         MockHttpSession session = new MockHttpSession();
 
-        QuizAttempt attempt = quizService.loadAttemptFromSession(5, session);
+        QuizAttempt attempt = quizService.loadAttemptFromSession(5, 1, session);
 
         assertNotNull(attempt);
         assertEquals(5, attempt.getQuizId());
@@ -51,7 +51,7 @@ class QuizServiceTests {
 
         session.setAttribute("quizAttempt", existing);
 
-        QuizAttempt result = quizService.loadAttemptFromSession(9, session);
+        QuizAttempt result = quizService.loadAttemptFromSession(9, 0, session);
 
         assertSame(existing, result);
     }

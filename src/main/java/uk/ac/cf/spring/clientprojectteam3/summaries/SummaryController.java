@@ -1,17 +1,20 @@
-
 package uk.ac.cf.spring.clientprojectteam3.summaries;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import uk.ac.cf.spring.clientprojectteam3.capabilities.Capability;
 import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityService;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.Outcome;
 import uk.ac.cf.spring.clientprojectteam3.quiz.Question;
 import uk.ac.cf.spring.clientprojectteam3.quiz.Quiz;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizRepository;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizService;
+import uk.ac.cf.spring.clientprojectteam3.security.CustomUserDetails;
+import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,102 +28,100 @@ public class SummaryController {
     private final QuizService quizService;
     private final QuizRepository quizRepository;
     private final CapabilityService capabilityService;
+    private final UserService userService;
 
-    public SummaryController(QuizService quizService, QuizRepository quizRepository, CapabilityService capabilityService) {
+    public SummaryController(QuizService quizService, QuizRepository quizRepository,
+                             CapabilityService capabilityService, UserService userService) {
         this.quizService = quizService;
         this.quizRepository = quizRepository;
         this.capabilityService = capabilityService;
+        this.userService = userService;
     }
 
-    // Landing page - redirects to latest attempt or shows empty state
     @GetMapping
     public String summaryLanding(Model model) {
-        // For now, show empty summary with sample quiz/attempt
-        // TODO: In future, fetch user's latest attempt from database
-        // For demo purposes, use quiz 1, attempt 1
-        return "redirect:/summary/quiz/1/attempt/1";
+        try {
+            Integer userId = userService.getCurrentUserId();
+            return showUserSummary(userId.longValue(), model);
+        } catch (Exception e) {
+            model.addAttribute("hasError", true);
+            model.addAttribute("errorMessage", "Unable to load summary");
+            return "summary";
+        }
     }
 
-    @GetMapping("/quiz/{quizId}/attempt/{attemptId}")
-    public String showSummary(
-            @PathVariable long quizId,
-            @PathVariable long attemptId,
-            Model model
-    ) {
-        // Initialize default values
+    @GetMapping("/user/{userId}")
+    public String showUserSummary(@PathVariable long userId, Model model) {
         model.addAttribute("hasError", false);
         model.addAttribute("hasData", false);
 
         try {
-            // Get quiz info using existing method
-            Quiz quiz = quizService.getQuizForAttempt(quizId, 0);
-            List<Question> questions = quiz.getQuestions();
+            String userName = "User";
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof CustomUserDetails) {
+                CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+                userName = userDetails.getName();
+            }
 
-            // Get attempt answers from database
-            Map<Long, Integer> attemptAnswers = quizRepository.getAttemptAnswers(attemptId);
-            int attemptNumber = quizRepository.getAttemptNumber(attemptId);
+            List<Outcome> allOutcomes = capabilityService.getAllOutcomes();
 
-            // Initialize empty data structures
-            Map<Long, List<Integer>> capabilityScores = new HashMap<>();
-            Map<Long, String> capabilityTitles = new HashMap<>();
+            List<String> capabilityLabels = new ArrayList<>();
+            List<Integer> capabilityScoresList = new ArrayList<>();
+            List<CapabilityResult> capabilityResults = new ArrayList<>();
 
-            // If there are answers, process them
-            if (!attemptAnswers.isEmpty()) {
-                for (Question question : questions) {
-                    Long questionId = question.getQuestionId();
-                    Long capabilityId = question.getCapabilityId();
+            int completedQuizCount = 0;
 
-                    if (attemptAnswers.containsKey(questionId)) {
-                        Integer score = attemptAnswers.get(questionId);
+            for (Outcome outcome : allOutcomes) {
+                Long outcomeId = outcome.getId();
+                Long quizId = outcomeId;
 
-                        capabilityScores.computeIfAbsent(capabilityId, k -> new ArrayList<>()).add(score);
+                try {
+                    Long latestAttemptId = quizRepository.findLatestCompletedAttempt(userId, quizId);
 
-                        if (!capabilityTitles.containsKey(capabilityId)) {
-                            try {
-                                Capability capability = capabilityService.getCapability(capabilityId);
-                                capabilityTitles.put(capabilityId, capability.getTitle());
-                            } catch (Exception e) {
-                                capabilityTitles.put(capabilityId, "Capability " + capabilityId);
+                    if (latestAttemptId != null) {
+                        completedQuizCount++;
+
+                        Quiz quiz = quizService.getQuizForAttempt(quizId, 0);
+                        List<Question> questions = quiz.getQuestions();
+
+                        Map<Integer, Integer> attemptAnswers = quizRepository.getAttemptAnswers(latestAttemptId);
+
+                        if (!attemptAnswers.isEmpty()) {
+                            List<Integer> scores = new ArrayList<>();
+
+                            for (Question question : questions) {
+                                if (attemptAnswers.containsKey((int) question.getQuestionId())) {
+                                    scores.add(attemptAnswers.get((int) question.getQuestionId()));
+                                }
+                            }
+
+                            if (!scores.isEmpty()) {
+                                int avgScore = (int) Math.round(scores.stream()
+                                        .mapToInt(Integer::intValue)
+                                        .average()
+                                        .orElse(0.0) * 20);
+
+                                capabilityLabels.add(outcome.getTitle());
+                                capabilityScoresList.add(avgScore);
+                                capabilityResults.add(new CapabilityResult(outcome.getTitle(), avgScore));
                             }
                         }
                     }
+                } catch (Exception e) {
+                    System.err.println("Error processing outcome " + outcomeId + ": " + e.getMessage());
                 }
             }
 
-            // Calculate results
-            List<CapabilityResult> capabilityResults = new ArrayList<>();
-            List<String> capabilityLabels = new ArrayList<>();
-            List<Integer> capabilityScoresList = new ArrayList<>();
-
-            for (Map.Entry<Long, List<Integer>> entry : capabilityScores.entrySet()) {
-                Long capabilityId = entry.getKey();
-                List<Integer> scores = entry.getValue();
-
-                int averageScore = (int) Math.round(scores.stream()
-                        .mapToInt(Integer::intValue)
-                        .average()
-                        .orElse(0.0) * 20);
-
-                String title = capabilityTitles.get(capabilityId);
-
-                capabilityResults.add(new CapabilityResult(title, averageScore));
-                capabilityLabels.add(title);
-                capabilityScoresList.add(averageScore);
-            }
-
-            // Sort for strengths/weaknesses
             List<CapabilityResult> sortedResults = new ArrayList<>(capabilityResults);
             sortedResults.sort((a, b) -> Integer.compare(b.getScore(), a.getScore()));
 
             List<String> strengths = sortedResults.stream()
-                    .filter(r -> r.getScore() >= 60)
                     .limit(3)
                     .map(CapabilityResult::getCapabilityTitle)
                     .collect(Collectors.toList());
 
             List<String> weaknesses = sortedResults.stream()
                     .filter(r -> r.getScore() < 60)
-                    .limit(3)
                     .map(CapabilityResult::getCapabilityTitle)
                     .collect(Collectors.toList());
 
@@ -130,9 +131,9 @@ public class SummaryController {
                             .average()
                             .orElse(0.0));
 
-            // Add to model - always add these, even if empty
-            model.addAttribute("quizName", quiz.getName());
-            model.addAttribute("attemptNumber", attemptNumber);
+            model.addAttribute("userName", userName);
+            model.addAttribute("quizName", "All Outcomes Summary");
+            model.addAttribute("attemptNumber", completedQuizCount + " of 6 completed");
             model.addAttribute("completionDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")));
             model.addAttribute("overallScore", overallScore);
             model.addAttribute("strengths", strengths);
@@ -140,7 +141,7 @@ public class SummaryController {
             model.addAttribute("capabilityResults", capabilityResults);
             model.addAttribute("capabilityLabels", capabilityLabels);
             model.addAttribute("capabilityScores", capabilityScoresList);
-            model.addAttribute("hasData", !attemptAnswers.isEmpty());
+            model.addAttribute("hasData", !capabilityScoresList.isEmpty());
 
         } catch (Exception e) {
             model.addAttribute("hasError", true);
@@ -149,6 +150,18 @@ public class SummaryController {
         }
 
         return "summary";
+    }
+
+    @GetMapping("/quiz/{quizId}/attempt/{attemptId}")
+    public String showSummary(@PathVariable long quizId, @PathVariable long attemptId, Model model) {
+        try {
+            Integer userId = userService.getCurrentUserId();
+            return "redirect:/summary/user/" + userId;
+        } catch (Exception e) {
+            model.addAttribute("hasError", true);
+            model.addAttribute("errorMessage", "Unable to load summary");
+            return "summary";
+        }
     }
 
     public static class CapabilityResult {

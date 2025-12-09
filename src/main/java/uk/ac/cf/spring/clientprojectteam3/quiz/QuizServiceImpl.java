@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -18,24 +20,58 @@ public class QuizServiceImpl implements QuizService {
         session.setAttribute("quizAttempt", attempt);
     }
 
-    public QuizAttempt loadAttemptFromSession(int quizId, HttpSession session) {
+    public QuizAttempt loadAttemptFromSession(int quizId, int attemptId, HttpSession session) {
         QuizAttempt attempt = (QuizAttempt) session.getAttribute("quizAttempt");
 
-        if (attempt == null) {
+        if (attempt == null || attempt.getAttemptId() != attemptId) {
+            // Create a new session attempt or replace if the attemptId changed
             attempt = new QuizAttempt();
             attempt.setQuizId(quizId);
+            attempt.setAttemptId(attemptId);
+
+            // Load saved answers from DB
+            Map<Integer, Integer> savedAnswers = quizRepository.getAttemptAnswers(attemptId);
+            List<Question> questions = quizRepository.getQuestions(quizId);
+
+            Map<Integer, Integer> answersByIndex = new HashMap<>();
+            for (int i = 0; i < questions.size(); i++) {
+                long qId = questions.get(i).getQuestionId();
+                if (savedAnswers.containsKey((int) qId)) {
+                    answersByIndex.put(i, savedAnswers.get((int) qId));
+                }
+            }
+
+            attempt.setAnswers(answersByIndex);
         }
+
         return attempt;
     }
 
+
     // quiz loading.
+
+    @Override
+    public int getOrStartAttempt(long userId, int quizId) {
+        Integer latestAttemptId = quizRepository.getLatestAttemptId(userId, quizId);
+
+        if (latestAttemptId == null) {
+            // Create a new attempt
+            return Math.toIntExact(startAttempt(userId, quizId));
+        }
+
+        int completed = quizRepository.getAttemptStatus(latestAttemptId);
+        if(completed == 1){
+            return Math.toIntExact(startAttempt(userId, quizId));
+        }
+
+        return latestAttemptId;
+    }
 
     public Quiz getQuizForAttempt(long quizId, int attemptId) {
         Quiz quiz = quizRepository.getQuiz(quizId);
         quiz.setQuizId(quizId);
         List<Question> quizQuestions = quizRepository.getQuestions(quizId);
         quiz.setQuestions(quizQuestions);
-
         return quiz;
     }
 
@@ -97,6 +133,10 @@ public class QuizServiceImpl implements QuizService {
 
 
     // lookups.
+
+    public int getAttemptNumber(long userAttemptId) {
+        return quizRepository.getAttemptNumber(userAttemptId); // already in your repo
+    }
 
     @Override
     public List<QuizCardDTO> getQuizCards(Integer userId) {

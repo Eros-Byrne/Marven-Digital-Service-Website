@@ -32,7 +32,7 @@
 
                     <h4 class="text-on-white-background" th:text="${question.text}">Question Text</h4>
 
-                    <form th:action="@{/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer(quizId=${quizId}, attemptId=${attemptId}, index=${index})}" method="post">
+                    <form th:action="@{/quiz/{quizId}/attempt/question/{index}/answer(quizId=${quizId}, index=${index})}" method="post">
 
                         <!-- Centered Rating Buttons -->
                         <div class="d-flex justify-content-center mt-4 rating-buttons text-center">
@@ -111,4 +111,6 @@
 </div>
 
 </body>
+<script th:src="@{/bootstrap-5.2.3-dist/js/bootstrap.bundle.min.js}"></script>
+
 </html>

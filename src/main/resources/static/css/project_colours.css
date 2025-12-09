@@ -7,7 +7,7 @@
     --white: #ffffff;
 }
 body {
-    background-color: #6068ff;
+    background-color: var(--powder-blue);
 }
 
 .white-text {
@@ -15,7 +15,7 @@ body {
 }
 
 .text-on-white-background {
-    color: #00313f;
+    color: var(--cdps-slate);
 }
 
 .warning {
@@ -31,5 +31,19 @@ body {
 :root {
     --text-on-white-background-colour: #00313f;
     --campws-light-powder-blue: #8089ff;
+}
+
+.project-button {
+    background-color: var(--cdps-blue);
+    color: #ffffff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.project-button:hover {
+    background-color: var(--light-powder-blue);
+    color: #ffffff;
 }
 
