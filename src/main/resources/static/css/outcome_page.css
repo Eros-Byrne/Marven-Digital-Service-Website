@@ -120,18 +120,18 @@
 
 /*Capability button colours - overwriting bootstrap colours*/
 #blue-btn {
-    border-color: #8089ff;
-    /*color: #8089ff;*/
-    color: #00313f;
+    border-color: var(--light-powder-blue);
+    /*color: var(--light-powder-blue);*/
+    color: var(--cdps-slate);
 }
 
 #blue-btn:hover {
-    background-color: #8089ff;
+    background-color: var(--light-powder-blue);
     color: #ffffff;
 }
 
 /*quiz button colours - overwriting bootstrap colours*/
 
 #quiz-btn {
-    background-color: #8089ff;
+    background-color: var(--light-powder-blue);
 }
