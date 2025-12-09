@@ -18,6 +18,21 @@ body {
     color: var(--cdps-slate);
 }
 
+.warning {
+    background-color: #003761;
+    color: #ffffff;
+    border-color: #003761;
+}
+
+.list-rounded {
+    border-radius: 12px;
+}
+
+:root {
+    --text-on-white-background-colour: #00313f;
+    --campws-light-powder-blue: #8089ff;
+}
+
 .project-button {
     background-color: var(--cdps-blue);
     color: #ffffff;
@@ -26,7 +41,9 @@ body {
     border-radius: 8px;
     font-weight: 600;
 }
+
 .project-button:hover {
     background-color: var(--light-powder-blue);
     color: #ffffff;
 }
+

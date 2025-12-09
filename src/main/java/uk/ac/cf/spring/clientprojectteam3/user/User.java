@@ -28,4 +28,6 @@ public class User {
     @NotBlank
     @Size(min = 8)
     private String password;
+
+    private String jobRole;
 }

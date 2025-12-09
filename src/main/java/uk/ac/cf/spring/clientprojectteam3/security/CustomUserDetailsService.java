@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import uk.ac.cf.spring.clientprojectteam3.user.User;
 import uk.ac.cf.spring.clientprojectteam3.user.UserJdbcRepository;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +24,18 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        if (user.getJobRole() != null && user.getJobRole().equalsIgnoreCase("admin")) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
         return new CustomUserDetails(
                 user.getEmail(),
                 user.getPassword(),
                 user.getName(),
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+                authorities
         );
     }
 }
