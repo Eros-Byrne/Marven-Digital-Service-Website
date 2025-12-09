@@ -1,9 +1,3 @@
-#no-teams-warning {
-    background-color: var(--cdps-blue);
-    color: #ffffff;
-    border-color: var(--cdps-blue);
-}
-
 .team-name {
     max-width: 40ch;
     white-space: nowrap;

@@ -10,8 +10,8 @@ delete from users;
 delete from outcomes;
 
 -- password for this user is password
-insert into users (user_id, email, password, name, phone) values
-    (1, 'test@example.com', '$2a$10$G9GYd3lS9lAHXKrUpiYsmO6M1FsK8LO.HuZPd6mfFVcvQfyWMzuzS', 'Test User', '07123456789');
+insert into users (user_id, email, password, name, phone, jobrole) values
+    (1, 'test@example.com', '$2a$10$G9GYd3lS9lAHXKrUpiYsmO6M1FsK8LO.HuZPd6mfFVcvQfyWMzuzS', 'Test Admin', '07123456789', 'admin');
 
 
 insert into skills (name) values
@@ -591,6 +591,7 @@ insert into quiz_questions (quiz_id, capability_id, text) values
 -- Capability 35: Identify where to get advice and assurance
 insert into quiz_questions (quiz_id, capability_id, text) values
 (6, 35, 'How confident are you that you know when and where to seek data governance advice?');
+
 -- Create resources
 insert into resources (content, difficulty, capability_id)
 values ("Resource 1", "Low", 1);

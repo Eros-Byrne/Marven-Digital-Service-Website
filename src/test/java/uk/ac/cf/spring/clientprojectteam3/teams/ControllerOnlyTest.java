@@ -94,7 +94,7 @@ public class ControllerOnlyTest {
         String content = result.getResponse().getContentAsString();
 
         assertFalse(content.contains("<ul class=\"list-group list-group-flush bg-white m-0\">"));
-        assertTrue(content.contains("<div id=\"no-teams-warning\" class=\"alert alert-info\">"));
+        assertTrue(content.contains("<div class=\"warning alert alert-info\">"));
         assertTrue(content.contains("You are not currently a member of any teams."));
     }
 }
