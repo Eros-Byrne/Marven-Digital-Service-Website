@@ -20,10 +20,13 @@ public interface QuizRepository {
 
     void deleteEmptyAttempt(int attemptId);
 
-    // New methods for summary page
+    // Methods for summary page
     Map<Long, Integer> getAttemptAnswers(long attemptId);
 
     int getAttemptNumber(long attemptId);
 
     List<QuizCardDTO> getQuizCardsByUserId(long userId);
+
+    // NEW METHOD: Find latest completed attempt for a user and quiz
+    Long findLatestCompletedAttempt(long userId, long quizId);
 }
