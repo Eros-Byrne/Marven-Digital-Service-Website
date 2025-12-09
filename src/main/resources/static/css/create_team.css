@@ -1,8 +1,8 @@
 #create-team-card {
     width: 500px;
-    background-color: #ffffff;
+    background-color: var(--white);
 }
 
 #create-team-submit-btn {
-    background-color: #8089ff;
+    background-color: var(--light-powder-blue);
 }
