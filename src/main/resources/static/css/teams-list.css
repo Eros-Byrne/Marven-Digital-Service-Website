@@ -20,7 +20,7 @@
     background-color: #dc3545;
 }
 .leave-btn:hover {
-    background-color: var(--bs-btn-hover-bg);
+    background-color: #bb2d3b;
 }
 
 .team-grid {
