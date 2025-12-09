@@ -1,7 +1,7 @@
 #capability_description {
     white-space: pre-line;
-    background-color: #ffffff;
-    border-color: #8089ff !important;
+    background-color: var(--white);
+    border-color: var(--light-powder-blue) !important;
 }
 
 #resource-col {
@@ -13,15 +13,15 @@
 }
 
 #resources-table {
-    background-color: #ffffff;
+    background-color: var(--white);
 }
 
 #resources-table th, #resources-table tr {
-    border-color: #8089ff;
+    border-color: var(--light-powder-blue);
 }
 
 #resources-table-wrapper {
-    border-color: #8089ff !important;
+    border-color: var(--light-powder-blue) !important;
     align-self: flex-start;
 }
 

@@ -22,13 +22,13 @@ img {
 
 /* Content section styling */
 .content-section {
-    background-color: white;
+    background-color: var(--white);
     padding: 30px;
     border: solid;
     border-width: 0;
     border-bottom-width: 2px;
     border-top-width: 2px;
-    border-color: var(--campws-light-powder-blue);
+    border-color: var(--light-powder-blue);
 }
 
 .switch-colour.content-section {
@@ -39,20 +39,20 @@ img {
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: var(--text-on-white-background-colour);
+    color: var(--cdps-slate);
 }
 .switch-colour.content-section h2 {
-    color: white;
+    color: #ffffff;
 }
 
 .content-section p {
     font-size: 19px;
     line-height: 1.6;
-    color: var(--text-on-white-background-colour);
+    color: var(--cdps-slate);
 }
 
 .switch-colour.content-section p {
-    color: white;
+    color: #ffffff;
 }
 
 .image {
