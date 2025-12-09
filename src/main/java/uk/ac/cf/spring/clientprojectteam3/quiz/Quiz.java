@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +17,8 @@ public class Quiz {
     private String description;
     private int timeEstimate;
     private List<Question> questions;
+    private Map<Integer, Integer> answers = new HashMap<>();
+
 
     public Quiz(long quizId, String name, String description, int timeEstimate) {
         this.quizId = quizId;

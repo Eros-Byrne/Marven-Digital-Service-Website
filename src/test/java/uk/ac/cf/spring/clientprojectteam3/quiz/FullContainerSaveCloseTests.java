@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
     @SpringBootTest
     @AutoConfigureMockMvc
+    @DirtiesContext
     @Transactional
-    @WithMockUser(username = "test-user", roles = {"USER"})
+    @WithMockUser(username = "test@example.com", roles = {"USER"})
     public class FullContainerSaveCloseTests {
 
         @Autowired
@@ -55,18 +57,18 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
         @Test
         void shouldStore1Answer() throws Exception {
             MockHttpSession session = new MockHttpSession();
-            QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
+            QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, (int) attemptId, session);
             session.setAttribute("quizAttempt", attempt);
 
-            mockMvc.perform(post("/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer",
-                            quizId, attemptId, 0)
+            mockMvc.perform(post("/quiz/{quizId}/attempt/question/{index}/answer",
+                            quizId, 0)
                             .param("answer", "3")
                             .param("nav", "saveclose")
                             .session(session)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/quiz/1/attempt/2/save-close"));
+                    .andExpect(redirectedUrl("/quiz/1/attempt/save-close"));
 
             // Save to DB
             quizService.saveIncompleteAttempt(userId, (int) attemptId, attempt);
@@ -80,17 +82,17 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
         @Test
         void shouldDeleteAttemptWith0Answers() throws Exception {
             MockHttpSession session = new MockHttpSession();
-            QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
+            QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, (int) attemptId, session);
             session.setAttribute("quizAttempt", attempt);
 
-            mockMvc.perform(post("/quiz/{quizId}/attempt/{attemptId}/question/{index}/answer",
+            mockMvc.perform(post("/quiz/{quizId}/attempt/question/{index}/answer",
                             quizId, attemptId, 0)
                             .param("nav", "saveclose")
                             .session(session)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/quiz/1/attempt/1/save-close"));
+                    .andExpect(redirectedUrl("/quiz/1/attempt/save-close"));
 
             // Delete attempt
             quizService.deleteEmptyAttempt((int) attemptId, session);

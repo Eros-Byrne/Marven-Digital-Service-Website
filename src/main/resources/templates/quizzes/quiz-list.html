@@ -33,13 +33,13 @@
 
 
                 <div th:if="${quiz.completed==1 || quiz.attemptNumber == 0}">
-                    <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
+                    <a th:href="@{/quiz/{quizId}/attempt/question/0(quizId=${quiz.quizId})}"
                        class="btn start-btn w-100 mt-3">
                         Start Quiz
                     </a>
                 </div>
                 <div th:if="${quiz.completed==0 && quiz.attemptNumber>0}" sec:authorize="isAuthenticated()">
-                    <a th:href="@{/quiz/{quizId}/attempt/0/question/0(quizId=${quiz.quizId})}"
+                    <a th:href="@{/quiz/{quizId}/attempt/question/0(quizId=${quiz.quizId})}"
                        class="btn start-btn w-100 mt-3">
                         Resume Quiz
                     </a>

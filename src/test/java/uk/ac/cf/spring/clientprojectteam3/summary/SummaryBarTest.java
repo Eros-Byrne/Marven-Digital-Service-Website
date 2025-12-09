@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.summaries;
+package uk.ac.cf.spring.clientprojectteam3.summary;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import uk.ac.cf.spring.clientprojectteam3.quiz.Question;
 import uk.ac.cf.spring.clientprojectteam3.quiz.Quiz;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizRepository;
 import uk.ac.cf.spring.clientprojectteam3.quiz.QuizService;
+import uk.ac.cf.spring.clientprojectteam3.summaries.SummaryController;
 import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.util.HashMap;
@@ -72,12 +73,12 @@ public class SummaryBarTest {
         when(quizService.getQuizForAttempt(2L, 0)).thenReturn(quiz2);
         when(quizService.getQuizForAttempt(3L, 0)).thenReturn(quiz3);
 
-        Map<Long, Integer> answers1 = new HashMap<>();
-        answers1.put(1L, 5);
-        Map<Long, Integer> answers2 = new HashMap<>();
-        answers2.put(2L, 3);
-        Map<Long, Integer> answers3 = new HashMap<>();
-        answers3.put(3L, 2);
+        Map<Integer, Integer> answers1 = new HashMap<>();
+        answers1.put(1, 5);
+        Map<Integer, Integer> answers2 = new HashMap<>();
+        answers2.put(2, 3);
+        Map<Integer, Integer> answers3 = new HashMap<>();
+        answers3.put(3, 2);
 
         when(quizRepository.getAttemptAnswers(100L)).thenReturn(answers1);
         when(quizRepository.getAttemptAnswers(101L)).thenReturn(answers2);
