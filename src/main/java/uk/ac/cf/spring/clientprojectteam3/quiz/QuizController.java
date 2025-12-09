@@ -18,28 +18,25 @@ public class QuizController {
     private UserService currentUserService;
 
 
-    @GetMapping("/attempt/{attemptId}/question/{index}")
-    public ModelAndView showQuestion(@PathVariable int attemptId,
-                                     @PathVariable int index,
+    @GetMapping("/attempt/question/{index}")
+    public ModelAndView showQuestion(@PathVariable int index,
                                      @PathVariable int quizId,
                                      HttpSession session) {
-        if (attemptId == 0) {
-            return startAttempt(currentUserService.getCurrentUserId(), quizId, index);
-        }
-
+        long userId = currentUserService.getCurrentUserId();
+        int attemptId = quizService.getOrStartAttempt(userId, quizId);
         QuizContext ctx = quizContext(quizId, attemptId, session);
 
         if (!quizService.indexValid(ctx.quiz(), index)) {
-            return new ModelAndView("redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/0");
+            return new ModelAndView("redirect:/quiz/" + quizId + "/attempt/question/0");
         }
 
         ModelAndView mav = new ModelAndView("quizzes/quiz");
 
         mav.addObject("quizTitle", ctx.quiz().getName());
         mav.addObject("questionNum", index + 1);
-        mav.addObject("question", ctx.quiz().getQuestions().get(index));
+        mav.addObject("question", ctx.quiz().getQuestions().get( index));
         mav.addObject("selectedAnswer", ctx.attempt().getAnswers().get(index));
-        mav.addObject("attemptId", attemptId);
+        mav.addObject("attemptId", quizService.getAttemptNumber(ctx.attempt().getAttemptId()));
         mav.addObject("index", index);
         mav.addObject("total", ctx.quiz().getQuestions().size());
         mav.addObject("answeredCount", ctx.attempt().getAnswers().size());
@@ -48,68 +45,61 @@ public class QuizController {
         return mav;
     }
 
-    public ModelAndView startAttempt(long userId, long quizId, long index) {
-        long newAttemptId = quizService.startAttempt(userId, quizId);
-        return new ModelAndView(
-                "redirect:/quiz/" + quizId + "/attempt/" + newAttemptId + "/question/" + index
-        );
-    }
-
-    @PostMapping("/attempt/{attemptId}/question/{index}/answer")
+    @PostMapping("/attempt/question/{index}/answer")
     public String answer(@PathVariable int quizId,
-                         @PathVariable int attemptId,
                          @PathVariable int index,
                          @RequestParam(required = false) Integer answer,
                          @RequestParam String nav,
                          HttpSession session) {
 
-        QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
+        long userId = currentUserService.getCurrentUserId();
+        int attemptId = quizService.getOrStartAttempt(userId, quizId);
+        QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, attemptId, session);
 
         attempt.setCurrentQuestionIndex(index);
         quizService.recordAnswer(attempt, index, answer);
         quizService.saveAttemptToSession(session, attempt);
         // switch statement to determine redirect based on user input.
         return switch (nav) {
-            case "next" -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + (index + 1);
-            case "prev" -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + (index - 1);
-            case "submit" -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/submit";
-            case "saveclose" -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/save-close";
-            default -> "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/0";
+            case "next" -> "redirect:/quiz/" + quizId + "/attempt/question/" + (index + 1);
+            case "prev" -> "redirect:/quiz/" + quizId + "/attempt/question/" + (index - 1);
+            case "submit" -> "redirect:/quiz/" + quizId + "/attempt/submit";
+            case "saveclose" -> "redirect:/quiz/" + quizId + "/attempt/save-close";
+            default -> "redirect:/quiz/" + quizId + "/attempt/question/0";
         };
     }
 
 
-    @GetMapping("/attempt/{attemptId}/submit")
+    @GetMapping("/attempt/submit")
     public String submit(@PathVariable int quizId,
-                         @PathVariable int attemptId,
                          HttpSession session,
                          RedirectAttributes redirectAttributes) {
-
+        long userId = currentUserService.getCurrentUserId();
+        int attemptId = quizService.getOrStartAttempt(userId, quizId);
         QuizContext ctx = quizContext(quizId, attemptId, session);
 
         if (!quizService.isComplete(ctx.attempt(), ctx.quiz())) {
             int firstUnanswered = quizService.firstUnansweredIndex(ctx.attempt(), ctx.quiz());
             redirectAttributes.addFlashAttribute("errorMessage", "Please answer all questions before submitting.");
-            return "redirect:/quiz/" + quizId + "/attempt/" + attemptId + "/question/" + firstUnanswered;
+            return "redirect:/quiz/" + quizId + "/attempt/question/" + firstUnanswered;
         }
-        long userId = currentUserService.getCurrentUserId();
         quizService.submitAttempt(userId, attemptId, ctx.attempt());
         session.removeAttribute("quizAttempt");
         redirectAttributes.addFlashAttribute("successMessage", "Quiz submitted successfully!");
 
         // CHANGED: Redirect to summary page instead of quiz-list
-        return "redirect:/summary/quiz/" + quizId + "/attempt/" + attemptId;
+        return "redirect:/summary/quiz/" + quizId + "/attempt/"+attemptId;
     }
 
-    @GetMapping("/attempt/{attemptId}/save-close")
+    @GetMapping("/attempt/save-close")
     public String saveClose(@PathVariable int quizId,
-                            @PathVariable int attemptId,
+
                             HttpSession session,
                             RedirectAttributes redirectAttributes) {
-
+        long userId = currentUserService.getCurrentUserId();
+        int attemptId = quizService.getOrStartAttempt(userId, quizId);
         QuizContext ctx = quizContext(quizId, attemptId, session);
 
-        long userId = currentUserService.getCurrentUserId();
         if(ctx.attempt().getAnswers().isEmpty()) {
             quizService.deleteEmptyAttempt(attemptId, session);
         } else {
@@ -123,7 +113,7 @@ public class QuizController {
     private record QuizContext(QuizAttempt attempt, Quiz quiz) {}
 
     private QuizContext quizContext(int quizId, int attemptId, HttpSession session) {
-        QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, session);
+        QuizAttempt attempt = quizService.loadAttemptFromSession(quizId, attemptId, session);
         Quiz quiz = quizService.getQuizForAttempt(quizId,attemptId);
         return new QuizContext(attempt, quiz);
     }

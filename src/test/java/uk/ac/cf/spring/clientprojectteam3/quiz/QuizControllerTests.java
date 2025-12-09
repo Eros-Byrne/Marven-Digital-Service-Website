@@ -70,22 +70,22 @@ class QuizControllerTests {
         quiz.setName("Sample Quiz");
         quiz.setQuestions(List.of(question));
 
-        when(quizService.loadAttemptFromSession(1, session)).thenReturn(attempt);
-        when(quizService.getQuizForAttempt(1, 1)).thenReturn(quiz);
+        when(quizService.loadAttemptFromSession(1, 0, session)).thenReturn(attempt);
+        when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
         when(quizService.indexValid(quiz, 0)).thenReturn(true);
 
         // Perform request
-        MvcResult result = mockMvc.perform(get("/quiz/1/attempt/1/question/0")
+        MvcResult result = mockMvc.perform(get("/quiz/1/attempt/question/0")
                         .session(session))
                 .andReturn();
         System.out.println(result.getModelAndView());
 
-        mockMvc.perform(get("/quiz/1/attempt/1/question/0").session(session))
+        mockMvc.perform(get("/quiz/1/attempt/question/0").session(session))
                 .andExpect(model().attribute("quizTitle", "Sample Quiz"))
                 .andExpect(model().attribute("question", question))
                 .andExpect(model().attribute("index", 0))
                 .andExpect(model().attribute("total", 1))
-                .andExpect(model().attribute("attemptId", 1));
+                .andExpect(model().attribute("attemptId", 0));
     }
 
 
@@ -95,13 +95,13 @@ class QuizControllerTests {
         Question q1 = makeQuestion(1, "Question 1");
         quiz.setQuestions(List.of(q1));
 
-        when(quizService.getQuizForAttempt(1, 1)).thenReturn(quiz);
+        when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
         when(quizService.indexValid(any(Quiz.class), eq(10))).thenReturn(false);
 
 
-        mockMvc.perform(get("/quiz/1/attempt/1/question/10"))
+        mockMvc.perform(get("/quiz/1/attempt/question/10"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/quiz/1/attempt/1/question/0"));
+                .andExpect(redirectedUrl("/quiz/1/attempt/question/0"));
     }
 
     @Test
@@ -117,11 +117,11 @@ class QuizControllerTests {
         quiz.setQuestions(questions);
 
 
-        mockMvc.perform(get("/quiz/1/attempt/0/question/0"))
+        mockMvc.perform(get("/quiz/1/attempt/question/0"))
                 .andExpect(status().is3xxRedirection());
 
 
-        mockMvc.perform(get("/quiz/1/attempt/0/question/1"))
+        mockMvc.perform(get("/quiz/1/attempt/question/1"))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -137,7 +137,7 @@ class QuizControllerTests {
         Quiz quiz = new Quiz();
         quiz.setQuestions(List.of(new Question(), new Question()));
 
-        Mockito.lenient().when(quizService.loadAttemptFromSession(1, session)).thenReturn(attempt);
+        Mockito.lenient().when(quizService.loadAttemptFromSession(1, 0, session)).thenReturn(attempt);
         Mockito.lenient().when(quizService.getQuizForAttempt(1, 0)).thenReturn(quiz);
 
         // Simulate recordAnswer behavior
@@ -151,12 +151,12 @@ class QuizControllerTests {
             return null;
         }).when(quizService).recordAnswer(Mockito.any(), Mockito.anyInt(), Mockito.any());
 
-        mockMvc.perform(post("/quiz/1/attempt/0/question/1/answer")
+        mockMvc.perform(post("/quiz/1/attempt/question/1/answer")
                         .param("nav", "prev")
                         .param("answer", "2")
                         .session(session))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/quiz/1/attempt/0/question/0"));
+                .andExpect(redirectedUrl("/quiz/1/attempt/question/0"));
 
         assertEquals(2, attempt.getAnswers().get(1));
     }
@@ -168,12 +168,12 @@ class QuizControllerTests {
         session = new MockHttpSession();
 
         QuizAttempt attempt = new QuizAttempt();
-        attempt.setAttemptId(10);
+        attempt.setAttemptId(1);
         attempt.setCurrentQuestionIndex(0);
 
         session.setAttribute("quizAttempt", attempt);
 
-        when(quizService.loadAttemptFromSession(1, session))
+        when(quizService.loadAttemptFromSession(1, 0,session))
                 .thenReturn(attempt);
 
         Mockito.doAnswer(inv -> {
@@ -188,14 +188,13 @@ class QuizControllerTests {
 
         String result = controller.answer(
                 1,   // quizId
-                10,  // attemptId
                 0,   // index
                 1,   // answer
                 "next", // nav
                 session
         );
 
-        assertEquals("redirect:/quiz/1/attempt/10/question/1", result);
+        assertEquals("redirect:/quiz/1/attempt/question/1", result);
         assertEquals(0, attempt.getCurrentQuestionIndex());
         assertEquals(1, attempt.getAnswers().get(0));
     }
