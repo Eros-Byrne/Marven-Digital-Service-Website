@@ -26,108 +26,33 @@
 <!-- MAIN CONTENT -->
 <main class="container mb-5">
 
-    <!-- Error message -->
-    <div th:if="${hasError}" class="alert alert-danger" role="alert">
-        <span th:text="${errorMessage}">Error message</span>
-    </div>
+    <!-- Include the reusable summary content fragment with BAR CHART -->
+    <div th:replace="fragments/quiz-summary-content.html :: summaryContent('bar')"></div>
 
-    <!-- Show content even if no data yet -->
-    <div th:if="${!hasError}" class="row g-4">
-
-
-        <!-- LEFT: TEXT SUMMARY -->
-        <div class="col-lg-5">
-            <div class="summary-card">
-                <div class="summary-card-header">
-                    <h5 class="mb-0">Your Quiz Results</h5>
-                </div>
-                <div class="summary-card-body">
-                    <p><strong>User:</strong> <span th:text="${userName}">User Name</span></p>
-                    <p><strong>Summary:</strong> <span th:text="${quizName}">Quiz Name</span></p>
-                    <p><strong>Completion:</strong> <span th:text="${attemptNumber}">-</span></p>
-                    <p><strong>Date:</strong> <span th:text="${completionDate}">-</span></p>
-
-                    <h6 class="section-heading">Overall Score</h6>
-                    <p class="overall-score" th:text="${overallScore} + ' / 100'">0 / 100</p>
-
-                    <!-- Show message if no data -->
-                    <div th:if="${!hasData}" class="alert alert-info mt-3">
-                        <strong>No data yet!</strong> Complete a quiz to see your results here.
-                    </div>
-
-                    <!-- Show strengths/weaknesses only if there's data -->
-                    <div th:if="${hasData}">
-                        <h6 class="section-heading">Key Strengths</h6>
-                        <div th:if="${strengths != null && !strengths.isEmpty()}">
-                            <span th:each="strength : ${strengths}" class="skill-pill high" th:text="${strength}">Skill</span>
-                        </div>
-                        <div th:if="${strengths == null || strengths.isEmpty()}">
-                            <p class="text-muted">Complete more quizzes to identify strengths</p>
-                        </div>
-
-                        <h6 class="section-heading">Needs Improvement</h6>
-                        <div th:if="${weaknesses != null && !weaknesses.isEmpty()}">
-                            <span th:each="weakness : ${weaknesses}" class="skill-pill low" th:text="${weakness}">Skill</span>
-                        </div>
-                        <div th:if="${weaknesses == null || weaknesses.isEmpty()}">
-                            <p class="text-muted">Great! All outcomes above 60%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- RIGHT: BAR CHART -->
-        <div class="col-lg-7">
-            <div class="summary-card">
-                <div class="summary-card-header">
-                    <h5 class="mb-0">Outcomes Breakdown</h5>
-                </div>
-                <div class="summary-card-body">
-                    <p>Your confidence scores for each outcome</p>
-                    <div class="chart-container">
-                        <canvas id="capabilitiesChart"></canvas>
-                    </div>
-                    <div th:if="${!hasData}" class="text-center text-muted mt-3">
-                        <em>Chart will display when you complete a quiz</em>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- DETAILED TABLE -->
-    <div th:if="${hasData && capabilityResults != null && !capabilityResults.isEmpty()}" class="row g-4 mt-2">
+    <!-- Quiz Navigation Buttons -->
+    <div th:if="${!hasError && quizButtons != null}" class="row g-4 mt-2">
         <div class="col-12">
             <div class="summary-card">
                 <div class="summary-card-header">
-                    <h5 class="mb-0">Detailed Results by Outcomes</h5>
+                    <h5 class="mb-0">View Individual Quiz Results</h5>
                 </div>
-                <div class="summary-card-body table-responsive">
-                    <table class="table table-bordered results-table align-middle">
-                        <thead>
-                        <tr>
-                            <th>Capability</th>
-                            <th style="width: 120px;">Score</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="result : ${capabilityResults}">
-                            <td th:text="${result.capabilityTitle}">Capability Title</td>
-                            <td class="text-center">
-                                <span th:if="${result.score >= 70}" class="badge bg-success" th:text="${result.score}">80</span>
-                                <span th:if="${result.score >= 40 && result.score < 70}" class="badge bg-warning text-dark" th:text="${result.score}">55</span>
-                                <span th:if="${result.score < 40}" class="badge bg-danger" th:text="${result.score}">30</span>
-                            </td>
-                            <td>
-                                <span th:if="${result.score >= 70}">Strong understanding and confidence</span>
-                                <span th:if="${result.score >= 40 && result.score < 70}">Moderate confidence – review resources</span>
-                                <span th:if="${result.score < 40}">Needs improvement – training recommended</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="summary-card-body">
+                    <p class="mb-3">Click on a quiz below to see your detailed progress with a line chart</p>
+                    <div class="quiz-buttons-grid">
+                        <a th:each="quizBtn : ${quizButtons}"
+                           th:href="@{/summary/quiz/{id}(id=${quizBtn.quizId})}"
+                           th:class="${quizBtn.completed ? 'quiz-nav-btn quiz-nav-btn-active' : 'quiz-nav-btn quiz-nav-btn-disabled'}"
+                           th:attr="aria-disabled=${!quizBtn.completed}">
+                            <div class="quiz-btn-number" th:text="'Quiz ' + ${quizBtn.quizId}">Quiz 1</div>
+                            <div class="quiz-btn-title" th:text="${quizBtn.quizName}">Quiz Title</div>
+                            <div class="quiz-btn-status" th:if="${quizBtn.completed}">
+                                <i>✓ Completed</i>
+                            </div>
+                            <div class="quiz-btn-status text-muted" th:if="${!quizBtn.completed}">
+                                <i>Not completed</i>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
