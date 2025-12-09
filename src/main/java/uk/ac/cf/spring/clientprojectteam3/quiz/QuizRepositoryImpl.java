@@ -62,6 +62,18 @@ public class QuizRepositoryImpl implements QuizRepository {
         );
     }
 
+    private final RowMapper<QuizAttemptScore> quizAttemptScoreRowMapper = (rs, rowNum) -> new QuizAttemptScore(
+            rs.getLong("user_attempt_id"),
+            rs.getInt("attempt"),
+            rs.getDouble("average_score")
+    );
+
+    private final RowMapper<QuizButtonInfo> quizButtonInfoRowMapper = (rs, rowNum) -> new QuizButtonInfo(
+            rs.getLong("quiz_id"),
+            rs.getString("quiz_name"),
+            rs.getBoolean("completed")
+    );
+
     @Override
     public List<QuizCardDTO> getBlankQuizCards() {
 
@@ -297,5 +309,47 @@ public class QuizRepositoryImpl implements QuizRepository {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public List<QuizAttemptScore> getAllCompletedAttempts(long userId, long quizId) {
+        String sql = """
+            SELECT
+                ua.user_attempt_id,
+                ua.attempt,
+                COALESCE(AVG(a.score), 0) * 20 AS average_score
+            FROM user_attempt ua
+            LEFT JOIN answer a ON ua.user_attempt_id = a.user_attempt_id
+            WHERE ua.user_id = ?
+              AND ua.quiz_id = ?
+              AND ua.complete = 1
+            GROUP BY ua.user_attempt_id, ua.attempt
+            ORDER BY ua.attempt ASC
+        """;
+
+        return jdbcTemplate.query(sql, quizAttemptScoreRowMapper, userId, quizId);
+    }
+
+    @Override
+    public List<QuizButtonInfo> getQuizButtonsInfo(long userId) {
+        String sql = """
+            SELECT
+                q.quiz_id,
+                q.name AS quiz_name,
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM user_attempt ua
+                        WHERE ua.quiz_id = q.quiz_id
+                          AND ua.user_id = ?
+                          AND ua.complete = 1
+                    ) THEN TRUE
+                    ELSE FALSE
+                END AS completed
+            FROM quiz q
+            ORDER BY q.quiz_id ASC
+        """;
+
+        return jdbcTemplate.query(sql, quizButtonInfoRowMapper, userId);
     }
 }

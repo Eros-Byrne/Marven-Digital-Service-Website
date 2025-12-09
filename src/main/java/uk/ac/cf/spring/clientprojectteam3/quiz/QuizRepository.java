@@ -33,4 +33,10 @@ public interface QuizRepository {
 
     // NEW METHOD: Find latest completed attempt for a user and quiz
     Long findLatestCompletedAttempt(long userId, long quizId);
+
+    // NEW METHOD: Get all completed attempts for a specific quiz by a user
+    List<QuizAttemptScore> getAllCompletedAttempts(long userId, long quizId);
+
+    // NEW METHOD: Get all quizzes with completion status for a user
+    List<QuizButtonInfo> getQuizButtonsInfo(long userId);
 }
