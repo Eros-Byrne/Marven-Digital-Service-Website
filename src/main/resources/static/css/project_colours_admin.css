@@ -24,3 +24,18 @@ body {
     background-color: #e5e5e5;
 }
 
+.project-button-colours {
+    background-color: #7fffd6;
+    color: #00313f;
+    border: none;
+    padding: 10px 16px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.project-button-colours:hover {
+    background-color: #cdf7d4;
+}
+
