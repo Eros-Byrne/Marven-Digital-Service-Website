@@ -23,7 +23,8 @@ create table if not exists skills (
 create table if not exists outcomes
 (
     outcome_id bigint primary key auto_increment,
-    title varchar(128)
+    title varchar(128),
+    disabled boolean default false
 ) engine = InnoDB;
 
 create table if not exists capabilities (

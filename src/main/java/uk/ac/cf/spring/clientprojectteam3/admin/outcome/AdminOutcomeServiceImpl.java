@@ -21,4 +21,8 @@ public class AdminOutcomeServiceImpl implements AdminOutcomeService {
     public void createOutcome(String outcomeTitle) {
         capRepo.CreateOutcome(outcomeTitle);
     }
+
+    public void deleteOutcome(Long outcomeId) {
+        capRepo.deleteOutcome(outcomeId);
+    }
 }

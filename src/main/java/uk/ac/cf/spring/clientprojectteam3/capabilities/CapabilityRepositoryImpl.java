@@ -88,7 +88,7 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
     //OUTCOMES LOGIC
 
     public List<Outcome> findAllOutcomes() {
-        String sql = "SELECT * FROM outcomes";
+        String sql = "select * from outcomes where disabled = false";
         return jdbc.query(sql, new CapabilityRepositoryImpl.OutcomeRowMapper());
     }
 
@@ -115,13 +115,13 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
 
     // ADMIN OUTCOMES LOGIC
 
-
     public List<AdminOutcome> findAllOutcomesWithNumberOfCapabilities() {
 
         String sql = """
                 select o.outcome_id as id, o.title as title, count(c.capability_id) as capability_count
                 from outcomes o
                 left join capabilities c on c.outcome_id = o.outcome_id
+                where o.disabled = false
                 group by o.outcome_id
                 order by o.title""";
 
@@ -132,5 +132,11 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
         String sql = "insert into outcomes (title) values (?)";
 
         jdbc.update(sql, title);
+    }
+
+    public void deleteOutcome(Long id) {
+        String sql = "update outcomes set disabled = true where outcome_id = ?";
+
+        jdbc.update(sql, id.intValue());
     }
 }
