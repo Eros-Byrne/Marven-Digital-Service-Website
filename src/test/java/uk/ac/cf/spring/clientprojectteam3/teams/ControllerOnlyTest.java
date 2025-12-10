@@ -7,12 +7,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.ac.cf.spring.clientprojectteam3.capabilities.Outcome;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -96,5 +98,112 @@ public class ControllerOnlyTest {
         assertFalse(content.contains("<ul class=\"list-group list-group-flush bg-white m-0\">"));
         assertTrue(content.contains("<div class=\"warning alert alert-info\">"));
         assertTrue(content.contains("You are not currently a member of any teams."));
+    }
+
+//    AI assisted with the tests below :)
+
+    @Test
+    public void shouldRenderSingleTeamWithDefaultOutcome() throws Exception {
+        Long teamId = 27L;
+
+        TeamDetails details = new TeamDetails(teamId, "Team 27", "Team desc", List.of(), List.of());
+
+        when(teamService.getTeamDetailsForTeam(teamId)).thenReturn(details);
+        when(teamService.isTheCurrentUserAManager(teamId)).thenReturn(true);
+
+        Outcome outcome1 = new Outcome(10L, "Outcome 10", List.of());
+        Outcome outcome2 = new Outcome(11L, "Outcome 11", List.of());
+        when(teamService.listEnabledOutcomes()).thenReturn(List.of(outcome1, outcome2));
+
+        List<TopMemberForOutcome> leaders = List.of(new TopMemberForOutcome(7L, "John", "John@email.com", 87.0));
+        when(teamService.getTopMembersForOutcome(teamId, outcome1.getId())).thenReturn(leaders);
+
+        MvcResult result = mvc.perform(get("/teams/{id}", teamId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("teams/single-team-page"))
+                .andExpect(model().attributeExists("teamDetails"))
+                .andExpect(model().attributeExists("isManager"))
+                .andExpect(model().attributeExists("outcomes"))
+                .andExpect(model().attributeExists("selectedOutcomeId"))
+                .andExpect(model().attributeExists("leaders"))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains("Top Members by Outcome"));
+        assertTrue(content.contains("John"));
+    }
+
+    @Test
+    public void shouldRenderSingleTeamWithFilter() throws Exception {
+        Long teamId = 27L;
+        Long outcomeId = 10L;
+
+        TeamDetails details = new TeamDetails(teamId, "Team 27", "Team desc", List.of(), List.of());
+
+        when(teamService.getTeamDetailsForTeam(teamId)).thenReturn(details);
+        when(teamService.isTheCurrentUserAManager(teamId)).thenReturn(true);
+
+        Outcome outcome1 = new Outcome(10L, "Outcome 10", List.of());
+        Outcome outcome2 = new Outcome(11L, "Outcome 11", List.of());
+        when(teamService.listEnabledOutcomes()).thenReturn(List.of(outcome1, outcome2));
+
+        List<TopMemberForOutcome> leaders = List.of(new TopMemberForOutcome(7L, "John", "John@email.com", 87.0));
+        when(teamService.getTopMembersForOutcome(teamId, outcome1.getId())).thenReturn(leaders);
+
+        MvcResult result = mvc.perform(get("/teams/{id}", teamId)
+                        .param("outcomeId", String.valueOf(outcomeId)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("teams/single-team-page"))
+                .andExpect(model().attribute("selectedOutcomeId", outcomeId))
+                .andExpect(model().attributeExists("leaders"))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains("John"));
+    }
+
+    @Test
+    public void shouldPromoteMemberAndRedirect() throws Exception {
+        Long teamId = 27L;
+        Long memberId = 10L;
+
+        mvc.perform(post("/teams/{teamId}/members/{memberId}/promote", teamId, memberId))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teams/" + teamId));
+
+        verify(teamService).promoteTeamMember(teamId, memberId);
+    }
+
+//    My code :)
+    @Test
+    public void shouldDemoteManagerAndRedirect() throws Exception {
+        Long teamId = 27L;
+        Long memberId = 10L;
+
+        mvc.perform(post("/teams/{teamId}/members/{memberId}/demote", teamId, memberId))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teams/" + teamId));
+
+        verify(teamService).demoteManager(teamId, memberId);
+    }
+
+//    Ai code for this test :)
+    @Test
+    public void shouldFailToDemoteLastManager() throws Exception {
+        Long teamId = 27L;
+        Long memberId = 10L;
+
+        doThrow(new IllegalStateException("A team can't have 0 managers")).when(teamService).demoteManager(teamId, memberId);
+
+        mvc.perform(post("/teams/{teamId}/members/{memberId}/demote", teamId, memberId))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teams/" + teamId));
+
+
     }
 }
