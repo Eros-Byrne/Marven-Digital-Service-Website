@@ -47,15 +47,6 @@ VALUES (2, 'Test team 2', 'Test description 2');
 INSERT INTO team_members (team_id, user_id, is_manager)
 VALUES (2, 1, true);
 
--- Insert outcomes for quiz support
-INSERT INTO outcomes (outcome_id, title) VALUES
-(1, 'Building a team'),
-(2, 'Designing a user journey'),
-(3, 'Designing content'),
-(4, 'Managing a service'),
-(5, 'Managing technology for a service'),
-(6, 'Managing data for a service');
-
 -- Insert quizzes for test
 INSERT INTO quiz (quiz_id, name, description, time_estimate) VALUES
 (1, 'Building a team', 'Reflect on how you build and support your team.', 15),
