@@ -1,14 +1,18 @@
 package uk.ac.cf.spring.clientprojectteam3.settings;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +27,9 @@ import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 @Validated
 public class SettingsController {
 
+    @Autowired
+    private SecurityContextLogoutHandler logoutHandler;
+
     private final UserService userService;
 
     @GetMapping
@@ -31,7 +38,7 @@ public class SettingsController {
 
         User user = userService.findByEmail(userDetails.getUsername());
         model.addAttribute("user", user);
-        return "settings";
+        return "/login/settings";
     }
 
 
@@ -76,15 +83,15 @@ public class SettingsController {
 
     @PostMapping("/change-email")
     public String changeEmail(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal CustomUserDetails principal,
             @RequestParam
             @NotBlank
             @jakarta.validation.constraints.Email(message = "Enter a valid email address")
             String newEmail,
             RedirectAttributes ra) {
 
-        User user = userService.findByEmail(userDetails.getUsername());
-
+        User user = userService.findByEmail(principal.getUsername());
+        System.out.println(user.getName());
         User existing = userService.findByEmail(newEmail);
         if (existing != null && !existing.getUserid().equals(user.getUserid())) {
             ra.addFlashAttribute("error", "Email already in use.");
@@ -92,6 +99,24 @@ public class SettingsController {
         }
 
         userService.updateEmail(user.getUserid(), newEmail);
+        CustomUserDetails updatedDetails =
+                new CustomUserDetails(
+                        newEmail,
+                        principal.getPassword(),
+                        principal.getName(),
+                        principal.getAuthorities()
+                );
+
+        Authentication newAuth =
+                new UsernamePasswordAuthenticationToken(
+                        updatedDetails,
+                        principal.getPassword(),
+                        principal.getAuthorities()
+                );
+
+        SecurityContextHolder
+                .getContext()
+                .setAuthentication(newAuth);
         ra.addFlashAttribute("emailSuccess", "Email updated successfully.");
 
         return "redirect:/settings";
@@ -123,6 +148,8 @@ public class SettingsController {
             @NotBlank(message = "New password is required")
             @Size(min = 8, message = "New password must be at least 8 characters")
             String newPassword,
+            HttpServletRequest request,
+            HttpServletResponse response,
             RedirectAttributes ra) {
 
         User user = userService.findByEmail(userDetails.getUsername());
@@ -137,6 +164,12 @@ public class SettingsController {
         }
 
         userService.updatePassword(user.getUserid(), newPassword);
+        // Force logout (invalidates session and clears security context)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            logoutHandler.logout(request, response, auth);
+        }
+
         return "redirect:/login?passwordChanged";
     }
 }
