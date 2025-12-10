@@ -1,4 +1,4 @@
-package uk.ac.cf.spring.clientprojectteam3.config;
+package uk.ac.cf.spring.clientprojectteam3.settings;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
