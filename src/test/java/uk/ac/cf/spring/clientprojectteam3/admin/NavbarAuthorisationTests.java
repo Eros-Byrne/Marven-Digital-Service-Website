@@ -27,7 +27,7 @@ public class NavbarAuthorisationTests {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Quiz")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Summary")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Teams")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Outcomes")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Criteria")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Login")))
                 .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Dashboard"))));
     }
@@ -42,7 +42,7 @@ public class NavbarAuthorisationTests {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Quiz")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Summary")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Teams")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Outcomes")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Criteria")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Settings")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Logout")))
                 .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Dashboard"))));

@@ -1,0 +1,19 @@
+#create-team-card {
+    width: 500px;
+    background-color: var(--white);
+}
+
+#create-team-submit-btn {
+    background-color: var(--light-powder-blue);
+}
+
+#single-team-desc {
+    white-space: pre-wrap;
+}
+
+.demote-btn {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
