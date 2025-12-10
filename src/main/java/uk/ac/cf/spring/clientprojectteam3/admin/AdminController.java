@@ -1,6 +1,14 @@
 package uk.ac.cf.spring.clientprojectteam3.admin;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
 public class AdminController {
 
-    // possibly link to admin dashboard in here - currently unsure what that would look like
+    @GetMapping("/admin")
+    public ModelAndView admin() {
+        return new ModelAndView("admin/dashboard");
+    }
 }
