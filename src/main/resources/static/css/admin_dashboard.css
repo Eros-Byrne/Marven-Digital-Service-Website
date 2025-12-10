@@ -1,0 +1,15 @@
+.dashboard-header {
+    margin-bottom: 1.5rem;
+}
+.metric-card h6 {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+.metric-card h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+}

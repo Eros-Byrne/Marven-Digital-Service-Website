@@ -69,7 +69,7 @@ public class FullContainerMockRepoTest {
     @Test
     public void deleteOutcomeCallsRepoAndRedirects() throws Exception {
 
-        mvc.perform(post("/admin/outcome/delete/2")
+        mvc.perform(post("/admin/outcomes/delete/2")
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
