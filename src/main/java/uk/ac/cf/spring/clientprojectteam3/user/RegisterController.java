@@ -16,7 +16,7 @@ public class RegisterController {
     @GetMapping("/register")
     public String showForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";
+        return "login/register";
     }
 
     @PostMapping("/register")
@@ -26,12 +26,12 @@ public class RegisterController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-            return "register";
+            return "login/register";
         }
 
         if (userService.findByEmail(user.getEmail()) != null) {
             model.addAttribute("emailError", "Email is already registered");
-            return "register";
+            return "login/register";
         }
 
         userService.registerUser(user);
