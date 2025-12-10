@@ -139,4 +139,15 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
 
         jdbc.update(sql, id.intValue());
     }
+
+    @Override
+    public List<Capability> getAllCapabilitiesByOutcomeId(Long id) {
+        return jdbc.query("SELECT * FROM capabilities WHERE outcome_id = ?", capabilityMapper, id);
+    }
+
+    @Override
+    public Long getOutcomeIdByQuizId(int id) {
+        return jdbc.queryForObject("SELECT outcome_id FROM quiz WHERE quiz_id = ?", Long.class, id);
+
+    }
 }

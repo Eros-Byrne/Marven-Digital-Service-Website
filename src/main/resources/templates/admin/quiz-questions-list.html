@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Skills Outcomes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" th:href="@{/bootstrap-5.2.3-dist/css/bootstrap.css}">
+  <link rel="stylesheet" th:href="@{/css/project_colours_admin.css}">
+  <link rel="stylesheet" th:href="@{/css/admin_quiz.css}">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="main-background-colour">
+
+<div th:replace="fragments/navbar.html :: navbar"></div>
+
+<div class="container mt-4 mb-5">
+
+  <div class="content-wrapper">
+    <div class="grey-background-colour d-flex align-items-center justify-content-between p-4 shadow-sm rounded mb-4">
+
+      <h2 class="m-0">Quizzes & Questions</h2>
+
+      <form method="post" th:action="@{/admin/quizzes/create}">
+        <button type="submit" class="btn project-button-colours">Create Quiz</button>
+      </form>
+
+    </div>
+
+
+    <div class="mx-auto" style="max-width: 56rem;">
+      <div>
+        <!-- Loop through quizzes from the database -->
+        <div  th:each="quiz, iterStat : ${quizzes}">
+          <div class="grey-background-colour" th:replace="fragments/quiz-item :: quiz-item(${quiz}, ${iterStat.index + 1})"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Bootstrap JS for accordion and navbar functionality -->
+<script th:src="@{/bootstrap-5.2.3-dist/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>

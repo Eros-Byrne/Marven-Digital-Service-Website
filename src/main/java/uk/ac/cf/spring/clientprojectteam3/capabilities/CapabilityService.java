@@ -11,4 +11,8 @@ public interface CapabilityService {
     List<Outcome> getAllOutcomes();
     Outcome getOutcomeById(Long id);
     void setCapabilitiesForOutcome(Outcome outcome);
+
+    List<Capability> getAllCapabilitiesByOutcomeId(Long id);
+
+    Long getOutcomeIdByQuizId(int id);
 }
