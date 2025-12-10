@@ -38,12 +38,17 @@ public class QuizRepositoryImpl implements QuizRepository {
                 0,    // questionsCompleted
                 rs.getInt("total_questions")
         );
-        questionRowMapper = (rs, i) -> new Question(
-                rs.getLong("question_id"),
-                rs.getLong("quiz_id"),
-                rs.getString("text"),
-                rs.getLong("capability_id")
-        );
+        questionRowMapper = (rs, i) -> {
+            Question q = new Question();
+            q.setQuestionId(rs.getLong("question_id"));
+            q.setQuizId(rs.getLong("quiz_id"));
+            q.setText(rs.getString("text"));
+            q.setCapabilityId(rs.getLong("capability_id"));
+            q.setDisabled(rs.getInt("disabled"));
+            try { q.setCapabilityName(rs.getString("capability_name")); } catch (Exception ignored) {}
+            try { q.setCapabilityColour(rs.getString("capability_colour")); } catch (Exception ignored) {}
+            return q;
+        };
         quizUserCardRowMapper = (rs, rowNum) -> new QuizCardDTO(
                 rs.getLong("quiz_id"),
                 rs.getString("quiz_name"),
@@ -87,6 +92,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 SELECT COUNT(*) 
                 FROM quiz_questions qq
                 WHERE qq.quiz_id = q.quiz_id
+                AND qq.disabled = 0
             ) AS total_questions
         FROM quiz q
         ORDER BY q.quiz_id
@@ -97,7 +103,7 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     public List<Question> getQuestions(long quizId) {
-        return jdbcTemplate.query("select * from quiz_questions where quiz_id = ?", questionRowMapper, quizId);
+        return jdbcTemplate.query("select * from quiz_questions where quiz_id = ? and disabled = 0", questionRowMapper, quizId);
     }
 
     @Override
@@ -206,6 +212,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 SELECT COUNT(*)
                 FROM quiz_questions qq
                 WHERE qq.quiz_id = q.quiz_id
+                AND qq.disabled = 0
             ) AS total_questions,
 
             (

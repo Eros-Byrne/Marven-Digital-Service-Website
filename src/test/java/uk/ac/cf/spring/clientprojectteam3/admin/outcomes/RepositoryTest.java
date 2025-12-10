@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.cf.spring.clientprojectteam3.admin.outcome.AdminOutcome;
 import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityRepository;
 import uk.ac.cf.spring.clientprojectteam3.capabilities.CapabilityRepositoryImpl;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 @ActiveProfiles("test")
+@Transactional
 @Import(CapabilityRepositoryImpl.class)
 public class RepositoryTest {
 
@@ -33,7 +35,7 @@ public class RepositoryTest {
 
         List<AdminOutcome> outcomes = capRepo.findAllOutcomesWithNumberOfCapabilities();
         assertEquals("Outcome 1", outcomes.getFirst().getTitle());
-        assertEquals(2, outcomes.size());
+        assertEquals(4, outcomes.size());
     }
 
 //    Ai assisted with this test

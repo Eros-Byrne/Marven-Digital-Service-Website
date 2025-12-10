@@ -45,4 +45,6 @@ public class AdminOutcomeController {
         mv = new ModelAndView("redirect:/admin/outcomes");
         return mv;
     }
+
+
 }
