@@ -161,7 +161,7 @@ public class QuizDetailSummaryIntegrationTest {
                    content.contains("/summary"));
         assertTrue(content.contains("Back to Quizzes") ||
                    content.contains("/quiz-list"));
-        assertTrue(content.contains("btn-back"));
+        assertTrue(content.contains("project-button"));
     }
 
     @Test

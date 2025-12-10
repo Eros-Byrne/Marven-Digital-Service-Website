@@ -110,7 +110,7 @@ create table if not exists team_members
 (
     team_id bigint,
     user_id bigint,
-    is_manager boolean,
+    is_manager boolean default false,
     primary key (team_id, user_id),
     foreign key (team_id) references teams(team_id),
     foreign key (user_id) references users(user_id)
