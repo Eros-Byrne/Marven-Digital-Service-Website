@@ -22,4 +22,8 @@ public interface CapabilityRepository {
     List<AdminOutcome> findAllOutcomesWithNumberOfCapabilities();
     void CreateOutcome(String title);
     void deleteOutcome(Long id);
+
+    List<Capability> getAllCapabilitiesByOutcomeId(Long id);
+
+    Long getOutcomeIdByQuizId(int id);
 }

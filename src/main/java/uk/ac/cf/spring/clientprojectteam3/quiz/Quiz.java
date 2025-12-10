@@ -18,6 +18,7 @@ public class Quiz {
     private int timeEstimate;
     private List<Question> questions;
     private Map<Integer, Integer> answers = new HashMap<>();
+    private Long outcomeId;
 
 
     public Quiz(long quizId, String name, String description, int timeEstimate) {

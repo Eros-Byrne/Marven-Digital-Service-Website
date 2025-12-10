@@ -32,6 +32,7 @@ create table if not exists capabilities (
     title varchar(128),
     description TEXT,
     outcome_id bigint,
+    colour TEXT,
     foreign key (outcome_id) references outcomes(outcome_id)
 ) engine = InnoDB;
 
@@ -65,7 +66,9 @@ create table if not exists quiz
     quiz_id        bigint auto_increment primary key,
     name           varchar(128),
     description    text,
-    time_estimate  int
+    time_estimate  int,
+    outcome_id bigint,
+    foreign key (outcome_id) references outcomes(outcome_id)
 ) engine = InnoDB;
 
 create table if not exists quiz_questions
@@ -74,6 +77,7 @@ create table if not exists quiz_questions
     quiz_id        bigint,
     capability_id  bigint,
     text           TEXT,
+    disabled smallint default 0,
     foreign key (quiz_id) references quiz(quiz_id),
     foreign key (capability_id) references capabilities(capability_id)
 ) engine = InnoDB;
