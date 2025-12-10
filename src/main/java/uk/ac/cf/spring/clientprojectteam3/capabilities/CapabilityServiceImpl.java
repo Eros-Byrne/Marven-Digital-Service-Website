@@ -49,4 +49,14 @@ public class CapabilityServiceImpl implements CapabilityService {
         List<Capability> capabilities = capRepository.findAllCapabilitiesForAnOutcome(outcome.getId());
         outcome.setCapabilities(capabilities);
     }
+
+    @Override
+    public List<Capability> getAllCapabilitiesByOutcomeId(Long id) {
+        return capRepository.getAllCapabilitiesByOutcomeId(id);
+    }
+
+    @Override
+    public Long getOutcomeIdByQuizId(int id) {
+        return capRepository.getOutcomeIdByQuizId(id);
+    }
 }

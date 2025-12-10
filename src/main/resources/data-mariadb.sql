@@ -60,82 +60,83 @@ insert into outcomes (title) values
 
 
 -- Create quizzes
-insert into quiz (name, description, time_estimate)
-values ('Building a team', 'Reflect on how you build and support your team.', 15);
+insert into quiz (name, description, time_estimate, outcome_id)
+values
+    ('Building a team', 'Reflect on how you build and support your team.', 15, 1),
+    ('Designing a user journey', 'Reflect on how confident you feel about understanding, designing and improving the user journey.', 20, 2),
+    ('Designing content', 'Reflect on how confident you feel about designing, testing and improving accessible bilingual content.', 20, 3),
+    ('Managing a service','Reflect on how confident you feel about managing and improving a service.',20, 4),
+    ('Managing technology for a service','Reflect on how confident you feel about selecting, managing and assuring technology for a service.',20, 5),
+    ('Managing data for a service','Reflect on how confident you feel about managing data legally, ethically and effectively.',20, 6);
 
-insert into quiz (name, description, time_estimate)
-values ('Designing a user journey', 'Reflect on how confident you feel about understanding, designing and improving the user journey.', 20);
-
-insert into quiz (name, description, time_estimate)
-values ('Designing content', 'Reflect on how confident you feel about designing, testing and improving accessible bilingual content.', 20);
-
-insert into quiz (name, description, time_estimate)
-values ('Managing a service','Reflect on how confident you feel about managing and improving a service.',20);
-
-insert into quiz (name, description, time_estimate)
-values ('Managing technology for a service','Reflect on how confident you feel about selecting, managing and assuring technology for a service.',20);
-
-insert into quiz (name, description, time_estimate)
-values ('Managing data for a service','Reflect on how confident you feel about managing data legally, ethically and effectively.',20);
--- Create capabilities
-insert into capabilities (title, description, outcome_id)
-values ('Identify the capabilities needed to deliver the service',
+-- Create capabilities with unique colours
+insert into capabilities (title, description, outcome_id, colour)
+values
+    ('Identify the capabilities needed to deliver the service',
+     'Users can:
+      - show how they’ve assessed the capabilities needed to deliver the service.
+      - create a core team that has the capabilities needed.
+      - plan how to engage with others to bring in specialist knowledge or information, when needed.',
+     1,
+     '#1f77b4' -- Blue
+    ),
+    (
+        'Establish clear roles and responsibilities',
         'Users can:
-  - show how they’ve assessed the capabilities needed to deliver the service.
-  - create a core team that has the capabilities needed.
-  - plan how to engage with others to bring in specialist  knowledge or information, when needed.',
-        1),
-(
-    'Establish clear roles and responsibilities',
-    'Users can:
-    - demonstrate how the team has clear roles and responsibilities.
-    - align the team around their purpose and goals.
-    - show awareness of the roles and capabilities that are in the team.
-    - understand how each person will help them work towards their goals.',
-    1
-),
-(
-  'Agree ways of working',
-  'Users can:
-  - demonstrate how the team has agreed their ways of working.
-  - define shared expectations, working arrangements and ways to collaborate effectively.
-  - establish routines to help keep the team aligned and on track.',
-  1
-),
-(
-  'Create the environment for teams to thrive',
-  'Users can:
-  - demonstrate how they encourage diverse perspectives within the team.
-  - allow team members to contribute and feel safe to speak up.
-  - ensure teams have the right support to develop their skills as they work.',
-  1
-),
-(
-  'Adapt ways of working based on the needs of the team',
-  'Users can:
-  - show how they monitor and improve ways of working.
-  - reflect on their collective performance.
-  - suggest actions to improve.',
-  1
-);
+         - demonstrate how the team has clear roles and responsibilities.
+         - align the team around their purpose and goals.
+         - show awareness of the roles and capabilities that are in the team.
+         - understand how each person will help them work towards their goals.',
+        1,
+        '#ff7f0e' -- Orange
+    ),
+    (
+        'Agree ways of working',
+        'Users can:
+         - demonstrate how the team has agreed their ways of working.
+         - define shared expectations, working arrangements and ways to collaborate effectively.
+         - establish routines to help keep the team aligned and on track.',
+        1,
+        '#2ca02c' -- Green
+    ),
+    (
+        'Create the environment for teams to thrive',
+        'Users can:
+         - demonstrate how they encourage diverse perspectives within the team.
+         - allow team members to contribute and feel safe to speak up.
+         - ensure teams have the right support to develop their skills as they work.',
+        1,
+        '#d62728' -- Red
+    ),
+    (
+        'Adapt ways of working based on the needs of the team',
+        'Users can:
+         - show how they monitor and improve ways of working.
+         - reflect on their collective performance.
+         - suggest actions to improve.',
+        1,
+        '#9467bd' -- Purple
+    );
 
-insert into capabilities (title, description, outcome_id) values
- (
- 'Understand how users currently interact with the service',
- 'Users can:
+insert into capabilities (title, description, outcome_id, colour) values
+(
+'Understand how users currently interact with the service',
+'Users can:
 -  use quantitative data like web analytics, call logs, and performance metrics to understand the current state of the service.
 - use qualitative data like user interviews and surveys to understand the current state of the service.
 - use data from a diverse range of users.
 - use data to create a user journey map.
 - identify user needs, pain points and opportunities to improve the service from a user journey map.',
-2
+2,
+'#8c564b' -- Brown
 ),
 (
 'Ideate potential solutions',
 'Users can:
 - show how they have prioritised identified pain points.
 - consider potential solutions to address the highest priority problem/s.',
-2
+2,
+'#e377c2' -- Pink
 ),
 (
 'Test potential solutions',
@@ -143,7 +144,8 @@ insert into capabilities (title, description, outcome_id) values
 - test potential solutions with users.
 - gather feedback.
 - identify whether the solution addresses the problem, before it is implemented.',
-2
+2,
+'#7f7f7f' -- Grey
 ),
 (
 'Implement solutions',
@@ -151,14 +153,16 @@ insert into capabilities (title, description, outcome_id) values
 - implement solutions that have been successfully tested.
 - update the user journey map to show the changes made.
 - continue to use quantitative and/or qualitative data to measure whether the solution has improved the service.',
-2
+2,
+'#bcbd22' -- Olive
 ),
 (
 'Share improvements',
 'Users can:
 - share information about the change that has been made.
 - use data to demonstrate how the change has improved the service for users.',
-2
+2,
+'#17becf' -- Teal
 ),
 (
 'Improve a service regularly',
@@ -169,9 +173,11 @@ insert into capabilities (title, description, outcome_id) values
 - design, test and implement solutions, using data to measure whether the solution has improved the service.
 - share information regularly about changes made.
 - demonstrate how the change has improved the service for users, by using data.',
-2
+2,
+'#e41a1c' -- Red-orange
 );
-insert into capabilities (title, description, outcome_id) values
+
+insert into capabilities (title, description, outcome_id, colour) values
 (
 'Understand how users interact with your content',
 'Users can:
@@ -180,7 +186,8 @@ insert into capabilities (title, description, outcome_id) values
 - use data to determine user needs.
 - identify difficulties and opportunities to improve content.
 - plan how to avoid duplication or conflicting messaging of existing content.',
-3
+3,
+'#377eb8' -- Dark Blue
 ),
 (
 'Plan accessible and bilingual content',
@@ -190,7 +197,8 @@ insert into capabilities (title, description, outcome_id) values
 - develop content in plain Welsh and plain English.
 - treat both languages equally.
 - ensure content is accessible to a diverse range of users.',
-3
+3,
+'#ff7f00' -- Dark Orange
 ),
 (
 'Test your content',
@@ -199,7 +207,8 @@ insert into capabilities (title, description, outcome_id) values
 - review or peer review content.
 - gather feedback.
 - identify whether solutions address the problem before publishing.',
-3
+3,
+'#4daf4a' -- Dark Green
 ),
 (
 'Publish your content',
@@ -207,14 +216,16 @@ insert into capabilities (title, description, outcome_id) values
 - publish content that has been successfully tested.
 - publish content in an appropriate format.
 - use data to measure whether content has improved the user experience.',
-3
+3,
+'#f781bf' -- Magenta
 ),
 (
 'Share improvements',
 'Users can:
 - share information about changes made.
 - demonstrate improvements to user experience using data.',
-3
+3,
+'#a65628' -- Brown-orange
 ),
 (
 'Improve your content regularly',
@@ -224,9 +235,12 @@ insert into capabilities (title, description, outcome_id) values
 - use data to inform priorities.
 - design, test and publish improvements.
 - demonstrate improvement using data.',
-3
+3,
+'#984ea3' -- Violet
 );
-insert into capabilities (title, description, outcome_id) values
+
+-- Outcome 4 capabilities
+insert into capabilities (title, description, outcome_id, colour) values
 (
 'Identify users and their needs',
 'Users can:
@@ -235,23 +249,26 @@ insert into capabilities (title, description, outcome_id) values
 - use qualitative data like user interviews and surveys to understand their users and their needs.
 - plan to test any assumptions about the needs of users.
 - explain the outcome they are looking to achieve, rather than the output.',
-4
+4,
+'#e41a1c' -- Red
 ),
 (
 'Create a vision',
 'Users can:
 - describe the service.
 - describe the aims of the service users and their identified needs and who it is for.
-- share the vision, within the team, organisation, other relevant organisations and publicly , if appropriate.
+- share the vision, within the team, organisation, other relevant organisations and publicly, if appropriate.
 - use the vision to create alignment, both within and beyond the team.',
-4
+4,
+'#377eb8' -- Blue
 ),
 (
 'Consider the Well-being of Future Generations (Wales) Act 2015',
 'Users can:
 - clearly identify how the product or service aligns with the organisational wellbeing objectives.
 - demonstrate how they can track progress towards the objectives.',
-4
+4,
+'#4daf4a' -- Green
 ),
 (
 'Measure progress',
@@ -260,7 +277,8 @@ insert into capabilities (title, description, outcome_id) values
 - demonstrate how these align with the vision.
 - measure progress against outcomes.
 - determine their next steps.',
-4
+4,
+'#ff7f00' -- Orange
 ),
 (
 'Plan improvements to the service',
@@ -270,7 +288,8 @@ insert into capabilities (title, description, outcome_id) values
 - adapt their plans as they learn.
 - shape the plan using identified priorities.
 - review and update the plan regularly.',
-4
+4,
+'#984ea3' -- Purple
 ),
 (
 'Prioritise and manage work',
@@ -278,7 +297,8 @@ insert into capabilities (title, description, outcome_id) values
 - track planned improvements.
 - prioritise their work.
 - define and understand the standard of work that needs to be delivered.',
-4
+4,
+'#f781bf' -- Pink
 ),
 (
 'Communicate progress and decisions',
@@ -288,9 +308,12 @@ insert into capabilities (title, description, outcome_id) values
 - share updates regularly.
 - highlight achievements, challenges and next steps.
 - explain decisions which are supported using evidence from users and data.',
-4
+4,
+'#a65628' -- Brown
 );
-insert into capabilities (title, description, outcome_id) values
+
+-- Outcome 5 capabilities
+insert into capabilities (title, description, outcome_id, colour) values
 (
 'Identify what technology is needed',
 'Users can:
@@ -298,7 +321,8 @@ insert into capabilities (title, description, outcome_id) values
 - identify the essential capabilities of a technology solution.
 - identify the most appropriate solution based on user needs and capabilities.
 - identify a scalable, cloud-based and widely supported technology.',
-5
+5,
+'#17becf' -- Teal
 ),
 (
 'Decide whether to buy or build a solution',
@@ -309,15 +333,17 @@ When procuring users can:
 - make choices that avoid being locked into lengthy contracts.
 - change suppliers when they need to so they are not dependent on a single supplier.
 When building users can:
-- follow best practices when building a solution.
+- follow best practices when building.
 - use common programming languages and develop solutions which are easy to maintain and iterate.',
-5
+5,
+'#ff9f40' -- Coral
 ),
 (
 'Ensure technology meets relevant standards',
 'Users can:
 - ensure technology choices comply with relevant standards, including the Digital Service Standard for Wales and the Welsh Language Standards.',
-5
+5,
+'#6c757d' -- Gray
 ),
 (
 'Understand security risks',
@@ -326,16 +352,20 @@ When building users can:
 - mitigate risks through security testing.
 - implement practical security measures.
 - access support to ensure systems are secure.',
-5
+5,
+'#8c564b' -- Brown-gray
 ),
 (
 'Ensure compliance',
 'Users can:
 - identify legislation and policies relating to their service.
 - follow relevant processes to ensure compliance with legislation and policy.',
-5
+5,
+'#bcbd22' -- Olive
 );
-insert into capabilities (title, description, outcome_id) values
+
+-- Outcome 6 capabilities
+insert into capabilities (title, description, outcome_id, colour) values
 (
 'Use data legally and ethically',
 'Users can:
@@ -343,42 +373,49 @@ insert into capabilities (title, description, outcome_id) values
 - differentiate between different categories of data.
 - explain safeguards for different categories of data.
 - apply principles from the Data Ethics Framework.',
-6
+6,
+'#1f77b4' -- Blue
 ),
 (
 'Identify the data the service needs',
 'Users can:
 - identify the types of data a service collects.
 - explain why the data is needed to deliver the service.',
-6
+6,
+'#ff7f0e' -- Orange
 ),
 (
 'Store data appropriately',
 'Users can:
 - explain how data is stored, processed and retained.
 - identify potential risks and ways to mitigate them.',
-6
+6,
+'#2ca02c' -- Green
 ),
 (
 'Ensure data is usable',
 'Users can:
 - explain the importance of data quality, consistency and structure.
 - identify how and when to seek specialist support.',
-6
+6,
+'#d62728' -- Red
 ),
 (
 'Share and reuse data responsibly',
 'Users can:
 - identify opportunities to share or reuse data where it benefits users.
 - ensure data is shared securely, ethically and legally.',
-6
+6,
+'#9467bd' -- Purple
 ),
 (
 'Identify where to get advice and assurance',
 'Users can:
 - demonstrate awareness of when to involve data specialists such as DPOs or Information Governance leads.',
-6
+6,
+'#17becf' -- Teal
 );
+
 -- Create questions for Quiz 1
 -- Capability 1: Identify the capabilities needed to deliver the service
 insert into quiz_questions (quiz_id, capability_id, text) values

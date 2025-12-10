@@ -1,0 +1,48 @@
+<!-- Reusable fragment for outcome accordion items using Bootstrap Accordion -->
+<div th:fragment="quiz-item(quiz, index)" class="accordion-item outcome-item ">
+  <div class="grey-background-colour">
+    <h2 class="accordion-header" th:id="'heading-' + ${index}">
+      <div class="outcome-header-wrapper grey-background-colour">
+        <button class="accordion-button collapsed outcome-accordion-btn" type="button"
+                th:attr="data-bs-toggle='collapse', data-bs-target='#collapse-' + ${index}, aria-expanded='false', aria-controls='collapse-' + ${index}">
+          <span class="text-on-white-background" th:text="'Quiz ' + ${index} + ': ' + ${quiz.name}">Outcome 1: Title</span>
+        </button>
+        <div class="col-3">
+          <form method="post" th:action="@{/admin/quizzes/add-question/{id} (id=${quiz.quizId})}">
+            <button type="submit" class="btn project-button-colours">Add A Question</button>
+          </form>
+        </div>
+      </div>
+    </h2>
+  </div>
+
+  <div th:id="'collapse-' + ${index}" class="accordion-collapse collapse grey-background-colour"
+       th:attr="aria-labelledby='heading-' + ${index}" data-bs-parent="#outcomes-accordion">
+    <div class="accordion-body outcome-details">
+
+      <!-- Questions section -->
+      <div th:if="${quiz.questions != null && !quiz.questions.isEmpty()}" class="mt-3">
+
+        <div class="row fw-bold border-bottom pb-1 mb-2">
+          <div class="col-6">Question</div>
+          <div class="col-3">Capability</div>
+        </div>
+        <!-- Question rows -->
+        <div th:each="question : ${quiz.questions}"
+             class="row align-items-center mb-2 border rounded p-2 bg-light">
+          <div class="col-6" th:text="${question.text}">Sample question text</div>
+          <div class="col-3">
+            <span class="badge rounded-pill text-white" th:style="'background-color:' + ${question.capabilityColour}" th:text="${question.capabilityName}">
+                Capability
+            </span>
+          </div>
+          <div class="col-3 text-end">
+            <form method="post" th:action="@{/admin/quizzes/delete-question/{id} (id=${question.questionId})}">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

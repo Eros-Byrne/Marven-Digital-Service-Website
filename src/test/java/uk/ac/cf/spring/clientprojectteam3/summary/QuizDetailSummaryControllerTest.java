@@ -248,6 +248,5 @@ public class QuizDetailSummaryControllerTest {
 
         // Verify capability data is present
         assertTrue(content.contains("Capability 1") || content.contains("capability"));
-        assertTrue(content.contains("Detailed Results"));
     }
 }

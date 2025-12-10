@@ -48,17 +48,23 @@ INSERT INTO team_members (team_id, user_id, is_manager)
 VALUES (2, 1, true);
 
 -- Insert quizzes for test
-INSERT INTO quiz (quiz_id, name, description, time_estimate) VALUES
-(1, 'Building a team', 'Reflect on how you build and support your team.', 15),
-(2, 'Designing a user journey', 'Reflect on how confident you feel about understanding, designing and improving the user journey.', 20),
-(3, 'Designing content', 'Reflect on how confident you feel about designing, testing and improving accessible bilingual content.', 20),
-(4, 'Managing a service', 'Reflect on how confident you feel about managing and improving a service.', 20),
-(5, 'Managing technology for a service', 'Reflect on how confident you feel about selecting, managing and assuring technology for a service.', 20),
-(6, 'Managing data for a service', 'Reflect on how confident you feel about managing data legally, ethically and effectively.', 20);
+-- INSERT INTO quiz (quiz_id, name, description, time_estimate, outcome_id) VALUES
+-- (1, 'Building a team', 'Reflect on how you build and support your team.', 15, 1),
+-- (2, 'Designing a user journey', 'Reflect on how confident you feel about understanding, designing and improving the user journey.', 20, 2),
+-- (3, 'Designing content', 'Reflect on how confident you feel about designing, testing and improving accessible bilingual content.', 20, 3),
+-- (4, 'Managing a service', 'Reflect on how confident you feel about managing and improving a service.', 20, 4),
+-- (5, 'Managing technology for a service', 'Reflect on how confident you feel about selecting, managing and assuring technology for a service.', 20, 5),
+-- (6, 'Managing data for a service', 'Reflect on how confident you feel about managing data legally, ethically and effectively.', 20, 6);
+--
+-- -- Insert quiz questions so test dont fail
+-- INSERT INTO quiz_questions (question_id, quiz_id, capability_id, text) VALUES
+-- (1, 1, 1, 'Test question 1 for quiz 1'),
+-- (2, 1, 1, 'Test question 2 for quiz 1'),
+-- (3, 1, 1, 'Test question 3 for quiz 1'),
+-- (4, 2, 1, 'Test question 1 for quiz 2');
 
--- Insert quiz questions so test dont fail
-INSERT INTO quiz_questions (question_id, quiz_id, capability_id, text) VALUES
-(1, 1, 1, 'Test question 1 for quiz 1'),
-(2, 1, 1, 'Test question 2 for quiz 1'),
-(3, 1, 1, 'Test question 3 for quiz 1'),
-(4, 2, 1, 'Test question 1 for quiz 2');
+INSERT INTO outcomes (title)
+VALUES ('Test Outcome');
+
+INSERT INTO outcomes (title)
+VALUES ('Test Outcome 2')

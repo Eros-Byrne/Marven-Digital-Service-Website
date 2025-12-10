@@ -26,7 +26,6 @@
 /* Accordion Button Styling */
 .outcome-accordion-btn {
     flex-grow: 1;
-    background-color: white;
     border: none;
     text-align: left;
     font-size: 1.25rem;
@@ -62,7 +61,6 @@
 
 /* Accordion Body (Details) */
 .outcome-details {
-    background-color: #fcfcfc;
     padding: 1.5rem;
     color: #4b5563;
 }
@@ -122,6 +120,10 @@
     border-color: var(--light-powder-blue);
     /*color: var(--light-powder-blue);*/
     color: var(--cdps-slate);
+}
+
+.row:nth-child(even) {
+    background-color: #f8f9fa; /* light grey */
 }
 
 #blue-btn:hover {
