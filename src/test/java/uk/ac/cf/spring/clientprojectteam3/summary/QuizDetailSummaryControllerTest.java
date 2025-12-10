@@ -68,7 +68,7 @@ public class QuizDetailSummaryControllerTest {
         when(quizRepository.getAttemptAnswers(103L)).thenReturn(answers);
 
         Capability mockCapability = new Capability();
-        mockCapability.setCapabilityId(1L);
+        mockCapability.setId(1L);
         mockCapability.setTitle("Test Capability");
         when(capabilityService.getCapability(1L)).thenReturn(mockCapability);
 
@@ -228,11 +228,11 @@ public class QuizDetailSummaryControllerTest {
         when(quizRepository.getAttemptAnswers(102L)).thenReturn(latestAnswers);
 
         Capability cap1 = new Capability();
-        cap1.setCapabilityId(1L);
+        cap1.setId(1L);
         cap1.setTitle("Capability 1");
 
         Capability cap2 = new Capability();
-        cap2.setCapabilityId(2L);
+        cap2.setId(2L);
         cap2.setTitle("Capability 2");
 
         when(capabilityService.getCapability(1L)).thenReturn(cap1);
