@@ -26,7 +26,7 @@ class RegisterControllerTest {
     void register_page_loads() throws Exception {
         mockMvc.perform(get("/register"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("register"))
+                .andExpect(view().name("login/register"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(content().string(containsString("Create Account")));
     }
@@ -35,7 +35,7 @@ class RegisterControllerTest {
     void user_can_register_successfully() throws Exception {
 
         when(userService.findByEmail("test@email.com"))
-                .thenReturn(null); // no such email → success
+                .thenReturn(null);
 
         mockMvc.perform(post("/register")
                         .param("name", "Test User")
@@ -52,7 +52,7 @@ class RegisterControllerTest {
     void registration_fails_when_email_exists() throws Exception {
 
         when(userService.findByEmail("test@email.com"))
-                .thenReturn(new User()); // email exists → fail
+                .thenReturn(new User());
 
         mockMvc.perform(post("/register")
                         .param("name", "Test User")
@@ -60,7 +60,7 @@ class RegisterControllerTest {
                         .param("phone", "07123456789")
                         .param("password", "password123"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("register"))
+                .andExpect(view().name("login/register"))
                 .andExpect(model().attributeExists("emailError"));
     }
 }
