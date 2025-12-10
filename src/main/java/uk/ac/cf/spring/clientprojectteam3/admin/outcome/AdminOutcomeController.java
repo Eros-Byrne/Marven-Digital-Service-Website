@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/outcomes")
 public class AdminOutcomeController {
 
     private final AdminOutcomeService adminOutcomeService;
@@ -16,7 +16,7 @@ public class AdminOutcomeController {
         adminOutcomeService = aAdminOutcomeService;
     }
 
-    @GetMapping("/outcomes")
+    @GetMapping("")
     public ModelAndView ListOfOutcomes() {
         ModelAndView mv = new ModelAndView("admin/outcomes-list");
         List<AdminOutcome> outcomes = adminOutcomeService.getAllOutcomesWithCapabilityCount();
@@ -24,13 +24,13 @@ public class AdminOutcomeController {
         return mv;
     }
 
-    @GetMapping("/outcomes/add")
+    @GetMapping("/add")
     public ModelAndView AddOutcomeForm() {
         ModelAndView mv = new ModelAndView("admin/create-outcome");
         return mv;
     }
 
-    @PostMapping("/outcomes/add")
+    @PostMapping("/add")
     public ModelAndView AddNewOutcome(@ModelAttribute("title") String title) {
         ModelAndView mv;
         adminOutcomeService.createOutcome(title);
@@ -38,7 +38,7 @@ public class AdminOutcomeController {
         return mv;
     }
 
-    @PostMapping("/outcome/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ModelAndView deleteOutcome(@PathVariable("id") int id) {
         ModelAndView mv;
         adminOutcomeService.deleteOutcome((long) id);

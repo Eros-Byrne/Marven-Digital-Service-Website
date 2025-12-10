@@ -82,7 +82,7 @@ public class ControllerOnlyTest {
     @Test
     public void deleteCallsServiceAndRedirects() throws Exception {
 
-        mvc.perform(post("/admin/outcome/delete/4"))
+        mvc.perform(post("/admin/outcomes/delete/4"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/outcomes"));
