@@ -15,6 +15,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -61,8 +63,8 @@ public class ControllerOnlyTest {
     public void shouldDisplayTeamsWhenUserIsInTeams() throws Exception {
 
         List<UserTeam> teams = List.of(
-                new UserTeam(1L, "Team 1", true, 2L),
-                new UserTeam(2L, "Team 2", false, 4L));
+                new UserTeam(1L, "Team 1", true, 2L,0L),
+                new UserTeam(2L, "Team 2", false, 4L, 0L));
 
         when(teamService.listOfTeamsForCurrentUser()).thenReturn(teams);
 
@@ -82,6 +84,50 @@ public class ControllerOnlyTest {
     }
 
     @Test
+    public void shouldErrorAtWrongCode() throws Exception {
+        when(teamService.listOfTeamsForCurrentUser()).thenReturn(List.of());
+
+        MvcResult result = mvc
+                .perform(post("/teams/join?joinCode=12345"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/teams"))
+                .andExpect(flash().attributeExists("joinError"))
+                .andReturn();
+    }
+
+    private boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        try {
+            long d = Long.parseLong(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+    @Test
+    public void shouldReturnJoinCode() throws Exception {
+        when(teamService.listOfTeamsForCurrentUser()).thenReturn(List.of(new UserTeam(1L, "Team 1", true, 192647285L,0L)));
+
+        MvcResult result = mvc
+                .perform(get("/teams/joinCode/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertEquals("192647285", result.getResponse().getContentAsString());
+
+        MvcResult result2 = mvc
+                .perform(get("/teams/joinCode/2"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        assertEquals("-1", result2.getResponse().getContentAsString());
+    }
+
+    @Test
     public void shouldShowWarningUserInNoTeams() throws Exception {
         when(teamService.listOfTeamsForCurrentUser()).thenReturn(List.of());
 
@@ -96,7 +142,7 @@ public class ControllerOnlyTest {
         String content = result.getResponse().getContentAsString();
 
         assertFalse(content.contains("<ul class=\"list-group list-group-flush bg-white m-0\">"));
-        assertTrue(content.contains("<div class=\"warning alert alert-info\">"));
+        assertTrue(content.contains("<div id=\"no-teams-warning\" class=\"warning alert alert-info\">"));
         assertTrue(content.contains("You are not currently a member of any teams."));
     }
 
@@ -106,7 +152,7 @@ public class ControllerOnlyTest {
     public void shouldRenderSingleTeamWithDefaultOutcome() throws Exception {
         Long teamId = 27L;
 
-        TeamDetails details = new TeamDetails(teamId, "Team 27", "Team desc", List.of(), List.of());
+        TeamDetails details = new TeamDetails(teamId, "Team 27", "Team desc", 123456789L, List.of(), List.of());
 
         when(teamService.getTeamDetailsForTeam(teamId)).thenReturn(details);
         when(teamService.isTheCurrentUserAManager(teamId)).thenReturn(true);
@@ -139,7 +185,7 @@ public class ControllerOnlyTest {
         Long teamId = 27L;
         Long outcomeId = 10L;
 
-        TeamDetails details = new TeamDetails(teamId, "Team 27", "Team desc", List.of(), List.of());
+        TeamDetails details = new TeamDetails(teamId, "Team 27", "Team desc", 123456789L, List.of(), List.of());
 
         when(teamService.getTeamDetailsForTeam(teamId)).thenReturn(details);
         when(teamService.isTheCurrentUserAManager(teamId)).thenReturn(true);

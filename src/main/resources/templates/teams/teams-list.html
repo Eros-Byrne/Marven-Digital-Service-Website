@@ -15,8 +15,14 @@
         <h1 class="white-text">My Teams</h1>
 <!--        Temp colours for buttons - will be changed once the button styling has been confirmed with team-->
         <div class="d-flex gap-2">
-            <button class="btn btn-primary project-button">Join</button>
+            <form th:action="@{/teams/join}" method="POST">
+                <input class="" type="number" id="joinCodeInput" placeholder="join code" name="joinCode" min="0" max="999999999" required>
+                <label for="joinButton"></label>
+                <button class="btn btn-primary project-button" id="joinButton">Join</button>
+            </form>
             <a class="btn btn-primary project-button" href="teams/create">Create</a>
+            <div class="text-danger small" th:text="${joinError}"></div>
+
         </div>
     </div>
 
@@ -37,9 +43,7 @@
     <!--                This button should change colour once project button styling has been confirmed-->
                     <a class="btn btn-primary project-button" th:href="@{/teams/{id} (id=${team.teamId})}">View</a>
 
-                    <form th:action="@{/team/{id}/leave (id=${team.teamId})}" method="post">
-                        <button type="submit" class="btn project-button leave-btn">Leave</button>
-                    </form>
+                    <button class="btn btn-danger project-button leaveTeamButton leave-btn" th:if="${_csrf}" th:data-csrf-js="${_csrf.token}" th:data-csrf-js-name="${_csrf.parameterName}" th:data-team-name="${team.getTeamName()}" th:data-teamid="${team.teamId}">Leave</button>
                 </div>
             </div>
         </li>
@@ -47,11 +51,11 @@
     </div>
 
 
-    <div th:if="${teams.isEmpty()}" class="warning alert alert-info">
+    <div id="no-teams-warning" th:if="${teams.isEmpty()}" class="warning alert alert-info">
         You are not currently a member of any teams.
     </div>
 </div>
 </body>
 <script th:src="@{/bootstrap-5.2.3-dist/js/bootstrap.bundle.min.js}"></script>
-
+<script src="/js/team-list.js"></script>
 </html>

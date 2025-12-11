@@ -14,6 +14,7 @@ public class TeamDetails {
     private Long TeamId;
     private String TeamName;
     private String TeamDescription;
+    private Long join_code;
 
     private List<TeamMember> Managers;
     private List<TeamMember> Members;

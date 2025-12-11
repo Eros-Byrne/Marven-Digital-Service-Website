@@ -17,3 +17,14 @@
     border-radius: 8px;
     font-weight: 600;
 }
+
+#joinCodeDisplay{
+    width: 5.3em;
+}
+
+.joinCodeButtons{
+
+}
+.joinCodeButtons:active{
+    border-color: var(--white);
+}
