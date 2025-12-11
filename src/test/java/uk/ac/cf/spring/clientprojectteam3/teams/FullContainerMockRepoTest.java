@@ -16,6 +16,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -59,6 +62,7 @@ public class FullContainerMockRepoTest {
 
         verify(teamRepo).createTeam(any(NewTeam.class));
         verify(currentUserService).getCurrentUserId();
+        verify(teamRepo).setTeamCode(eq(2L), any(Long.class));
         verify(teamRepo).setUserAsManager(1L, 2L);
     }
 
@@ -68,8 +72,8 @@ public class FullContainerMockRepoTest {
         when(currentUserService.getCurrentUserId()).thenReturn(1);
 
         List<UserTeam> teams = List.of(
-                new UserTeam(1L, "Team 1", false, 7L),
-                new UserTeam(2L, "Team 2", false, 27L)
+                new UserTeam(1L, "Team 1", false, 7L, 0L),
+                new UserTeam(2L, "Team 2", false, 27L, 0L)
         );
 
         when(teamRepo.getAllTeamsForAUser(1L)).thenReturn(teams);
@@ -93,7 +97,7 @@ public class FullContainerMockRepoTest {
         Long teamId = 1L;
 
         when(teamRepo.getTeamDetails(teamId)).thenReturn(
-                new TeamDetails(teamId, "Team 1", "team desc", List.of(), List.of()));
+                new TeamDetails(teamId, "Team 1", "team desc", 123456789L, List.of(), List.of()));
         when(teamRepo.getTeamMembers(teamId)).thenReturn(List.of(
                 new TeamMember(1L, "test1", "test1@email.com", true),
                 new TeamMember(2L, "test2", "test2@email.com", false)

@@ -4,6 +4,8 @@ VALUES (1, 'Test user', 'test@email.com', '07123456789', 'password');
 -- Add test user for QuizDetailSummaryRepositoryTest
 INSERT INTO users (user_id, name, email, phone, password)
 VALUES (100, 'Test User 100', 'testuser100@email.com', '07987654321', 'password');
+INSERT INTO users (user_id, name, email, phone, password)
+VALUES (2,'Test user 2', 'test2@email.com', '07123456789', 'password');
 
 INSERT INTO capabilities (capability_id, title, description)
 VALUES (1, 'Normal Capability1', 'Description');
@@ -35,14 +37,14 @@ VALUES (2, 1);
 INSERT INTO resources (resource_id, content, difficulty, capability_id)
 VALUES (2, 'Resource 2', 'High', 3);
 
-INSERT INTO teams (team_id, team_name, team_description)
-VALUES (1, 'Test team 1', 'Test description 1');
+INSERT INTO teams (team_id, team_name, team_description, join_code)
+VALUES (1, 'Test team 1', 'Test description 1', 987654321);
 
 INSERT INTO team_members (team_id, user_id, is_manager)
 VALUES (1, 1, false);
 
-INSERT INTO teams (team_id, team_name, team_description)
-VALUES (2, 'Test team 2', 'Test description 2');
+INSERT INTO teams (team_id, team_name, team_description, join_code)
+VALUES (2, 'Test team 2', 'Test description 2', 123456789);
 
 INSERT INTO team_members (team_id, user_id, is_manager)
 VALUES (2, 1, true);

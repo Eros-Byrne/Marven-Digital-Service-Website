@@ -12,5 +12,6 @@ public class UserTeam {
     private Long teamId;
     private String teamName;
     private Boolean isManager;
+    private Long joinCode;
     private Long memberCount;
 }
