@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import uk.ac.cf.spring.clientprojectteam3.admin.capability.AdminCapability;
 import uk.ac.cf.spring.clientprojectteam3.admin.outcome.AdminOutcome;
 
 import java.sql.ResultSet;
@@ -139,6 +140,99 @@ public class CapabilityRepositoryImpl implements CapabilityRepository {
 
         jdbc.update(sql, id.intValue());
     }
+    private RowMapper<AdminCapability> adminCapabilityMapper = (rs, rowNum) ->
+            new AdminCapability(
+                    rs.getLong("capability_id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getLong("outcome_id"),
+                    rs.getString("outcome_title")
+            );
+    @Override
+    public List<AdminCapability> findCapabilitiesForOutcome(Long outcomeId) {
+
+        String sql = """
+        SELECT c.capability_id,
+               c.title,
+               c.description,
+               c.outcome_id,
+               o.title AS outcome_title
+        FROM capabilities c
+        JOIN outcomes o ON o.outcome_id = c.outcome_id
+        WHERE c.outcome_id = ?
+        ORDER BY c.capability_id
+    """;
+
+        return jdbc.query(sql, adminCapabilityMapper, outcomeId);
+    }
+    @Override
+    public void createCapability(Long outcomeId, String title, String description) {
+        jdbc.update(
+                "INSERT INTO capabilities (title, description, outcome_id) VALUES (?, ?, ?)",
+                title, description, outcomeId
+        );
+    }
+    @Override
+    public void deleteCapability(Long capabilityId) {
+
+        jdbc.update("DELETE FROM capability_skills WHERE capability_id = ?", capabilityId);
+        jdbc.update("DELETE FROM quiz_questions WHERE capability_id = ?", capabilityId);
+        jdbc.update("DELETE FROM resources WHERE capability_id = ?", capabilityId);
+        jdbc.update("DELETE FROM capabilities WHERE capability_id = ?", capabilityId);
+    }
+    @Override
+    public AdminCapability findCapabilityById(Long capabilityId) {
+
+        String sql = """
+        SELECT c.capability_id,
+               c.title,
+               c.description,
+               c.outcome_id,
+               o.title AS outcome_title
+        FROM capabilities c
+        JOIN outcomes o ON o.outcome_id = c.outcome_id
+        WHERE c.capability_id = ?
+    """;
+
+        return jdbc.queryForObject(sql, adminCapabilityMapper, capabilityId);
+    }
+    @Override
+    public void updateCapability(Long capabilityId, String title, String description) {
+        jdbc.update(
+                "UPDATE capabilities SET title = ?, description = ? WHERE capability_id = ?",
+                title, description, capabilityId
+        );
+    }
+
+    @Override
+    public AdminOutcome findAdminOutcomeById(Long id) {
+
+        String sql = """
+        SELECT o.outcome_id AS id,
+               o.title,
+               COUNT(c.capability_id) AS capability_count
+        FROM outcomes o
+        LEFT JOIN capabilities c ON c.outcome_id = o.outcome_id
+        WHERE o.outcome_id = ?
+        GROUP BY o.outcome_id, o.title
+    """;
+
+        return jdbc.queryForObject(sql, adminOutcomeMapper, id);
+    }
+
+    @Override
+    public void updateOutcome(Long id, String title) {
+
+        String sql = "UPDATE outcomes SET title = ? WHERE outcome_id = ?";
+
+        jdbc.update(sql, title, id);
+    }
+
+
+
+
+
+
 
     @Override
     public List<Capability> getAllCapabilitiesByOutcomeId(Long id) {

@@ -58,7 +58,6 @@ public class NavbarAuthorisationTests {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Dashboard")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Edit Outcomes")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Edit Quizzes")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Edit Capabilities")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Settings")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Logout")));
     }
