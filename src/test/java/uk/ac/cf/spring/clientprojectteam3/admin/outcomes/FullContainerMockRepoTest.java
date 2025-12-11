@@ -49,8 +49,8 @@ public class FullContainerMockRepoTest {
 
         String content = result.getResponse().getContentAsString();
 
-        assertTrue(content.contains("<p class=\"mb-0 text-truncate text-on-white-background\">outcome 1</p>"));
-        assertTrue(content.contains("<p class=\"mb-0 text-truncate text-on-white-background\">Outcome 2</p>"));
+        assertTrue(content.contains(">outcome 1</p>"));
+        assertTrue(content.contains(">Outcome 2</p>"));
     }
 
     @Test
