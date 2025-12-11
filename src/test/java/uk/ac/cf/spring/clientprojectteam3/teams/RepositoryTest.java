@@ -4,13 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 @ActiveProfiles("test")
@@ -68,5 +69,29 @@ public class RepositoryTest {
         assertEquals(true, teams.getFirst().getIsManager());
         assertEquals("Test team 1", teams.get(1).getTeamName());
         assertEquals(false, teams.get(1).getIsManager());
+    }
+
+    @Test
+    public void shouldDeleteTeam(){
+        teamRepo.deleteTeam(2L);
+
+        List<Map<String, Object>> teamMembers = jdbc.query("select * from team_members", new ColumnMapRowMapper());
+        assertEquals(1, teamMembers.size());
+        assertEquals(1L, teamMembers.getFirst().get("user_id"));
+        List<Map<String, Object>> teams = jdbc.query("select * from teams", new ColumnMapRowMapper());
+        assertEquals(1, teams.size());
+        assertEquals("Test team 1", teams.getFirst().get("team_name"));
+    }
+
+    @Test
+    public void shouldntLeave(){
+        assertFalse(teamRepo.leaveTeam(2L,1L));//can't leave as last manager
+    }
+
+    @Test
+    public void shouldJoinTeam(){
+        teamRepo.addTeamMember(123456789, 2L, false);
+        List<Map<String, Object>> teamMembers = jdbc.query("select * from team_members where team_id=?", new ColumnMapRowMapper(), 2L);
+        assertEquals(2, teamMembers.size());
     }
 }

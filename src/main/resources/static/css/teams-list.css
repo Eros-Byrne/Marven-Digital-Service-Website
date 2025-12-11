@@ -1,3 +1,9 @@
+#no-teams-warning {
+    background-color: #003761;
+    color: #ffffff;
+    border-color: #003761;
+}
+
 .team-name {
     max-width: 40ch;
     white-space: nowrap;
@@ -17,6 +23,13 @@
     background-color: #bb2d3b;
 }
 
+#joinCodeInput::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    width: 5.3em;
+}
+
 .team-grid {
     display: grid;
     grid-template-columns: 40ch 1fr auto;
@@ -24,5 +37,5 @@
     column-gap: 25px;
     row-gap: 10px;
     padding: 15px;
-    background-color: var(--white);
+    background-color: #ffffff;
 }

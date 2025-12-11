@@ -1,5 +1,6 @@
 package uk.ac.cf.spring.clientprojectteam3.teams;
 
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class TeamRepositoryImpl implements TeamRepository {
@@ -30,6 +32,7 @@ public class TeamRepositoryImpl implements TeamRepository {
                 rs.getLong("team_id"),
                 rs.getString("team_name"),
                 rs.getBoolean("is_manager"),
+                rs.getLong("join_code"),
                 rs.getLong("members_count")
         );
     }
@@ -39,6 +42,7 @@ public class TeamRepositoryImpl implements TeamRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("description"),
+                rs.getLong("join_code"),
                 new ArrayList<>(),
                 new ArrayList<>()
         );
@@ -78,7 +82,7 @@ public class TeamRepositoryImpl implements TeamRepository {
 
     public List<UserTeam> getAllTeamsForAUser(Long userId) {
         String sql = """
-                select t.team_id, t.team_name, tm.is_manager,
+                select t.team_id, t.team_name, tm.is_manager, t.join_code,
                        (select count(*) from team_members tm where tm.team_id = t.team_id) as members_count
                 from teams t
                 join team_members tm on t.team_id = tm.team_id
@@ -90,7 +94,7 @@ public class TeamRepositoryImpl implements TeamRepository {
 
     public TeamDetails getTeamDetails(Long teamId) {
         String sql = """
-                select team_id as id, team_name as name, team_description as description
+                select team_id as id, team_name as name, team_description as description, join_code
                 from teams
                 where team_id = ?""";
 
@@ -184,6 +188,69 @@ public class TeamRepositoryImpl implements TeamRepository {
             ), teamId, outcomeId);
         }
 
+    public boolean isCodeAlreadyPresent(long code) {
+        String sql = "select join_code from teams where join_code = ?";
+
+        List<Map<String, Object>> join_code = jdbc.query(sql, new ColumnMapRowMapper(), code);
+        return !join_code.isEmpty();
+    }
+
+    public void setTeamCode(long teamID, long joinCode) {
+        String sql = "update teams set join_code = ? where team_id = ?";
+
+        jdbc.update(sql, joinCode, teamID);
+    }
+
+    public boolean addTeamMember(long joinCode, Long userID, boolean isManager) {
+        String sqlSelectTeam = "select count(team_id) from teams where join_code = ?";
+        Object joinCodePresentCheck = jdbc.queryForMap(sqlSelectTeam, joinCode).get("count(team_id)");
+        if((Long)joinCodePresentCheck == 0) {
+            return false;
+        }
+
+        String sqlSelectTeamID = "select team_id from teams where join_code = ? limit 1";
+        Long teamID = (Long) jdbc.queryForMap(sqlSelectTeamID, joinCode).get("team_id");
+
+        String sqlCheckDuplicate = "select * from team_members where user_id=? and team_id=?";
+        List<Map<String, Object>> checkDuplicate = jdbc.query(sqlCheckDuplicate, new ColumnMapRowMapper(), userID, teamID);
+        if(!checkDuplicate.isEmpty()) {
+            return false;
+        }
 
 
+        String sqlInsert = "insert into team_members (team_id, user_id, is_manager) values (?, ?, ?)";
+
+        jdbc.update(sqlInsert, teamID, userID, isManager);
+        return true;
+    }
+
+    @Override
+    public boolean leaveTeam(Long teamID, Long userID) {
+        String sqlTeamMemberDetails = "select is_manager from team_members where team_id=? and user_id=?";
+        List<Map<String, Object>> memberDetail = jdbc.query(sqlTeamMemberDetails, new ColumnMapRowMapper(), teamID, userID);
+        if(memberDetail.isEmpty()) {
+            return false;
+        }
+        if((Boolean) memberDetail.getFirst().get("is_manager")) {
+            String sqlSelectTeam = "select * from team_members where team_id = ? and is_manager = 1";
+            List<Map<String, Object>> managerMembers = jdbc.query(sqlSelectTeam, new ColumnMapRowMapper(), teamID);
+            if(managerMembers.size() == 1) {
+                return false;
+            }
+        }
+
+        String sqlInsert = "delete from team_members where team_id = ? and user_id = ?";
+
+        jdbc.update(sqlInsert, teamID, userID);
+
+        return true;
+    }
+
+    public void deleteTeam(Long teamID) {
+        String deleteTeamMembersSql = "delete from team_members where team_id = ?";
+        jdbc.update(deleteTeamMembersSql, teamID);
+
+        String deleteTeamSql = "delete from teams where team_id = ?";
+        jdbc.update(deleteTeamSql, teamID);
+    }
 }
