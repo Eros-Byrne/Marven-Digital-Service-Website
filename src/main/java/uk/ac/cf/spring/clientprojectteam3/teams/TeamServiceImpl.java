@@ -7,6 +7,8 @@ import uk.ac.cf.spring.clientprojectteam3.user.UserService;
 
 import java.util.List;
 
+import java.util.Random;
+
 @Service
 public class TeamServiceImpl implements TeamService {
 
@@ -23,6 +25,7 @@ public class TeamServiceImpl implements TeamService {
     public void createNewTeam(NewTeam newTeam) {
         Long teamId = teamRepository.createTeam(newTeam);
         Long userId = userService.getCurrentUserId().longValue();
+        regenerateTeamCode(teamId);
 
         teamRepository.setUserAsManager(userId, teamId);
     }
@@ -80,5 +83,31 @@ public class TeamServiceImpl implements TeamService {
 
     public List<TopMemberForOutcome> getTopMembersForOutcome(Long teamId, Long outcomeId) {
         return teamRepository.getTopMembersForOutcomes(teamId, outcomeId);
+    }
+    public boolean addNewTeamMember(long joinCode){
+        return teamRepository.addTeamMember(joinCode, userService.getCurrentUserId().longValue(), false);
+    }
+
+    public long regenerateTeamCode(long teamID){
+        long code = randomGenerateCode();
+        while(teamRepository.isCodeAlreadyPresent(code)){
+            code = randomGenerateCode();
+        }
+        teamRepository.setTeamCode(teamID, code);
+        return code;
+    }
+
+    private long randomGenerateCode(){
+        Random rand = new Random();
+        rand.setSeed(System.currentTimeMillis());
+        return Math.abs(rand.nextLong() % 1000000000);
+    }
+
+    public boolean leaveTeam(Long teamID) {
+        return teamRepository.leaveTeam(teamID, userService.getCurrentUserId().longValue());
+    }
+
+    public void deleteTeam(Long teamID) {
+        teamRepository.deleteTeam(teamID);
     }
 }

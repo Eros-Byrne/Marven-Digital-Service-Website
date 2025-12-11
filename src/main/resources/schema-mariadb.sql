@@ -107,7 +107,8 @@ create table if not exists teams
 (
     team_id bigint primary key auto_increment,
     team_name varchar(255),
-    team_description TEXT
+    team_description TEXT,
+    join_code long unique
 ) engine = InnoDB;
 
 create table if not exists team_members
