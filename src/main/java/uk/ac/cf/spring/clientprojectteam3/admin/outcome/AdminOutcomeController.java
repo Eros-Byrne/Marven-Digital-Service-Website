@@ -45,6 +45,19 @@ public class AdminOutcomeController {
         mv = new ModelAndView("redirect:/admin/outcomes");
         return mv;
     }
+    @GetMapping("/edit/{id}")
+    public ModelAndView editOutcomeForm(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("admin/edit-outcome");
+        mv.addObject("outcome", adminOutcomeService.getOutcomeById(id));
+        return mv;
+    }
 
-
+    @PostMapping("/edit")
+    public ModelAndView updateOutcome(
+            @RequestParam Long id,
+            @RequestParam String title
+    ) {
+        adminOutcomeService.updateOutcome(id, title);
+        return new ModelAndView("redirect:/admin/outcomes");
+    }
 }
