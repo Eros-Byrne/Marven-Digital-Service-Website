@@ -78,3 +78,9 @@ If editing files via terminal, use these commands:
 
 ## ⚖️ Legal & Ethical Considerations
 This tool is built to assist in **upskilling**, not for disciplinary action. Data collected is used to identify where resources should be focused to help teams improve. Users must handle data legally and ethically according to current Wales laws including GDPR.
+
+---
+
+Here is how the website looks also check out the showcase video in project:
+
+<img width="1504" height="1271" alt="image" src="https://github.com/user-attachments/assets/d7eb3812-61b1-4313-ad95-d48ea58bc928" /> 
